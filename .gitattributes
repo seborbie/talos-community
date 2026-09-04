@@ -1,3 +1,3 @@
-# Preserve digest-bound acquisition inputs across checkout platforms.
-/apps/vpx-encode/Cargo.toml -text
-/apps/third-party-patches/*.patch -text
+# Acquisition and export policies bind exact committed bytes, including licence notices.
+# Prevent platform checkout conversion from invalidating those digests.
+* -text
