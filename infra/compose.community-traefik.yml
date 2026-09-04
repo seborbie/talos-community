@@ -1,0 +1,111 @@
+# Default public edge: Traefik terminates HTTPS and relay TLS, and obtains certificates through
+# Let's Encrypt HTTP-01. Combine with compose.community.yml and one database mode.
+
+volumes:
+  talos_traefik_acme:
+    # The launcher addresses this volume directly for stopped-state backup and restore. Keep the
+    # name stable and covered by the edge/launcher contract tests.
+    name: talos-community_talos_traefik_acme
+
+networks:
+  talos_edge:
+    ipam:
+      config:
+        - subnet: "${TALOS_EDGE_SUBNET:-172.31.240.0/24}"
+
+services:
+  api_backend:
+    environment:
+      # Trust exactly Traefik's fixed private address. Other containers and direct clients cannot
+      # choose the forwarding metadata used for audit and rate-limit identity.
+      API_TRUSTED_PROXIES: "${TALOS_TRAEFIK_IPV4:-172.31.240.2}"
+
+  traefik:
+    # The moving default is the narrowly reviewed DR-012 exception. The launcher resolves it once
+    # and supplies TALOS_TRAEFIK_IMAGE as an immutable digest for normal starts and restarts.
+    image: "${TALOS_TRAEFIK_IMAGE:-traefik:latest}"
+    pull_policy: missing
+    command:
+      - --global.checknewversion=false
+      - --global.sendanonymoususage=false
+      - --api.dashboard=false
+      - --api.insecure=false
+      - --core.stricttlsoptions=true
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.forwardedheaders.insecure=false
+      - --entrypoints.web.http.aliasheadersstrategy=delete
+      - --entrypoints.web.http.encodedcharacters.allowencodedslash=false
+      - --entrypoints.web.http.encodedcharacters.allowencodedbackslash=false
+      - --entrypoints.web.http.encodedcharacters.allowencodednullcharacter=false
+      - --entrypoints.web.http.encodedcharacters.allowencodedsemicolon=false
+      - --entrypoints.web.http.encodedcharacters.allowencodedpercent=false
+      - --entrypoints.web.http.encodedcharacters.allowencodedquestionmark=false
+      - --entrypoints.web.http.encodedcharacters.allowencodedhash=false
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.forwardedheaders.insecure=false
+      - --entrypoints.websecure.http.aliasheadersstrategy=delete
+      - --entrypoints.websecure.http.encodedcharacters.allowencodedslash=false
+      - --entrypoints.websecure.http.encodedcharacters.allowencodedbackslash=false
+      - --entrypoints.websecure.http.encodedcharacters.allowencodednullcharacter=false
+      - --entrypoints.websecure.http.encodedcharacters.allowencodedsemicolon=false
+      - --entrypoints.websecure.http.encodedcharacters.allowencodedpercent=false
+      - --entrypoints.websecure.http.encodedcharacters.allowencodedquestionmark=false
+      - --entrypoints.websecure.http.encodedcharacters.allowencodedhash=false
+      - --entrypoints.traefik.address=:8080
+      - --entrypoints.traefik.http.aliasheadersstrategy=delete
+      - --providers.file.filename=/etc/traefik/dynamic/talos.yml
+      - --providers.file.watch=true
+      - --providers.file.debugloggeneratedtemplate=false
+      - --ping=true
+      - --ping.entrypoint=traefik
+      - --log.format=json
+      - "--log.level=${TALOS_TRAEFIK_LOG_LEVEL:-INFO}"
+      - --accesslog=true
+      - --accesslog.format=json
+      - --accesslog.fields.headers.defaultmode=drop
+      - "--certificatesresolvers.letsencrypt.acme.email=${TALOS_ACME_EMAIL:?TALOS_ACME_EMAIL is required}"
+      - --certificatesresolvers.letsencrypt.acme.storage=/acme/acme.json
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - "--certificatesresolvers.letsencrypt.acme.caserver=${TALOS_ACME_CA_SERVER:-https://acme-v02.api.letsencrypt.org/directory}"
+    environment:
+      TALOS_FRONTEND_DOMAIN: "${TALOS_FRONTEND_DOMAIN:?TALOS_FRONTEND_DOMAIN is required}"
+      TALOS_API_DOMAIN: "${TALOS_API_DOMAIN:?TALOS_API_DOMAIN is required}"
+      TALOS_CONTROL_DOMAIN: "${TALOS_CONTROL_DOMAIN:?TALOS_CONTROL_DOMAIN is required}"
+      TALOS_RELAY_DOMAIN: "${TALOS_RELAY_DOMAIN:?TALOS_RELAY_DOMAIN is required}"
+      TALOS_EDGE_HTTPS_PORT: "${TALOS_EDGE_HTTPS_PORT:-443}"
+    ports:
+      - "${TALOS_EDGE_BIND_ADDRESS:-0.0.0.0}:${TALOS_EDGE_HTTP_PORT:-80}:80/tcp"
+      - "${TALOS_EDGE_BIND_ADDRESS:-0.0.0.0}:${TALOS_EDGE_HTTPS_PORT:-443}:443/tcp"
+    volumes:
+      - ./traefik/dynamic-acme.yml:/etc/traefik/dynamic/talos.yml:ro
+      - talos_traefik_acme:/acme
+    networks:
+      talos_edge:
+        ipv4_address: "${TALOS_TRAEFIK_IPV4:-172.31.240.2}"
+    depends_on:
+      api_backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+      talos_relay:
+        condition: service_healthy
+      talos_server:
+        condition: service_healthy
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=32m
+    restart: unless-stopped
+    stop_grace_period: 30s
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s

@@ -1,0 +1,71 @@
+[package]
+name = "talos_worker"
+version = "0.6.183"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[lib]
+path = "src/lib.rs"
+
+[features]
+windows-resource = []
+
+[dependencies]
+anyhow = "1.0"
+talos_protocol = { path = "../talos_protocol", features = ["relay-transport"] }
+talos_log_util = { path = "../talos_log_util" }
+base64 = "0.22"
+chrono = "0.4"
+chacha20poly1305 = "0.10"
+futures-util = "0.3"
+hostname = "0.4"
+local-ip-address = "0.6"
+get_if_addrs = "0.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sysinfo = "0.31"
+tokio = { version = "1.39", features = ["macros", "rt-multi-thread", "time", "sync", "process", "io-util"
+    , "net"] }
+tokio-rustls = "0.26"
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-webpki-roots"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1.8", features = ["v4"] }
+dotenvy = "0.15"
+quinn = "0.11.11"
+rustls = { version = "0.23.36", features = ["ring"] }
+rustls-pemfile = "2.2.0"
+stunclient = "0.4.2"
+url = "2.5.2"
+webpki-roots = "0.26"
+zip = { version = "8.0.0", default-features = false, features = ["deflate"] }
+walkdir = "2.5.0"
+talos_update_common = { path = "../talos_update_common" }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "stream"] }
+zstd = "0.13"
+
+[target.'cfg(windows)'.dependencies]
+dxgi-capture-rs = "1.1"
+talos_collector = { path = "../talos_collector" }
+winapi = { version = "0.3", features = ["processthreadsapi", "securitybaseapi", "winnt", "handleapi", "winuser", "wingdi", "winbase", "consoleapi", "wincontypes", "combaseapi", "objbase", "errhandlingapi", "wtsapi32", "synchapi", "winreg", "setupapi", "ioapiset", "fileapi", "namedpipeapi", "winerror", "tlhelp32", "sddl", "userenv", "libloaderapi"] }
+windows-service = "0.8"
+windows = { version = "0.58", features = ["Win32_Foundation", "Win32_Graphics_Direct3D", "Win32_Graphics_Direct3D_Fxc", "Win32_Graphics_Direct3D11", "Win32_Graphics_Dxgi", "Win32_Graphics_Dxgi_Common", "Win32_Graphics_Gdi", "Win32_Media_MediaFoundation", "Win32_NetworkManagement_WindowsFirewall", "Win32_System_Com", "Win32_System_UpdateAgent", "Win32_System_Variant"] }
+
+[target.'cfg(any(windows, target_os = "macos"))'.dependencies]
+vpx-encode = { path = "../vpx-encode", features = ["ffi-generate"] }
+yuv-sys = "0.3"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+core-foundation = "0.9"
+security-framework = "2.11"
+
+[build-dependencies]
+winres = "0.1.12"
+
+[lints]
+workspace = true

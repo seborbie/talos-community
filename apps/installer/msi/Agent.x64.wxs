@@ -1,0 +1,101 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+  <Package
+    Name="Talos Supervisor (x64)"
+    Manufacturer="Talos"
+    Version="$(var.ProductVersion)"
+    UpgradeCode="{BB235E02-81D0-44A4-BF09-6D0B7A74F00C}"
+    InstallerVersion="500"
+    Scope="perMachine"
+    Language="1033">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Property Id="ENROLLMENT_TOKEN" Secure="yes" Hidden="yes" />
+    <Property Id="RMM_SERVER_URL" Secure="yes" />
+
+    <Feature Id="MainFeature" Title="Talos Supervisor" Level="1">
+      <ComponentGroupRef Id="SupervisorComponents" />
+      <ComponentGroupRef Id="WorkerFolderComponents" />
+      <ComponentGroupRef Id="AgentLogComponents" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <StandardDirectory Id="ProgramFilesFolder">
+      <Directory Id="SUPERVISORDIR" Name="Talos\Supervisor" />
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="WORKERDIR" Name="Talos\Worker" />
+    </StandardDirectory>
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Id="TALOSDATADIR" Name="Talos">
+        <Directory Id="TALOSLOGDIR" Name="logs" />
+      </Directory>
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="SupervisorComponents" Directory="SUPERVISORDIR">
+      <Component Id="CmpSupervisorExe" Guid="*" Bitness="always32">
+        <File Id="FilSupervisorExe" Source="..\payload\x64\talos_supervisor.exe" KeyPath="yes" Checksum="yes" />
+        <Environment Id="EnvRmmServerUrl" Name="RMM_SERVER_URL" Value="[RMM_SERVER_URL]" Action="set" Part="all" System="yes" />
+        <Environment Id="EnvRmmAgentToken" Name="RMM_AGENT_TOKEN" Value="[ENROLLMENT_TOKEN]" Action="set" Part="all" System="yes" />
+        <ServiceInstall
+          Id="SvcInstallTalosSupervisor"
+          Name="TalosSupervisor"
+          DisplayName="Talos Supervisor"
+          Description="Talos supervisor, updater, and worker watchdog"
+          Start="auto"
+          Type="ownProcess"
+          ErrorControl="normal"
+          Vital="yes"
+          Account="LocalSystem" />
+        <ServiceControl
+          Id="SvcControlTalosSupervisor"
+          Name="TalosSupervisor"
+          Start="install"
+          Stop="both"
+          Remove="uninstall"
+          Wait="yes" />
+      </Component>
+      <Component Id="CmpAgentLicenseFilesX64" Guid="*" Bitness="always32">
+        <File Id="FilAgentLicenseX64" Source="..\..\..\LICENSE" Name="LICENSE.txt" KeyPath="yes" />
+        <File Id="FilAgentThirdPartyNoticesX64" Source="..\..\..\THIRD_PARTY_NOTICES.md" Name="THIRD_PARTY_NOTICES.txt" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="WorkerFolderComponents" Directory="WORKERDIR">
+      <Component Id="CmpWorkerDir" Guid="{E8D2B7D0-8E6C-4B7A-9F4A-2E1A7C6E6F3A}">
+        <CreateFolder>
+          <util:PermissionEx User="Users" GenericRead="yes" GenericWrite="yes" />
+          <util:PermissionEx User="Administrators" GenericAll="yes" />
+          <util:PermissionEx User="SYSTEM" GenericAll="yes" />
+        </CreateFolder>
+        <ServiceControl
+          Id="SvcControlTalosWorker"
+          Name="TalosWorker"
+          Stop="uninstall"
+          Remove="uninstall"
+          Wait="yes" />
+        <ServiceControl
+          Id="SvcControlLegacyRmmAgent"
+          Name="RmmAgent"
+          Stop="uninstall"
+          Remove="uninstall"
+          Wait="yes" />
+      </Component>
+    </ComponentGroup>
+
+    <ComponentGroup Id="AgentLogComponents" Directory="TALOSLOGDIR">
+      <Component Id="CmpTalosLogDir" Guid="{A053F910-F973-458C-A8D6-D491C33A2EF7}">
+        <CreateFolder>
+          <util:PermissionEx User="Users" GenericRead="yes" GenericWrite="yes" />
+          <util:PermissionEx User="Administrators" GenericAll="yes" />
+          <util:PermissionEx User="SYSTEM" GenericAll="yes" />
+        </CreateFolder>
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

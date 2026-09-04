@@ -1,0 +1,18 @@
+<Project Sdk="WixToolset.Sdk/6.0.0">
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+    <OutputName>Talos.Viewer.Setup</OutputName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <DefineConstants>
+      ViewerMsiX64Path=..\msi\bin\Release\Talos.Viewer.x64.msi
+    </DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Bal.wixext" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Viewer.Bundle.wxs" />
+  </ItemGroup>
+</Project>

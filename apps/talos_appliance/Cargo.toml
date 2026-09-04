@@ -1,0 +1,29 @@
+[package]
+name = "talos_appliance"
+version = "0.1.0"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "talos-server"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0"
+rand = "0.8"
+rcgen = "0.14.7"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+time = "0.3"
+url = "2.5.2"
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61.2", features = ["Win32_Foundation", "Win32_Security", "Win32_Security_Authorization"] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints]
+workspace = true

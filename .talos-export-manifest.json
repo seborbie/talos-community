@@ -1,0 +1,5587 @@
+{
+  "schemaVersion": 1,
+  "policy": {
+    "name": "Talos Community source snapshot",
+    "path": ".config/public-export-policy.json",
+    "sha256": "8ade46b24eeee15db7e509f5e0e8e232a1114017d65a2f28d6cc8246aaa495b4"
+  },
+  "source": {
+    "headCommit": "4c0a2b9accd42a2baf9c7c4d1166ba98bd2d7db3",
+    "headTree": "7c1af3373c7c2a4a95a172282d4466073d973831",
+    "clean": true,
+    "gitStatusSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidateSetSha256": "c95256dacf252ab44ac839b260286e5d6b19eddedf94ee43c601a834310b5729"
+  },
+  "snapshot": {
+    "publicationReady": true,
+    "fileCount": 927,
+    "totalBytes": 14469017,
+    "contentTreeSha256": "cae773373ead5165bb1291eb346b7831847b194e1f6aa13079db3deb024a6a08"
+  },
+  "readinessFailures": [],
+  "omittedBlockers": [],
+  "files": [
+    {
+      "path": ".config/dotnet-tools.json",
+      "mode": "100644",
+      "size": 142,
+      "sha256": "ee740710a45ac00ecbdf3ffe950c6fd0bd3be18004f2f3d5babadaafecb1b739"
+    },
+    {
+      "path": ".config/public-export-policy.json",
+      "mode": "100644",
+      "size": 12051,
+      "sha256": "8ade46b24eeee15db7e509f5e0e8e232a1114017d65a2f28d6cc8246aaa495b4"
+    },
+    {
+      "path": ".config/publication-identity.json",
+      "mode": "100644",
+      "size": 126,
+      "sha256": "5a4adc355546d5c01d149a68612c64d81f4621dff3f31926162a82246e5c9954"
+    },
+    {
+      "path": ".config/third-party-acquisition.json",
+      "mode": "100644",
+      "size": 3884,
+      "sha256": "0c50c41a73851bb1958847bf5771f476b40f54bc7a048626e1c07cf0efa9fce1"
+    },
+    {
+      "path": ".dockerignore",
+      "mode": "100644",
+      "size": 596,
+      "sha256": "bbfdc593aac3b7e68338dd28cd28ae879058186e086137467be573ece05a5c70"
+    },
+    {
+      "path": ".github/dependabot.yml",
+      "mode": "100644",
+      "size": 988,
+      "sha256": "3032cc3a73e37296b10f3463c5a10c9dab3052ec951746a0bb62066b8643f052"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug-report.yml",
+      "mode": "100644",
+      "size": 1948,
+      "sha256": "eb103aba7616b90234972c8051793998c900e894c17a5e6359f27e3187987fb1"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/config.yml",
+      "mode": "100644",
+      "size": 46,
+      "sha256": "8b09e7df09fc7534371988062769ee427af2954a02c04c763e8a8005be0f2be4"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature-request.yml",
+      "mode": "100644",
+      "size": 1219,
+      "sha256": "97def3e83fa1e74b73efa9532bf2b0b661dd402448da43407e68be0d8eb59d5b"
+    },
+    {
+      "path": ".github/PULL_REQUEST_TEMPLATE.md",
+      "mode": "100644",
+      "size": 950,
+      "sha256": "461197c74fbcfc957e20b8c1ac2ffd866a9be3e258ee9fdf768fa84fbff90ae4"
+    },
+    {
+      "path": ".github/RELEASE_TEMPLATE.md",
+      "mode": "100644",
+      "size": 2713,
+      "sha256": "87e4d12af30426a3fd85f80f1be9787db4a090f696205a8b29e9b7bea9367dad"
+    },
+    {
+      "path": ".github/REPOSITORY_SETTINGS.md",
+      "mode": "100644",
+      "size": 2191,
+      "sha256": "8eb2562d4dce7826bc69a65478a6cf95fac9bee7096bb6fde19c96263e005913"
+    },
+    {
+      "path": ".github/workflows/community-release-candidate.yml",
+      "mode": "100644",
+      "size": 19235,
+      "sha256": "cbf177526554ea034fe23c457ce2d514f54f901fbb2d65abadae390046629657"
+    },
+    {
+      "path": ".github/workflows/community-release-promote.yml",
+      "mode": "100644",
+      "size": 7581,
+      "sha256": "fc93492395c40540afaf21610874677364446a14521d05e68a5eed0d0ac5166a"
+    },
+    {
+      "path": ".github/workflows/community-release-publish.yml",
+      "mode": "100644",
+      "size": 14519,
+      "sha256": "571ccf1acf0486d46a8ddf59724a3103aace9584ab870a6cff805a47878bcc86"
+    },
+    {
+      "path": ".github/workflows/quality.yml",
+      "mode": "100644",
+      "size": 11239,
+      "sha256": "883782fc4961e085871ebd891535a4eb89c77e480cab69e3edb5a93018c2ad3d"
+    },
+    {
+      "path": ".github/workflows/security.yml",
+      "mode": "100644",
+      "size": 2223,
+      "sha256": "686ab79421b3f22d2df6293aa6b55290264874d1d76bb5fdc9eba7c81dbebf41"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "size": 2748,
+      "sha256": "d82cb9d5c9cd31040a34fb2603614423d51c3479d9f880bcd025aae0e8ee1e0c"
+    },
+    {
+      "path": ".gitleaks.toml",
+      "mode": "100644",
+      "size": 2516,
+      "sha256": "1a62d4378e76832de313f77ad52f374bcf94208ee5892d23e5872c3b611431a2"
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "size": 3258,
+      "sha256": "19eff6073852e9040f5f58ebe0c82fd97d6641e08b0b6d4d9674c701a989b2e8"
+    },
+    {
+      "path": "apps/.env.example",
+      "mode": "100644",
+      "size": 9099,
+      "sha256": "8d13d8da01d866ceee5048fa503354673d869f300507744c142ee81ad9682970"
+    },
+    {
+      "path": "apps/api_backend/.env.example",
+      "mode": "100644",
+      "size": 2138,
+      "sha256": "ab9f665d3d6674b6a0c168edf58ae594afda5f0a6c366e1d8a8d8adfb7ef7168"
+    },
+    {
+      "path": "apps/api_backend/Dockerfile",
+      "mode": "100644",
+      "size": 1485,
+      "sha256": "fa9d5349020f7e8da7f621577c6a0ab0da8db269b22702f82c0bd54ab599e957"
+    },
+    {
+      "path": "apps/api_backend/lib/alertLifecycle.ts",
+      "mode": "100644",
+      "size": 11074,
+      "sha256": "1efa99aab0f10b500129746242016edd9f85eea7f72d82769b2b97bef887ba62"
+    },
+    {
+      "path": "apps/api_backend/lib/alertNotifications.ts",
+      "mode": "100644",
+      "size": 1348,
+      "sha256": "769d07d81f34758a37d08dc3e3a855ff266e85426202afdceb56bd9dc6471226"
+    },
+    {
+      "path": "apps/api_backend/lib/async-wrapper.ts",
+      "mode": "100644",
+      "size": 411,
+      "sha256": "44a0183a62c5fa0ca8738bb5cca60af14189783bc225cbabeffff8b16bbaf45d"
+    },
+    {
+      "path": "apps/api_backend/lib/audit.ts",
+      "mode": "100644",
+      "size": 4206,
+      "sha256": "707a4f227cb2fee617d8d8d884df289a0a5bc9428ab78fe8a9c1a1fbe799bf37"
+    },
+    {
+      "path": "apps/api_backend/lib/auth.ts",
+      "mode": "100644",
+      "size": 663,
+      "sha256": "27e27483f6c3d119a97867f9f9766f0bc56aa902636b33c44c5ab803dc72387f"
+    },
+    {
+      "path": "apps/api_backend/lib/commandCenterAi.ts",
+      "mode": "100644",
+      "size": 20219,
+      "sha256": "a57345a6afcfad0e6c7137e63cf72a70c4bf558c3252321f50dbb5574bc8115c"
+    },
+    {
+      "path": "apps/api_backend/lib/commandCenterAiRunner.ts",
+      "mode": "100644",
+      "size": 107192,
+      "sha256": "54de47aef32b8d384b797cbc3c79fa515c8f65c87109169f39565bb444f8f831"
+    },
+    {
+      "path": "apps/api_backend/lib/commandCenterConversations.ts",
+      "mode": "100644",
+      "size": 6326,
+      "sha256": "b86e0791ee0f026681498044f2a2a40ccf48c51442e0c79815bf241e9d28fcec"
+    },
+    {
+      "path": "apps/api_backend/lib/commandCenterMcp.ts",
+      "mode": "100644",
+      "size": 3544,
+      "sha256": "b13077edc0ddac475aaf02bf5b0b412a17ed7ea111fc3720ad9ba3ba7418d204"
+    },
+    {
+      "path": "apps/api_backend/lib/communityRegistration.ts",
+      "mode": "100644",
+      "size": 2575,
+      "sha256": "2a2e9224012bc341192c222f6a489036710b2d408f1cb16b1f6cc3d9af43161b"
+    },
+    {
+      "path": "apps/api_backend/lib/crypto.test.ts",
+      "mode": "100644",
+      "size": 1975,
+      "sha256": "af992ecc6cf09f42a25590f97297a7a089adaed496fcca2db6019eaa5099a1f3"
+    },
+    {
+      "path": "apps/api_backend/lib/crypto.ts",
+      "mode": "100644",
+      "size": 1248,
+      "sha256": "64c18031a6225e38dd221141991fe8046d3a7046eb5ddddc8df6aa78e7a69142"
+    },
+    {
+      "path": "apps/api_backend/lib/env.ts",
+      "mode": "100644",
+      "size": 1933,
+      "sha256": "c8091caa8a6bb8795866768152f70beb77d25dd17ec164017a7d366f1c89f69c"
+    },
+    {
+      "path": "apps/api_backend/lib/environmentPolicy.test.ts",
+      "mode": "100644",
+      "size": 5571,
+      "sha256": "b5e7a8679f9836103f4b6b43cc4a52986446b66afbd17914078facc1ea18329e"
+    },
+    {
+      "path": "apps/api_backend/lib/environmentPolicy.ts",
+      "mode": "100644",
+      "size": 5126,
+      "sha256": "9e6cbb05d5479830fe289af99ee1f5dc65133bacdc1178c414c4281e631412e8"
+    },
+    {
+      "path": "apps/api_backend/lib/featureUpgradePreflight.ts",
+      "mode": "100644",
+      "size": 32456,
+      "sha256": "db98fb62546912c04812d58d4c8f78554536c4a297a6880cc5fdf02735e8cc6b"
+    },
+    {
+      "path": "apps/api_backend/lib/logger.ts",
+      "mode": "100644",
+      "size": 3738,
+      "sha256": "52ce78ac6a1f8a5957fd14fd8974363a881be390ff63f71ee657c19dc767d55d"
+    },
+    {
+      "path": "apps/api_backend/lib/mcp/client.ts",
+      "mode": "100644",
+      "size": 5805,
+      "sha256": "ef6da16d295404d9971a01277ace8094b7cb27c9949310ff4c68cebf15bf06ab"
+    },
+    {
+      "path": "apps/api_backend/lib/mcp/servers/aiRunnerServer.ts",
+      "mode": "100644",
+      "size": 11882,
+      "sha256": "7e208f78f46461ad3218c98cb0d69fe4c57e8a44aeae18e71eb01ac4107095c3"
+    },
+    {
+      "path": "apps/api_backend/lib/mcp/servers/deviceServer.ts",
+      "mode": "100644",
+      "size": 32982,
+      "sha256": "327cb622757f0683561f700df5eed0920b94b0f5fb78e50a49654258aa91ae76"
+    },
+    {
+      "path": "apps/api_backend/lib/mcp/servers/secretBrokerServer.ts",
+      "mode": "100644",
+      "size": 3486,
+      "sha256": "276e80ccc89ffd26318907b466ef8b29dd604f4c837dfea5a968813ec2c87432"
+    },
+    {
+      "path": "apps/api_backend/lib/mcp/types.ts",
+      "mode": "100644",
+      "size": 1029,
+      "sha256": "877c5227559f4b96bcf0dc258fbc87bef8517a3e8ad925eee0a567fe1cbf2a96"
+    },
+    {
+      "path": "apps/api_backend/lib/passwordGenerator.ts",
+      "mode": "100644",
+      "size": 3338,
+      "sha256": "33344d633ead6d516fc4be1ec2c00ea5327b7c75eab188bf0edad1c4114c2dfd"
+    },
+    {
+      "path": "apps/api_backend/lib/patchDecisionEngine.ts",
+      "mode": "100644",
+      "size": 34582,
+      "sha256": "98195ab481fe256129507c04b3ad82bc5961aa0fc36afa6cad05b5f93d8d0f5e"
+    },
+    {
+      "path": "apps/api_backend/lib/patchDecisionService.transaction.test.ts",
+      "mode": "100644",
+      "size": 2573,
+      "sha256": "ad87cb5e7704086de8d3859113a2387cf1163c2063d3af1cd7ccbca74a0ea935"
+    },
+    {
+      "path": "apps/api_backend/lib/patchDecisionService.ts",
+      "mode": "100644",
+      "size": 56967,
+      "sha256": "eaaa1ff6e22044697a5dc46e71fddeba1c451641643a3d03bf7904d6809de9da"
+    },
+    {
+      "path": "apps/api_backend/lib/patchManagement.ts",
+      "mode": "100644",
+      "size": 11491,
+      "sha256": "59ecc49b82dc9854dd740ef98ca3a890f221d948c9c2cb3af46e4d1b39071c83"
+    },
+    {
+      "path": "apps/api_backend/lib/patchPolicies.ts",
+      "mode": "100644",
+      "size": 3733,
+      "sha256": "86c47cea8f5b0a93d61255d7743e671b360292fa4c72fb40a2dc2578d0037f68"
+    },
+    {
+      "path": "apps/api_backend/lib/patchProgressPersistence.ts",
+      "mode": "100644",
+      "size": 5887,
+      "sha256": "4031536de217245498d4f05f3adcc3cdff50f0d2f65e10913cabad424ddee5ac"
+    },
+    {
+      "path": "apps/api_backend/lib/patchProgressProjection.test.ts",
+      "mode": "100644",
+      "size": 5184,
+      "sha256": "1169d0907b7270891842a2a6dc72422f5940511a84e76b4e11fdbaa5b8bb665e"
+    },
+    {
+      "path": "apps/api_backend/lib/patchProgressProjection.ts",
+      "mode": "100644",
+      "size": 10850,
+      "sha256": "6da6a31f980acf0d27d518f1483ff6cfe7478e5966074ec981b3030a166baab6"
+    },
+    {
+      "path": "apps/api_backend/lib/patchRebootLoop.ts",
+      "mode": "100644",
+      "size": 1437,
+      "sha256": "46fa91cbaa6597429a10da9e7a12c6c2f5c442bac701200f833a0cdad19d4c84"
+    },
+    {
+      "path": "apps/api_backend/lib/prisma.ts",
+      "mode": "100644",
+      "size": 90,
+      "sha256": "08efef264f5d92af0a53cdbb8c3adfcf3763599aa94a14ee4ef91b4b69c34702"
+    },
+    {
+      "path": "apps/api_backend/lib/productionDatabasePreflight.test.ts",
+      "mode": "100644",
+      "size": 3075,
+      "sha256": "3e78713f7708fd7fbb42a14cb69f5a2488a66166b7484ce193a2d035a81f7eb7"
+    },
+    {
+      "path": "apps/api_backend/lib/productionDatabasePreflight.ts",
+      "mode": "100644",
+      "size": 3902,
+      "sha256": "5eb7005ba9970b674c3db15dae878c352e771b821d38ceb73b6c7a9c6185b867"
+    },
+    {
+      "path": "apps/api_backend/lib/remediationDispatch.test.ts",
+      "mode": "100644",
+      "size": 3011,
+      "sha256": "d7c2f3e6e57d2e67799577da9722165c7b9f7697835ca7c5a139f61ecc1a6d4b"
+    },
+    {
+      "path": "apps/api_backend/lib/remediationDispatch.ts",
+      "mode": "100644",
+      "size": 3929,
+      "sha256": "768329f001b1284bd3c5d4a28953c98d2525fd5ad78c3a4bea6c951af6c1fc06"
+    },
+    {
+      "path": "apps/api_backend/lib/remediationStatusTransitions.ts",
+      "mode": "100644",
+      "size": 14963,
+      "sha256": "de6c7486fead9a9b7a4544f276d2bfef4f30563278d8e00979ed110df4371308"
+    },
+    {
+      "path": "apps/api_backend/lib/reports.test.ts",
+      "mode": "100644",
+      "size": 3803,
+      "sha256": "22fd322b6bf12d7f8b8f6499c10c99784ce3c093d3edfe681e607212c2285238"
+    },
+    {
+      "path": "apps/api_backend/lib/reports.ts",
+      "mode": "100644",
+      "size": 27379,
+      "sha256": "6cba5b9d8d5d3f7f6b173cb05220ef4924e63ce96cebe2ee9382944debce281d"
+    },
+    {
+      "path": "apps/api_backend/lib/requestTrust.test.ts",
+      "mode": "100644",
+      "size": 3936,
+      "sha256": "70eb3b20fc14f1d1d5446a6c61a01736966bc91459099c1a6faf1a660f74e18b"
+    },
+    {
+      "path": "apps/api_backend/lib/requestTrust.ts",
+      "mode": "100644",
+      "size": 3435,
+      "sha256": "ba2c29a73760f3c338e03c2e1e4f8955469ae2f62a482fa07021109cf74e29f2"
+    },
+    {
+      "path": "apps/api_backend/lib/rmmAgentHealth.test.ts",
+      "mode": "100644",
+      "size": 3462,
+      "sha256": "3b6fb8ee95c9812b4d8741e5c707c77707dd83001c2db6cbaf431ed82999a5c1"
+    },
+    {
+      "path": "apps/api_backend/lib/rmmAgentHealth.ts",
+      "mode": "100644",
+      "size": 11850,
+      "sha256": "aa19e9ce3eeb751311337e571298596c961e71ffaa73331f81e3d100af127729"
+    },
+    {
+      "path": "apps/api_backend/lib/rmmAiAssist.ts",
+      "mode": "100644",
+      "size": 81049,
+      "sha256": "03595ac4205b07e17b0d887d3ff0aefdc9711d6159d0ebca0b6866f70d724d87"
+    },
+    {
+      "path": "apps/api_backend/lib/rmmDeviceList.test.ts",
+      "mode": "100644",
+      "size": 3734,
+      "sha256": "84b8a2328ca1426dc965ef04dd14e0efd8f53174b7f817401443f5f734298fab"
+    },
+    {
+      "path": "apps/api_backend/lib/rmmDeviceList.ts",
+      "mode": "100644",
+      "size": 12256,
+      "sha256": "7d4e86dd23f54392f4ccbd4d4340c0eeb3579f3715e2a74c6f57af0bea2488b5"
+    },
+    {
+      "path": "apps/api_backend/lib/secureNotes.ts",
+      "mode": "100644",
+      "size": 18062,
+      "sha256": "4db0ce8f831c69cc1595ebaf85a877102e9503bc1ca93b492ec3d93381324253"
+    },
+    {
+      "path": "apps/api_backend/lib/wordDictionary.json",
+      "mode": "100644",
+      "size": 116596,
+      "sha256": "1fcb5a803907b33e5b9137d70861b8fe9927bfabfe53611b716027906120da34"
+    },
+    {
+      "path": "apps/api_backend/middleware/auth.ts",
+      "mode": "100644",
+      "size": 630,
+      "sha256": "eeeb04c6eb4de65ad52999298fe39b38c2248b81089e1db8e33088269eda7961"
+    },
+    {
+      "path": "apps/api_backend/middleware/rmmServerKey.ts",
+      "mode": "100644",
+      "size": 627,
+      "sha256": "c577e5aa9eb8b414e9c3549e8b98303ecce3a95f66622efd9aa64cf2d6fb31f1"
+    },
+    {
+      "path": "apps/api_backend/middleware/security.ts",
+      "mode": "100644",
+      "size": 2971,
+      "sha256": "a072bd486a299db5bfd44aa3acb6c6e35176a7d3e5627d8b299fe79589e0145a"
+    },
+    {
+      "path": "apps/api_backend/package.json",
+      "mode": "100644",
+      "size": 987,
+      "sha256": "ac083d28d2ff7f1daebf8e854f315883ca27515ce236f53dbd626e790337b995"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250626121540_init/migration.sql",
+      "mode": "100644",
+      "size": 1275,
+      "sha256": "8acb4472640d64de40b4560a3ee1ba89f107b74690530e7e45963c636ffea04e"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250628092622_add_agent_config/migration.sql",
+      "mode": "100644",
+      "size": 834,
+      "sha256": "22b57d407f409f193e7f5ff1ad3bf9ca9d1d8f49a2e33367915b23b8323bc5df"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250709132958_update_twiml_template/migration.sql",
+      "mode": "100644",
+      "size": 258,
+      "sha256": "ca8b13062a0e2f5d0cd81379cce51ddad2f90de9b8c591b1756d87518d401bf1"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250723141216_update_agent_config/migration.sql",
+      "mode": "100644",
+      "size": 248,
+      "sha256": "2265cdb7456723f9d2d5c72b2754718c03c4e0f2b1df49581b7d172094588522"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250723142858_update_agent_config_realtime_agent_default/migration.sql",
+      "mode": "100644",
+      "size": 100,
+      "sha256": "5b4e00abbb3ff8384f36361ae6688fe9e93e8973f13eaac2e273c436d6d092f5"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250723144219_update_agent_config_servervad_removal/migration.sql",
+      "mode": "100644",
+      "size": 348,
+      "sha256": "0062fa76f37ad8761b15601abb565cf6686d46cd2cf820c4cf093f91d41e671f"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250807134523_add_twilio_user_fields/migration.sql",
+      "mode": "100644",
+      "size": 1103,
+      "sha256": "6800d16a14017c6b4ffd9fd751263f77b3574b134f817c565115e759109b14dc"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250807141210_add_call_status_and_end_time/migration.sql",
+      "mode": "100644",
+      "size": 128,
+      "sha256": "acd314e559b1e6743fa4f5f5d94a4efd3aef3aeabce24e5ceb8f76bc332fd39c"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250811120000_add_call_sid_sessionid/migration.sql",
+      "mode": "100644",
+      "size": 376,
+      "sha256": "8ccc649b72f87556ba100e00b79ac8208e0fe6354b58b011b9f21046ecc7bbce"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250813125021_add_organization_and_membership/migration.sql",
+      "mode": "100644",
+      "size": 1733,
+      "sha256": "b8cc3efa2530042f89918fb641815f82e71ad57e146d06ba927f94adcb70ed54"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250905092647_remove_organization_twilio_and_halo/migration.sql",
+      "mode": "100644",
+      "size": 1209,
+      "sha256": "c5755edd34db9b88be4b776203c27c6ee1309960bb9c52aba0f61c17bccd4ad4"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20250917000000_add_halo_config/migration.sql",
+      "mode": "100644",
+      "size": 310,
+      "sha256": "82de15d978f6c31ed6df12415ef59b727f4a1784815811b78dcb557216af6706"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260123120000_add_perf_indexes/migration.sql",
+      "mode": "100644",
+      "size": 694,
+      "sha256": "77f3a2ef2f96d460f9a3d47ef6f2343a90faacd4f1d49ce9844240269b73bbc7"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260123120000_add_rmm_devices/migration.sql",
+      "mode": "100644",
+      "size": 1173,
+      "sha256": "f7a086777f82c00d913e219b244d7e4d8ced51a919444fefe3d61c74ec5eff3f"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260123123000_rmm_last_seen_timestamptz/migration.sql",
+      "mode": "100644",
+      "size": 109,
+      "sha256": "a2b10b8a24f7e62ba37e7c8d8c3bc0b82cd11a9d25bd0a66a7102d66c70df333"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260123205756_perf_changes/migration.sql",
+      "mode": "100644",
+      "size": 80,
+      "sha256": "55fa7ed4e36efcbceaff108baa9afe6ca7c2f95a1e5a669a35edd7f77e485eec"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260126120000_add_rmm_device_details/migration.sql",
+      "mode": "100644",
+      "size": 104,
+      "sha256": "296e59077af0faadc456e4ffc5c11f8b36cc69dbf3428777a91c121c296a7144"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260126130000_add_rmm_customers/migration.sql",
+      "mode": "100644",
+      "size": 1009,
+      "sha256": "8bbc1b786be07f195ce052d9f1ade9d810f357fbae7b7456c46f6528e3d13394"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260129080000_add_command_policies/migration.sql",
+      "mode": "100644",
+      "size": 6010,
+      "sha256": "0e68732864aaccc108914513744795836e71d3ffa5a156bc7a4a169653b7094f"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260129170000_rmm_command_allow_list/migration.sql",
+      "mode": "100644",
+      "size": 2034,
+      "sha256": "df632dcc2c3044990eaeacb863462fff6dda5119fd868d897823691ce58b6d0f"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260218100000_remove_phone_agent/migration.sql",
+      "mode": "100644",
+      "size": 355,
+      "sha256": "c603b51b513746b65227620972346556a871d8f95ddbc5d626ad57ff33dfe3fc"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260222190000_rmm_telemetry_schema_split/migration.sql",
+      "mode": "100644",
+      "size": 1739,
+      "sha256": "e526eceeacda1f2af02c320aa2b861b0ac635dc7a46c89adc4edffe3ddd19774"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260224211827_rmm_telemetry_data_update/migration.sql",
+      "mode": "100644",
+      "size": 902,
+      "sha256": "18ded9ccd9db66031ffa9e050a55600654ca878184f85c733a9eba25dbb8de47"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260225120000_rmm_telemetry_query_model_split/migration.sql",
+      "mode": "100644",
+      "size": 2842,
+      "sha256": "d0fdad1020e2cae43857b9d6ba93437d19b149399231499f576b2a06736156fb"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260225121500_rmm_telemetry_add_service_feature_tables/migration.sql",
+      "mode": "100644",
+      "size": 3936,
+      "sha256": "3d1638d0a785ea8e2063941d3eff7b75be1d1bbcd17059808c06519bcc302d1f"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260225123000_rmm_telemetry_add_update_tables/migration.sql",
+      "mode": "100644",
+      "size": 2919,
+      "sha256": "601eddcb13f364e32fdd385f965970c054095cb5927e32d3ead124e4f1cbe8e4"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260225215813_add_snapshot_request/migration.sql",
+      "mode": "100644",
+      "size": 1079,
+      "sha256": "f2b2f85ee1a963b2afd773851c24ecda93cd9223f7082ea5d916de8e9f3fdb81"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260226130000_rmm_telemetry_graph_baseline_rules/migration.sql",
+      "mode": "100644",
+      "size": 11024,
+      "sha256": "0233f3a82c327090263779389508e27c726c7f7af7384f671319a057d5cbeceb"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260226160733_rmm_telemetry_baselines/migration.sql",
+      "mode": "100644",
+      "size": 2098,
+      "sha256": "af55a818051ee3dfdf9970ac057eb322fae7c100989da9d881a04e15a1fe533a"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260226212301_rmm_scoped_baseline_mvp/migration.sql",
+      "mode": "100644",
+      "size": 1393,
+      "sha256": "fe495ef1ab0d3645ca0a23fd77b0ba503f67504534833cb158ed125e504ebf44"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260227000000_rmm_scoped_baseline_mvp/migration.sql",
+      "mode": "100644",
+      "size": 4551,
+      "sha256": "f8295e963afe582aaf0794929299b054d865dc1e459fb4b0472617db943d83d5"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260301120000_rmm_org_partitioning/migration.sql",
+      "mode": "100644",
+      "size": 22966,
+      "sha256": "95cd63dd930ce761c712361ed6a65813a6ecd7c86fd3a0856b3a4718ee16fb57"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260301143000_rmm_installer_tokens/migration.sql",
+      "mode": "100644",
+      "size": 6994,
+      "sha256": "bc69a9eb619db3329d2b0b518bd0b88f1c7b27ff9d2f6a86507c596ac8fc0753"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260305000000_baseline_engine_phase1/migration.sql",
+      "mode": "100644",
+      "size": 1804,
+      "sha256": "97275734268b2df0ed88dd066094a8c9560adee7849323672cfd2f541f7acc5b"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260306123000_rmm_phase1_routing/migration.sql",
+      "mode": "100644",
+      "size": 893,
+      "sha256": "4cabe4926b070f76da753ac571acfdbb87fb2b4f24a1095f873a1c4f3480a151"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260320195500_add_rmm_emergency_update_state/migration.sql",
+      "mode": "100644",
+      "size": 460,
+      "sha256": "297d3ba7b5b6a1685a4fed033e845e26ff784c8566e1754e649d9a07deddc20c"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260510180500_patch_management_mvp/migration.sql",
+      "mode": "100644",
+      "size": 6075,
+      "sha256": "8fb0459c92aa82df3db0c69015a65892b95fdc8dcd1dd2ca0cd012334edacb68"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260510191500_alert_lifecycle/migration.sql",
+      "mode": "100644",
+      "size": 5135,
+      "sha256": "335e4f06f5465f933c24488a9bc62b625d1ccac2e688bec527b21d28efcf17d4"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260510210500_rmm_reporting/migration.sql",
+      "mode": "100644",
+      "size": 3052,
+      "sha256": "765a50d503c031829695bc2eaa2ba71518938f5d5ec14da99c4657d033e4156e"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260510231000_audit_events/migration.sql",
+      "mode": "100644",
+      "size": 2142,
+      "sha256": "51235fc358ecf093765a415f3787fc65d3dc5ae1860ac504a79d3e3ee0016e08"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260511001000_rmm_agent_health/migration.sql",
+      "mode": "100644",
+      "size": 1774,
+      "sha256": "8272be4c9a683ee1bc6eae13796a8122ce1ee72a3f518f19afbb949fb5d345a0"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260511052000_rmm_device_saved_views/migration.sql",
+      "mode": "100644",
+      "size": 1258,
+      "sha256": "d4b6ef72cdc6c80c5c79320e14d5620fabdd434ec2ecaa14795bd582f7d77862"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260514120000_linux_shell_credentials/migration.sql",
+      "mode": "100644",
+      "size": 404,
+      "sha256": "550f9c0d2b8d12668975de714e5e4aa379a22843ac40ae23782e922918efa1a2"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260514120000_rmm_installer_short_links/migration.sql",
+      "mode": "100644",
+      "size": 1684,
+      "sha256": "cc47406bf0c991c65c7436d8324130838d5b504774101a14f2baa617f086ed2c"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260519153000_default_patch_policy/migration.sql",
+      "mode": "100644",
+      "size": 1444,
+      "sha256": "5f65ef4a0397263c6f02691373dd2910beac85cd2ffbe2a6631bc4bbd20f346f"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260519170000_remediation_command_bus/migration.sql",
+      "mode": "100644",
+      "size": 480,
+      "sha256": "0aafc8fd8058dca9e0f2afcaa1b0bc03c2b337584b6dc7e9578b93b0f5a25604"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260520120000_patch_decision_engine/migration.sql",
+      "mode": "100644",
+      "size": 11146,
+      "sha256": "1e2223ce10690e58ff2c10be667b60f38183cc627d9e1b174b009611fdad1524"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260520133000_patch_action_types/migration.sql",
+      "mode": "100644",
+      "size": 551,
+      "sha256": "166853f4c31225bc30529a2a0fb20a138d45e2a568b646fd6b01d9e272a46d82"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260520133000_patch_decision_actor/migration.sql",
+      "mode": "100644",
+      "size": 350,
+      "sha256": "c82b4f65a48cd1b302bb39787ff6563c73725bf0868a86837160c85f897e7fd4"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260520143000_patch_uwp_category_and_association/migration.sql",
+      "mode": "100644",
+      "size": 1586,
+      "sha256": "4288a00a4ac6388456668ec01a421bb5aba89d8bf923bb426d710793e6aa0132"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260520153000_patch_policy_priority/migration.sql",
+      "mode": "100644",
+      "size": 3577,
+      "sha256": "29e2a71f5af86aa96428c3599a25924327230b498bf73fcba61fc8765bd2180c"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260523120000_durable_patch_action_status/migration.sql",
+      "mode": "100644",
+      "size": 1914,
+      "sha256": "5539ce2dabd15ea3b4a69f75694aabab37cc9c69e910042eff8d62c3cbf5dead"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260523143000_patch_policy_target_os_family/migration.sql",
+      "mode": "100644",
+      "size": 655,
+      "sha256": "af52559698574485575c3e358b1fa92581972ed0f4c246d742cb20827c67ee4b"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260524120000_feature_upgrade_iso_media/migration.sql",
+      "mode": "100644",
+      "size": 951,
+      "sha256": "74b3ecaab137399e28717f0c72bba7e6e95a81e797e3e5eb04764acf64f86da7"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260524150000_feature_upgrade_preflight/migration.sql",
+      "mode": "100644",
+      "size": 3606,
+      "sha256": "9115f9739a8c39f5344c31bc4a9ea4ef43de814a1149bdaed729da17a1d1448b"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260525120000_feature_upgrade_iso_staging/migration.sql",
+      "mode": "100644",
+      "size": 4220,
+      "sha256": "f016ae6c5b8e69b714fc658071f27612567977648c5631acea6f0633e573139a"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260526120000_feature_upgrade_start/migration.sql",
+      "mode": "100644",
+      "size": 9783,
+      "sha256": "2ae0d747aa4740a24e86aa4aadc8cb7e03e6fe58805b6abf7daecc04bab172f9"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260603120000_macos_update_account_status/migration.sql",
+      "mode": "100644",
+      "size": 651,
+      "sha256": "825ada926738880f7d797d5d6fa0a208ee2db74bf89697f2a2af998d86623f06"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260603121500_patch_policy_macos_target_os_family/migration.sql",
+      "mode": "100644",
+      "size": 537,
+      "sha256": "7e5a3f0228335b895c178e6e9d601da5040ef58348ae32e5bc7419c9709467fb"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260610110000_command_center_conversations/migration.sql",
+      "mode": "100644",
+      "size": 1383,
+      "sha256": "d762dcf3bdf9ae61bd25c692d591d315ddefc2999d75808e08e43e2a9b55e3b9"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260610123000_command_center_ai_runner/migration.sql",
+      "mode": "100644",
+      "size": 2173,
+      "sha256": "6f82fbd47ddd0284db0443eba23fb8f74660cec3c644e6f46332a0a5bf3da2a3"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260610160000_command_center_ai_runner_approval/migration.sql",
+      "mode": "100644",
+      "size": 2148,
+      "sha256": "d3b9cd539852ecd151f90f762e819c9f9b24e942b2214b7a6c5397e8d500c8dc"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260611173000_ai_runner_live_frame_message/migration.sql",
+      "mode": "100644",
+      "size": 97,
+      "sha256": "aac841121eb5de15d15dd0e7f48cac831b42e4dc599a5ca62b60361cd1d16adc"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260615120000_ai_runner_shell_command_approvals/migration.sql",
+      "mode": "100644",
+      "size": 2204,
+      "sha256": "60ff70851e9b71b43d2ea636a8c2af3c433034efb3c88d1f2ce78ae8715c3276"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260615143000_ai_runner_job_leases_and_events/migration.sql",
+      "mode": "100644",
+      "size": 2667,
+      "sha256": "d7935eeeb1aa51c576852d4ec8e95294aae2e1ae704b92d108c0d55613d99cf2"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260616110000_command_center_secure_notes/migration.sql",
+      "mode": "100644",
+      "size": 1729,
+      "sha256": "4bd1804445746bff50b5e158d269d040bc860d5a4ba7c3a01739cb67e8f6beb2"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260616143000_ai_runner_desktop_control_transfer/migration.sql",
+      "mode": "100644",
+      "size": 455,
+      "sha256": "a3a1ed660368697692d80f59b4813cadb4a6e78f1b5f88d91d3859f76b84bf37"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260617190000_ai_runner_device_auto_approval/migration.sql",
+      "mode": "100644",
+      "size": 119,
+      "sha256": "d47977a6cde111815af3e2da7c8a18e238dbdabec291fccd69983168947344eb"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/20260817190000_harden_patch_progress_projection/migration.sql",
+      "mode": "100644",
+      "size": 249,
+      "sha256": "92cc4fe2c70dd3c9d913656d956df626cec57d300617070cda6fcc39cea6b774"
+    },
+    {
+      "path": "apps/api_backend/prisma/migrations/migration_lock.toml",
+      "mode": "100644",
+      "size": 128,
+      "sha256": "99836963713b4f5b269ad49af0ed3d7b0b2e336115c2f92dc9ac683d139d0900"
+    },
+    {
+      "path": "apps/api_backend/prisma/schema.prisma",
+      "mode": "100644",
+      "size": 79234,
+      "sha256": "d96cb77c211cd94206db19a846baafa1f3039509bd30a0af172bb131d94cdf21"
+    },
+    {
+      "path": "apps/api_backend/routes/audit.routes.ts",
+      "mode": "100644",
+      "size": 8627,
+      "sha256": "c485d9839aa861917a64e82521a66daad124b22ffe4fba176ae2fcc11569cca4"
+    },
+    {
+      "path": "apps/api_backend/routes/auth.routes.ts",
+      "mode": "100644",
+      "size": 11292,
+      "sha256": "d3af34cf3e614361513560733d76f9cf02f885fc0578396b9097fe272b549686"
+    },
+    {
+      "path": "apps/api_backend/routes/commandCenter.routes.ts",
+      "mode": "100644",
+      "size": 28399,
+      "sha256": "d608cd85b8df59e88e030206a7453416ebb2a88159e9511b01175af59b61cdcd"
+    },
+    {
+      "path": "apps/api_backend/routes/customers.routes.ts",
+      "mode": "100644",
+      "size": 6906,
+      "sha256": "d3f28f558c4f1f2081a648dc519f86f4aeca834c7e6c048b2d5517cfe978de7a"
+    },
+    {
+      "path": "apps/api_backend/routes/featureUpgrades.routes.ts",
+      "mode": "100644",
+      "size": 118624,
+      "sha256": "6f6766b26456c40b627774ccf5caad140073344a2179cac940015ec6f42ca9d8"
+    },
+    {
+      "path": "apps/api_backend/routes/installers.routes.ts",
+      "mode": "100644",
+      "size": 90744,
+      "sha256": "d4d222781a74c8a8a3febd1bbd4704c5819ef6f1ee39a4b1fdfbbcaf594239df"
+    },
+    {
+      "path": "apps/api_backend/routes/orgs.routes.ts",
+      "mode": "100644",
+      "size": 14220,
+      "sha256": "92fac42be938727334efb3eba96121970157edbcc17766898425b1d0a9d6b65a"
+    },
+    {
+      "path": "apps/api_backend/routes/patches.routes.ts",
+      "mode": "100644",
+      "size": 58112,
+      "sha256": "22642b32de4b4c86c3a7a6f1fb4220c6620bd80ca2e3823ab885ee09b98eabd7"
+    },
+    {
+      "path": "apps/api_backend/routes/policies.routes.ts",
+      "mode": "100644",
+      "size": 16415,
+      "sha256": "9eaf95162de6f6f3a1562f6e02db3534448777acf1b452ec07ff4c5a49c6f1a0"
+    },
+    {
+      "path": "apps/api_backend/routes/remediationDispatch.routes.ts",
+      "mode": "100644",
+      "size": 4988,
+      "sha256": "3f677c89cb8b6aa39d8c07f48b090a079a130140979da938f054e900da20832f"
+    },
+    {
+      "path": "apps/api_backend/routes/reports.routes.ts",
+      "mode": "100644",
+      "size": 16308,
+      "sha256": "920d1b7caea271c89297fa3823e7f89b4216c8b6dc97a14b7e23c21dc99ede66"
+    },
+    {
+      "path": "apps/api_backend/routes/rmm.routes.ts",
+      "mode": "100644",
+      "size": 153312,
+      "sha256": "50ebe134d11949b77898fdca7515224f7db84159e88c9158b19ba3a6fe77d5e5"
+    },
+    {
+      "path": "apps/api_backend/routes/rmmTelemetry.routes.ts",
+      "mode": "100644",
+      "size": 225255,
+      "sha256": "eeaa96be887c3c38e2ab2881a5615cb4a18eba35c20a87fd9d558ab3fc453f16"
+    },
+    {
+      "path": "apps/api_backend/routes/secureNotes.routes.ts",
+      "mode": "100644",
+      "size": 3628,
+      "sha256": "19cf06b219fd275ab09fa33633ee6fe106eb15ba21b697f61cda81ebbd04c8f6"
+    },
+    {
+      "path": "apps/api_backend/routes/sites.routes.ts",
+      "mode": "100644",
+      "size": 6899,
+      "sha256": "d80a6cb6121bbef71884cdf7103055221c93e92e98be1a1ffe78806e7499c00c"
+    },
+    {
+      "path": "apps/api_backend/routes/updates.routes.ts",
+      "mode": "100644",
+      "size": 18675,
+      "sha256": "904ef73a033d009e30a700191e0eb41b09a8b9b7e4f468f8fcc7dc5bdab35e61"
+    },
+    {
+      "path": "apps/api_backend/server.ts",
+      "mode": "100644",
+      "size": 7103,
+      "sha256": "0719b81c4ed63cf283362c5912ac359a9005b7694a71cac8cd2455c8ad0605cc"
+    },
+    {
+      "path": "apps/api_backend/tests/alertLifecycle.test.ts",
+      "mode": "100644",
+      "size": 2625,
+      "sha256": "fffb63dd172e5fffb64bc72e005664ffe2134f0fd779e7fc982f92b423c4e391"
+    },
+    {
+      "path": "apps/api_backend/tests/audit-payload.test.ts",
+      "mode": "100644",
+      "size": 2803,
+      "sha256": "5eaca90e37f54e5d79f40e4bc602db270a7bda3222c640a649ba8c7cf5aee6df"
+    },
+    {
+      "path": "apps/api_backend/tests/auth-security.regression.test.ts",
+      "mode": "100644",
+      "size": 6956,
+      "sha256": "cb5e1fee5f5d476f4966dc17a5b12c9f6336db0c92ffed5802eee744cb57c13f"
+    },
+    {
+      "path": "apps/api_backend/tests/authorization.regression.test.ts",
+      "mode": "100644",
+      "size": 34142,
+      "sha256": "a8ee3b7b6c6088619f8efc577254760e9b8d729df421bb899dad5870916e2e4c"
+    },
+    {
+      "path": "apps/api_backend/tests/commandCenterAiRunner.test.ts",
+      "mode": "100644",
+      "size": 54200,
+      "sha256": "f80540a4a9f165f3b66f288d2e1b559cc2e69f9e45538744cc714fc5cce48b44"
+    },
+    {
+      "path": "apps/api_backend/tests/commandCenterConversations.test.ts",
+      "mode": "100644",
+      "size": 7859,
+      "sha256": "67dedcc962d8829948338709fb9678ae16c30ca2e7516afff42feb52fd28dfac"
+    },
+    {
+      "path": "apps/api_backend/tests/commandCenterMcp.test.ts",
+      "mode": "100644",
+      "size": 7532,
+      "sha256": "a6da9b1f6e53c8d7beb66753c1c05d68d8745c64d6730ff62eb5febc39eec0b3"
+    },
+    {
+      "path": "apps/api_backend/tests/communityRegistrationPostgres.integration.test.ts",
+      "mode": "100644",
+      "size": 3955,
+      "sha256": "f246b93f14ce694cef36a808815fca953292b159e90439dcbf1b204f9fc63b08"
+    },
+    {
+      "path": "apps/api_backend/tests/cors.test.ts",
+      "mode": "100644",
+      "size": 2234,
+      "sha256": "97c9a2df9af39b55c900c9350851386fd1a3977c92085ba8d0ff0eec3b480022"
+    },
+    {
+      "path": "apps/api_backend/tests/featureUpgradePreflight.test.ts",
+      "mode": "100644",
+      "size": 9406,
+      "sha256": "2d19b3636db0b0eea0f170d08ce3cb5d8a07eb7ace7c88e93c6a7dfa38dfe9b1"
+    },
+    {
+      "path": "apps/api_backend/tests/installers.test.ts",
+      "mode": "100644",
+      "size": 4017,
+      "sha256": "6402424b03312db323b7331449155358ef71314fa9a5c80d5bd15a298c1f590e"
+    },
+    {
+      "path": "apps/api_backend/tests/patchManagement.test.ts",
+      "mode": "100644",
+      "size": 40565,
+      "sha256": "783f4654c92ca6bf6946cdba86236bd085c86dfcd38c90470478565aeff68e40"
+    },
+    {
+      "path": "apps/api_backend/tests/patchProgressProjection.regression.test.ts",
+      "mode": "100644",
+      "size": 10529,
+      "sha256": "33aa1934006bb864f7fc29605b2c2dd23e210a798041c9589dcd7b81f6f1c06c"
+    },
+    {
+      "path": "apps/api_backend/tests/remediationDispatch.regression.test.ts",
+      "mode": "100644",
+      "size": 30542,
+      "sha256": "72bb7fcc15695a5dc8ded362cf862fae73487daaa7e9d8c513a34a215b2e88c7"
+    },
+    {
+      "path": "apps/api_backend/tests/remediationPostgres.integration.test.ts",
+      "mode": "100644",
+      "size": 13682,
+      "sha256": "38e34523c4443f26a41094e942fb08a16d5631b2406bf6f4a8e33de91d6d6a50"
+    },
+    {
+      "path": "apps/api_backend/tests/rmmAiAssist.test.ts",
+      "mode": "100644",
+      "size": 10674,
+      "sha256": "5a07b0a21181cae11b8c2f60b937eed59ede2e21d386e721225a1a52d8ce6bc8"
+    },
+    {
+      "path": "apps/api_backend/tests/secureNotes.test.ts",
+      "mode": "100644",
+      "size": 1918,
+      "sha256": "3462b69cb3a5841e1586191b857e130d6338a52e8a7dbe9febc68e2f03218ed6"
+    },
+    {
+      "path": "apps/api_backend/tests/setup.ts",
+      "mode": "100644",
+      "size": 1223,
+      "sha256": "45fff9c4570e94f365fa9b0ef33a7687dc2beb43e80a023a1d921c16ab976016"
+    },
+    {
+      "path": "apps/api_backend/tests/updates.test.ts",
+      "mode": "100644",
+      "size": 3090,
+      "sha256": "700cad068cbae2b5f7cbe8dfe55cbb8928681f7318e2e2a93c11130ee76ea40b"
+    },
+    {
+      "path": "apps/api_backend/tsconfig.json",
+      "mode": "100644",
+      "size": 345,
+      "sha256": "d82bd2f5e4c29aa2d5d7edd1f9f92097b2dd100d9003afd8bda9f855f93e091e"
+    },
+    {
+      "path": "apps/brand/talos-app-icon.svg",
+      "mode": "100644",
+      "size": 1552,
+      "sha256": "67af677ac516efc85822b4a6ffdb7365f82f3e97a7d49a6f11ab9dd87b231c28"
+    },
+    {
+      "path": "apps/build/windows_resource.rs",
+      "mode": "100644",
+      "size": 1646,
+      "sha256": "e3e11ba5d3a3d7ac95cfa0fcf887e11cc1b039f0d5b355fd98f74b0095b1f12b"
+    },
+    {
+      "path": "apps/bun.lock",
+      "mode": "100644",
+      "size": 98889,
+      "sha256": "15ae3fc9580fefff110eb8b4e0ad1873784fbc3de6ae1fdcb56e2b10310687d3"
+    },
+    {
+      "path": "apps/bunfig.toml",
+      "mode": "100644",
+      "size": 435,
+      "sha256": "d593fed225883a2d78cf7fbb0ffd5c3d31e7e7d18c4b7f06ccffc1740ac2883f"
+    },
+    {
+      "path": "apps/Cargo.lock",
+      "mode": "100644",
+      "size": 195839,
+      "sha256": "94d524fbcb4101b785bf18049d60df9a731a5e6e6dc1a2de2d7ac21e7bfc395d"
+    },
+    {
+      "path": "apps/Cargo.toml",
+      "mode": "100644",
+      "size": 2315,
+      "sha256": "44d794fcf2cc5f1573e288d982dc238855efc43bd678eecafb9d089f4d89969c"
+    },
+    {
+      "path": "apps/certs/README.md",
+      "mode": "100644",
+      "size": 3077,
+      "sha256": "89f17c109bbc5a3e1d8ee29b185663db07412a4ff43940e8e9e737c744c9bfcc"
+    },
+    {
+      "path": "apps/frontend/.gitignore",
+      "mode": "100644",
+      "size": 506,
+      "sha256": "28f5459be3e03e68ea7816f8ff386d17aaee52a82d25d4bba262f53c5099cc3e"
+    },
+    {
+      "path": "apps/frontend/check.ts",
+      "mode": "100644",
+      "size": 598,
+      "sha256": "13596bb15de65201b8b6a1712546b111a57be6ea25acac98a3fd3683251809c5"
+    },
+    {
+      "path": "apps/frontend/dev.ts",
+      "mode": "100644",
+      "size": 682,
+      "sha256": "420dac1ce72866e59be578e3e0c95607ac5196fa4e90535764aab880851b80b6"
+    },
+    {
+      "path": "apps/frontend/Dockerfile",
+      "mode": "100644",
+      "size": 1791,
+      "sha256": "bd4b168f9d2aa2b4e8f47a385704900681a63d1a64e9626e445160cbcf5ac98b"
+    },
+    {
+      "path": "apps/frontend/package.json",
+      "mode": "100644",
+      "size": 959,
+      "sha256": "6a75a2fe9fa1277ac3a1fedfe0d75d1cd226f0d05ed9725e21a1c74f355970c1"
+    },
+    {
+      "path": "apps/frontend/postcss.config.js",
+      "mode": "100644",
+      "size": 122,
+      "sha256": "d015dcd870c481fd218facdeb8b092df4facf43874f7de794d7deee1abc45b2a"
+    },
+    {
+      "path": "apps/frontend/public/file.svg",
+      "mode": "100644",
+      "size": 391,
+      "sha256": "2b67812c325c199a02536cdbeea0c593a72f707d323b72ee3e08dbab06753bd4"
+    },
+    {
+      "path": "apps/frontend/public/globe.svg",
+      "mode": "100644",
+      "size": 1035,
+      "sha256": "b614b9bf183925957661ac851498fe1d8029fd43a62fbfed86f9e2624a57e7cf"
+    },
+    {
+      "path": "apps/frontend/public/next.svg",
+      "mode": "100644",
+      "size": 1375,
+      "sha256": "55995dfad6ecb4945a1e856ddca03c5e16aa5bf13fd21b4df6a74ae79357bcfc"
+    },
+    {
+      "path": "apps/frontend/public/NEXTJS_TEMPLATE_ASSET_LICENSE.md",
+      "mode": "100644",
+      "size": 1079,
+      "sha256": "ee765244e2d59f5234d474f62e0766fa0c8b99af967fdd4c0cb8dcb0c76ea224"
+    },
+    {
+      "path": "apps/frontend/public/vercel.svg",
+      "mode": "100644",
+      "size": 128,
+      "sha256": "f081337b2fee635b455b63275406a3e7f39d6a014e25ad90dab5a67e62a12ac4"
+    },
+    {
+      "path": "apps/frontend/public/window.svg",
+      "mode": "100644",
+      "size": 385,
+      "sha256": "644768c4aaeb4767bce293344eeb0c125fb804a94d801440424072202d85e3a1"
+    },
+    {
+      "path": "apps/frontend/README.md",
+      "mode": "100644",
+      "size": 331,
+      "sha256": "170c4c17b3d8b66ea629b5dd6acff9a388903de44f00f45721a80c3c435a1957"
+    },
+    {
+      "path": "apps/frontend/src/app.css",
+      "mode": "100644",
+      "size": 39499,
+      "sha256": "718c6cabcad031096f8ee04d65a6db1a7732a95d1ddc6c9f4eccf96916371780"
+    },
+    {
+      "path": "apps/frontend/src/app.d.ts",
+      "mode": "100644",
+      "size": 202,
+      "sha256": "8aafc08034663879e22c61387d0885ce0750165a71c657fac5dd4f725fbeadf7"
+    },
+    {
+      "path": "apps/frontend/src/app.html",
+      "mode": "100644",
+      "size": 374,
+      "sha256": "f5e77bcb5a7b478b8ca3a5bd010a22550415722973deac220ffce2c04bccd8aa"
+    },
+    {
+      "path": "apps/frontend/src/lib/api.ts",
+      "mode": "100644",
+      "size": 62535,
+      "sha256": "ac1c0223b305ac19b156cdaa5e48d4459d4cb591680b3ba5616395aa400e3b28"
+    },
+    {
+      "path": "apps/frontend/src/lib/build-warning-policy.test.ts",
+      "mode": "100644",
+      "size": 2150,
+      "sha256": "ccf6f08524758d699089d20e769834285d5b8e1d33a437b28ab75b4589f49b92"
+    },
+    {
+      "path": "apps/frontend/src/lib/build-warning-policy.ts",
+      "mode": "100644",
+      "size": 2406,
+      "sha256": "032f35939dad30d041c2dcd097a570d8aef912c6e1ccccdc0cee7f0b32de169d"
+    },
+    {
+      "path": "apps/frontend/src/lib/commandCenterAttachments.test.ts",
+      "mode": "100644",
+      "size": 4232,
+      "sha256": "652b3b4149734444bd68dfe68986874b4435b128272d0397f6d3f2a440c3489d"
+    },
+    {
+      "path": "apps/frontend/src/lib/commandCenterAttachments.ts",
+      "mode": "100644",
+      "size": 5881,
+      "sha256": "c59f25e64c566105f9975a3290927d70eb0314ac9b378f00bb50153a4115daf1"
+    },
+    {
+      "path": "apps/frontend/src/lib/commandCenterTerminal.test.ts",
+      "mode": "100644",
+      "size": 2638,
+      "sha256": "39687dcf30000f9d5c4534fe89b9aab33e4e80b1628759e5647acbde95937464"
+    },
+    {
+      "path": "apps/frontend/src/lib/commandCenterTerminal.ts",
+      "mode": "100644",
+      "size": 1787,
+      "sha256": "dc832cd02d26c2c0a2a95d1ad72aa23179b0b682ef0e435070d1447cc3e7d82d"
+    },
+    {
+      "path": "apps/frontend/src/lib/components/AlphaWatermark.svelte",
+      "mode": "100644",
+      "size": 1695,
+      "sha256": "ed2f72126d1b4446048a6aaa259f0d98266fa6ecfc42ff04a6e98878bcc569e0"
+    },
+    {
+      "path": "apps/frontend/src/lib/components/CommandCenterAttachmentImage.svelte",
+      "mode": "100644",
+      "size": 8046,
+      "sha256": "deca6716262f16eaf86a3f5537ebe998413bacfd6ce6fc1649d1af2c1782bc29"
+    },
+    {
+      "path": "apps/frontend/src/lib/components/CommandCenterTerminal.svelte",
+      "mode": "100644",
+      "size": 7439,
+      "sha256": "ef7889533a17822de5f5a6e01848efa402cd35550cb38a84b17064e5d5aaf689"
+    },
+    {
+      "path": "apps/frontend/src/lib/components/FeatureUpgradePreflightChecklist.svelte",
+      "mode": "100644",
+      "size": 7230,
+      "sha256": "450e87cafcfe126ce1a0b909961c853fca8b0c80c416d25db74175923f4df9f3"
+    },
+    {
+      "path": "apps/frontend/src/lib/components/Toaster.svelte",
+      "mode": "100644",
+      "size": 2278,
+      "sha256": "d5ebdd4e03fa815a8a87377a75be03683fbc10075834140741e29729dd8eae56"
+    },
+    {
+      "path": "apps/frontend/src/lib/components/ViewerInstallDialog.svelte",
+      "mode": "100644",
+      "size": 1825,
+      "sha256": "ab33319b18f32cbcd1e10b380cd5a643ccc4f5cb60bc242471bf3d773fe8a2a2"
+    },
+    {
+      "path": "apps/frontend/src/lib/cursor-effects.ts",
+      "mode": "100644",
+      "size": 911,
+      "sha256": "8b10857c64a18e8811d83c1820250fd7be6102216133c9976299c14e77392f64"
+    },
+    {
+      "path": "apps/frontend/src/lib/deviceListState.test.ts",
+      "mode": "100644",
+      "size": 2172,
+      "sha256": "fd2e404d3259fb01a766357c50022413b9d86f98053309311cc9e3cf59103ed9"
+    },
+    {
+      "path": "apps/frontend/src/lib/deviceListState.ts",
+      "mode": "100644",
+      "size": 4820,
+      "sha256": "97c68caf0c4af008afd6801c1f04602008fe0626e9908c110584de67f712906b"
+    },
+    {
+      "path": "apps/frontend/src/lib/markdown/render.test.ts",
+      "mode": "100644",
+      "size": 2287,
+      "sha256": "e869cbb1f828f2459413653a44208b0737663d353be83f541dc47fa800708964"
+    },
+    {
+      "path": "apps/frontend/src/lib/markdown/render.ts",
+      "mode": "100644",
+      "size": 5696,
+      "sha256": "ef4093779423c4d522ca99e4d67c35544fa0360bf8d3d0618f6060a39b13e880"
+    },
+    {
+      "path": "apps/frontend/src/lib/operatorContent.test.ts",
+      "mode": "100644",
+      "size": 1577,
+      "sha256": "c2d85fd5e03c2592c41ec6e521a93845d0a636f4d1769432f823c6ad236e9cce"
+    },
+    {
+      "path": "apps/frontend/src/lib/operatorContent.ts",
+      "mode": "100644",
+      "size": 1515,
+      "sha256": "fa0118815de82bae87e577dd63c3de0cf354b2682db9f4dde8ab09853f159db4"
+    },
+    {
+      "path": "apps/frontend/src/lib/runtimePublicConfig.test.ts",
+      "mode": "100644",
+      "size": 2637,
+      "sha256": "06fba0f020670d649059838aa1d04d9a57e796ddabb3795cf64b453663160ce7"
+    },
+    {
+      "path": "apps/frontend/src/lib/runtimePublicConfig.ts",
+      "mode": "100644",
+      "size": 1243,
+      "sha256": "0216650c059bb459f8a530ee7a68b1c99caaf9a07d6b412577bf6c52ccd4e0d2"
+    },
+    {
+      "path": "apps/frontend/src/lib/svelte-config.test.ts",
+      "mode": "100644",
+      "size": 823,
+      "sha256": "c7da427c971ce3c932e229e4d1e2f68e01d8910e4022757a3e2f51e03a89cb0b"
+    },
+    {
+      "path": "apps/frontend/src/lib/theme.ts",
+      "mode": "100644",
+      "size": 854,
+      "sha256": "e671a57746547c24b498cb1bbaed757a0dba903ade2579cd8125e43ee4ed7d2e"
+    },
+    {
+      "path": "apps/frontend/src/lib/toast.ts",
+      "mode": "100644",
+      "size": 1045,
+      "sha256": "552c6806d7f2da5949f5cb568419516c81972a617ae5b9e4cc9e69621024672d"
+    },
+    {
+      "path": "apps/frontend/src/lib/topbar.ts",
+      "mode": "100644",
+      "size": 289,
+      "sha256": "b6e3099577017c9a20d751af02bc97fcc8aa8ca43a1a056efdbd2bc81c73ce3d"
+    },
+    {
+      "path": "apps/frontend/src/lib/types.ts",
+      "mode": "100644",
+      "size": 52073,
+      "sha256": "de19150f17bafbf2b585ef82812cdc807eb66abf712919e436fdba90a87c1689"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/Button.svelte",
+      "mode": "100644",
+      "size": 1707,
+      "sha256": "57871605e977379b01847e8cd061f387cf9692b4e5c5f12f3009f7f900d0345a"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/Card.svelte",
+      "mode": "100644",
+      "size": 235,
+      "sha256": "2533528063309561a251f91976aadbef732591287e703dd093ec28488fe9d4b2"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/CardContent.svelte",
+      "mode": "100644",
+      "size": 217,
+      "sha256": "2b87d1398f7a4bcce7bde2132838b3229e417fb72ec4cb0fa73cc93d9baa2523"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/CardDescription.svelte",
+      "mode": "100644",
+      "size": 234,
+      "sha256": "0835069bc96ff5153bd2b274cfd6f0bc5c7151c3e36c53161622adedba03441c"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/CardFooter.svelte",
+      "mode": "100644",
+      "size": 235,
+      "sha256": "581130ccd37c4a5eb61bde9dc8b9be478c07e32183c63edf211b8db4fb5b6ddb"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/CardHeader.svelte",
+      "mode": "100644",
+      "size": 238,
+      "sha256": "6d4ab4aa22f1277a87be9e0dcd11679c6191d6362c08c37e65c9421f05404a56"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/CardTitle.svelte",
+      "mode": "100644",
+      "size": 257,
+      "sha256": "496a2062f64165ab7854218575624961aa451e667c03a13a39c0ea34e12c8fda"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/Dialog.svelte",
+      "mode": "100644",
+      "size": 3147,
+      "sha256": "bef50e2dbd72cb5e0e92efe74a27a41463dc389abdaf3b31434715170cf5431c"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/Input.svelte",
+      "mode": "100644",
+      "size": 454,
+      "sha256": "9f42b876771deed503b93e4105fa687109c38adbda46904973cdc07a829d9518"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/Label.svelte",
+      "mode": "100644",
+      "size": 314,
+      "sha256": "d2246828c2aa2568c40406198dda9cf1d84b408314bbcbe2b65eece83804aa06"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/Table.svelte",
+      "mode": "100644",
+      "size": 320,
+      "sha256": "bd4c9856f3cd94a85edbcbd1750d37844160dd75ba36acc9e5a1c388d4b7045e"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/TableBody.svelte",
+      "mode": "100644",
+      "size": 239,
+      "sha256": "01dfdb730179c3af14d77de76894b3a5eaa009328c396a8828ec436447af6079"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/TableCaption.svelte",
+      "mode": "100644",
+      "size": 251,
+      "sha256": "5d7d3883730af14473e9efe64157194cec7b1f8bba804d90ba3f083dee23e839"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/TableCell.svelte",
+      "mode": "100644",
+      "size": 271,
+      "sha256": "8614adf9b97121d8a12459ff55c16704559b8581f070eec494461b8dca19c8e5"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/TableFooter.svelte",
+      "mode": "100644",
+      "size": 268,
+      "sha256": "947dd871f8e469ab666c8d8f43a33a8d04f1cfc360e17cdacf0a46a2d31a7634"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/TableHead.svelte",
+      "mode": "100644",
+      "size": 307,
+      "sha256": "54e0629eb2cebbc29c45aa2e5d07b1f037f4644087b13d23411a67971c4681d8"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/TableHeader.svelte",
+      "mode": "100644",
+      "size": 250,
+      "sha256": "ca5f859b7733b27c273e2761b1e71005fcb4945c1e88d3af60ce40970d779c8c"
+    },
+    {
+      "path": "apps/frontend/src/lib/ui/TableRow.svelte",
+      "mode": "100644",
+      "size": 314,
+      "sha256": "10e47424fb1a7bad1a07dbd63a3f8a97f2dc5d26c62d7593cf843a641f7929c0"
+    },
+    {
+      "path": "apps/frontend/src/lib/utils.ts",
+      "mode": "100644",
+      "size": 165,
+      "sha256": "c19fe362f863a82ea9b01d42d07a92788763b2afd036b5e12bf872a5d016374e"
+    },
+    {
+      "path": "apps/frontend/src/lib/viewer-launcher.ts",
+      "mode": "100644",
+      "size": 2293,
+      "sha256": "05dcc0fe8584aa9cee9dc671f9fee5b91373babfa4a6927c114cc2d1509c53ac"
+    },
+    {
+      "path": "apps/frontend/src/lib/viewer-session-status.ts",
+      "mode": "100644",
+      "size": 5130,
+      "sha256": "3a28d327098efc31229f34fc27874c83eede6c672080814ca517d692797a9614"
+    },
+    {
+      "path": "apps/frontend/src/lib/vite-host-policy.test.ts",
+      "mode": "100644",
+      "size": 509,
+      "sha256": "9e185f5eef0c30dd9fb630a3314224f44fb098d0fec5edb03d06a64c7440a896"
+    },
+    {
+      "path": "apps/frontend/src/lib/vite-host-policy.ts",
+      "mode": "100644",
+      "size": 252,
+      "sha256": "052e50bc3c241cdb23ed1af60489be1774013fb97561dcfff2dd64c47ef72c1b"
+    },
+    {
+      "path": "apps/frontend/src/routes/(auth)/login/+page.svelte",
+      "mode": "100644",
+      "size": 7469,
+      "sha256": "aa24422a19c554e736d89fbf39aab0b0d7557dabfeb24694eeb5c4e860b519cf"
+    },
+    {
+      "path": "apps/frontend/src/routes/(auth)/register/+page.svelte",
+      "mode": "100644",
+      "size": 8553,
+      "sha256": "94d5a59a331fe418589109289bb2805ccfb026ae7a51006a8b1365eff5311b44"
+    },
+    {
+      "path": "apps/frontend/src/routes/[shortCode]/+server.ts",
+      "mode": "100644",
+      "size": 1720,
+      "sha256": "e8bd87002e962ca2f34a930f836478bf283671cb0301e5dc3b8435b4bbb5d77d"
+    },
+    {
+      "path": "apps/frontend/src/routes/+layout.svelte",
+      "mode": "100644",
+      "size": 5083,
+      "sha256": "920d84a94e809417cb561d58724b3e7f5568114b8d0a06141c69a9bab4288371"
+    },
+    {
+      "path": "apps/frontend/src/routes/+layout.ts",
+      "mode": "100644",
+      "size": 26,
+      "sha256": "f21b64d615dfbac548e7298fe8d130dfc7e0e148ffb00d6945ac470da791e002"
+    },
+    {
+      "path": "apps/frontend/src/routes/+page.svelte",
+      "mode": "100644",
+      "size": 26970,
+      "sha256": "1bcccce5ae2b1fb9f257a19cd689f8b47623ca165456f9fe316f991cad13a179"
+    },
+    {
+      "path": "apps/frontend/src/routes/contact/+page.svelte",
+      "mode": "100644",
+      "size": 2899,
+      "sha256": "ccac2ad6fbfa60b51d00df23683d9030423bd0a5fb9610d2098a147648f45416"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/+layout.svelte",
+      "mode": "100644",
+      "size": 19051,
+      "sha256": "5123ca2dd0f9ce949dae1002dd6da82795a12288fe599a12a2fc2d7b7ea4e172"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/+page.svelte",
+      "mode": "100644",
+      "size": 128212,
+      "sha256": "8e518e16c9e05e6437a33b5bcf9f96f02ab682d1efdae25403ae00a5a60f27f7"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/audit/+page.svelte",
+      "mode": "100644",
+      "size": 8259,
+      "sha256": "8553ab222a1c377b12a2e70d455599360a3124d77967673000dcd8f902ea2628"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/command-center/+page.ts",
+      "mode": "100644",
+      "size": 107,
+      "sha256": "051a0863f02ffc8adb346de63aa1ef0cfb2b62070bb3e46f9b169b0c516bf2e4"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/devices/+page.svelte",
+      "mode": "100644",
+      "size": 66215,
+      "sha256": "68adea59c8e40681bcca078cfb7ef0f4d48defe6593cdd31ff4d3eb398afba74"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/onboarding/+page.svelte",
+      "mode": "100644",
+      "size": 2786,
+      "sha256": "b9fdf7e4f4a943c336bd4cbdfab45266dac56975d2f360f3a139d644eeefebaf"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/org/policies/+page.svelte",
+      "mode": "100644",
+      "size": 13679,
+      "sha256": "a2356768f20596716abebadb302a6d4ddb3e1872062d558846c191386e9eadfa"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/org/users/+page.svelte",
+      "mode": "100644",
+      "size": 14657,
+      "sha256": "fbc8dcca8f2832dacfcdee96ff15074f6e4587de45e48393ee7b097814b9afed"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/profile/+page.svelte",
+      "mode": "100644",
+      "size": 13834,
+      "sha256": "2abb17fe612346b0a0838bbb6e67dd80d84c9f1f876da845a7f7831dec1c4071"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/[agentId]/+page.svelte",
+      "mode": "100644",
+      "size": 114430,
+      "sha256": "967d8f205dd085602982dc8a8efc528489adf3711754b0934b2673130bc2afcf"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/+page.ts",
+      "mode": "100644",
+      "size": 115,
+      "sha256": "90c91e3d0264b9dc653977a23cb305d0df0ce6bafbda73c7475fc2fe53dcf3e1"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/alerts/+page.svelte",
+      "mode": "100644",
+      "size": 12562,
+      "sha256": "f617ff19cb017c7ec88932fa9c44716e285e102969f7ac793361e5d5da698b13"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/baselines/+page.svelte",
+      "mode": "100644",
+      "size": 101501,
+      "sha256": "3e5be24067b6acdf868cb160517c108f442ee62b313e3098e8ec949c1615753c"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/customers/[id]/+page.svelte",
+      "mode": "100644",
+      "size": 4214,
+      "sha256": "79f2f31c11a23fc29cb5c497ab73626174e567079c956f31598dd2615f36e07f"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/customers/[id]/sites/+page.svelte",
+      "mode": "100644",
+      "size": 7850,
+      "sha256": "7ba4968ae76450b7bae82c54843f3261a41d9e6703cea797a91f62a56b127e06"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/customers/+page.svelte",
+      "mode": "100644",
+      "size": 7110,
+      "sha256": "5448f171f2a262f23ca79dce5dcffc7401ffa14497e863d0b4a535d12ae5b6b9"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/installers/+page.svelte",
+      "mode": "100644",
+      "size": 32224,
+      "sha256": "7196ee1b73a0c84ef86ee4879261f0106395326385dffc51988abda8bd1bc92d"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/patches/+page.svelte",
+      "mode": "100644",
+      "size": 84625,
+      "sha256": "beefeef4318bdfcd0fe10d3bd159c6dc81cf8eccbe4dd1a1497655eed3bca54d"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/patches/feature-upgrades/+page.svelte",
+      "mode": "100644",
+      "size": 75255,
+      "sha256": "9dac95d60fcb2d304cebaecd15200779ae5e4b0c9fc3b0d22b355ee92595fc3b"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/policies/+page.svelte",
+      "mode": "100644",
+      "size": 10080,
+      "sha256": "f6762aea7c363f2e48e69120eae0403c81e22b2684299c834046843cfa58943a"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/reports/+page.svelte",
+      "mode": "100644",
+      "size": 18576,
+      "sha256": "4775ca0b8dad891fa7660429d2933e735aa0355c9d2c91e5fe3525a98bbed048"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/sites/[id]/+page.svelte",
+      "mode": "100644",
+      "size": 6655,
+      "sha256": "995af8e54e28f984cf3788d70b29739e73bbf58f3043d419205ba667faff117f"
+    },
+    {
+      "path": "apps/frontend/src/routes/dashboard/rmm/sites/+page.svelte",
+      "mode": "100644",
+      "size": 7906,
+      "sha256": "2f65cc502689d80fe673e727281f5ba6944695a3a9d7cb891e9c7b4b72afde98"
+    },
+    {
+      "path": "apps/frontend/src/routes/devices/+page.ts",
+      "mode": "100644",
+      "size": 115,
+      "sha256": "90c91e3d0264b9dc653977a23cb305d0df0ce6bafbda73c7475fc2fe53dcf3e1"
+    },
+    {
+      "path": "apps/frontend/src/routes/macos/[shortCode]/+server.ts",
+      "mode": "100644",
+      "size": 1720,
+      "sha256": "0eaa6afc7a616464657c5fa08e1d9b7175fc0dc34f05ea151fc42f24f235c134"
+    },
+    {
+      "path": "apps/frontend/src/routes/privacy/+page.svelte",
+      "mode": "100644",
+      "size": 2890,
+      "sha256": "52276a3cc5ed4e0303275ab474a6576d5fa50160a8a224b35cb4c6835aae6a16"
+    },
+    {
+      "path": "apps/frontend/src/routes/SN/[code]/+page.svelte",
+      "mode": "100644",
+      "size": 7818,
+      "sha256": "1071c4419792c69657fb57ffa23e4c0071ea7493316689efe215da4e41b9d6c6"
+    },
+    {
+      "path": "apps/frontend/src/routes/terms/+page.svelte",
+      "mode": "100644",
+      "size": 2884,
+      "sha256": "c7b30467d674a44481537f87fa201f866771ce3ed3458d4a2906dc122e7eb492"
+    },
+    {
+      "path": "apps/frontend/svelte.config.js",
+      "mode": "100644",
+      "size": 436,
+      "sha256": "4dc030f23b89158171386fb986edb5a5c6041c016d6d17cadf60d061d0e5b5e0"
+    },
+    {
+      "path": "apps/frontend/tailwind.config.ts",
+      "mode": "100644",
+      "size": 2081,
+      "sha256": "cc52b155ee4e95f407697594c1ef5ee3651e61a1302294c9b4d45146b4d11d8d"
+    },
+    {
+      "path": "apps/frontend/tsconfig.json",
+      "mode": "100644",
+      "size": 292,
+      "sha256": "2cb5ce49d4804201f2eb19a5c15607014e5bc8dd3134c4cdf1683513959be229"
+    },
+    {
+      "path": "apps/frontend/vite.config.ts",
+      "mode": "100644",
+      "size": 845,
+      "sha256": "92ae94702c6201c48889d8e0523d8747715bca48bc91d090fac761a7ea3d4efc"
+    },
+    {
+      "path": "apps/installer/.gitignore",
+      "mode": "100644",
+      "size": 147,
+      "sha256": "7fd9487b0df561b56f8a57ef345977973543f0027ca901315dd0848be3db511a"
+    },
+    {
+      "path": "apps/installer/bundle/Bundle.wxs",
+      "mode": "100644",
+      "size": 3934,
+      "sha256": "670d37d332f55c1e69b460eff274ae222f5e0e6c7cf8cd7d892aa7eb621c58ab"
+    },
+    {
+      "path": "apps/installer/bundle/Talos.Agent.Bundle.wixproj",
+      "mode": "100644",
+      "size": 1304,
+      "sha256": "42a2737ccd3d5f6a22744583f2d51be03da6863d87f2a2f8ebcf7d40d67ddc3a"
+    },
+    {
+      "path": "apps/installer/bundle/Talos.Viewer.Bundle.wixproj",
+      "mode": "100644",
+      "size": 519,
+      "sha256": "b4dc9e3ea82aff9f341db9302612f7217f80c7168124927b6ed788cfadda0a58"
+    },
+    {
+      "path": "apps/installer/bundle/Viewer.Bundle.wxs",
+      "mode": "100644",
+      "size": 703,
+      "sha256": "23c5b29e99519721a01f674c567013b2caf9d40090674b18067afa5229fa9d02"
+    },
+    {
+      "path": "apps/installer/Directory.Build.targets",
+      "mode": "100644",
+      "size": 733,
+      "sha256": "88645ebaf15c1d8f8133070e22438de7cbaa045132b2650a30d4417b275e56da"
+    },
+    {
+      "path": "apps/installer/msi/Agent.x64.wxs",
+      "mode": "100644",
+      "size": 4040,
+      "sha256": "9e02bf6d95c9b31b4dc319a3a5d24b0a0c875daa345a2aee2420a9631fb30408"
+    },
+    {
+      "path": "apps/installer/msi/Agent.x86.wxs",
+      "mode": "100644",
+      "size": 3927,
+      "sha256": "bda1382602569f5e1024ee7b6be287bc744da3e6a195470dc1e7631a350b58ce"
+    },
+    {
+      "path": "apps/installer/msi/Talos.Agent.x64.wixproj",
+      "mode": "100644",
+      "size": 531,
+      "sha256": "b7cf75d40d2543761776058d9c7a034b669c56e127ca84008fcb954d4e0c4a49"
+    },
+    {
+      "path": "apps/installer/msi/Talos.Agent.x86.wixproj",
+      "mode": "100644",
+      "size": 531,
+      "sha256": "45374ce67c3a3286fe65ac8ee48898e452106f0062ae39ef4c807368eb7e0981"
+    },
+    {
+      "path": "apps/installer/msi/Talos.Viewer.x64.wixproj",
+      "mode": "100644",
+      "size": 498,
+      "sha256": "12f22e6e0cd7b724c6bb2102efc09bb63da3a9f3a3cb2680c2a5ae86adc5f4da"
+    },
+    {
+      "path": "apps/installer/msi/viewer-license.rtf",
+      "mode": "100644",
+      "size": 718,
+      "sha256": "e6658255290adc87593b742e407bf169377bbc3088eb6d9a6ee612be8cd80055"
+    },
+    {
+      "path": "apps/installer/msi/Viewer.x64.wxs",
+      "mode": "100644",
+      "size": 8089,
+      "sha256": "be503dae73a9b6e2372482a300eac6fbfb78ded7ae9dfad82a1c3175e1f4f89a"
+    },
+    {
+      "path": "apps/installer/payload/x64/.gitkeep",
+      "mode": "100644",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/installer/payload/x86/.gitkeep",
+      "mode": "100644",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "apps/installer/README.md",
+      "mode": "100644",
+      "size": 16762,
+      "sha256": "5e93c35332c84f144359d0dddc3a2a582f91368e1546523487d4010865c6b885"
+    },
+    {
+      "path": "apps/installer/third-party/7zip-26.00/License.txt",
+      "mode": "100644",
+      "size": 4918,
+      "sha256": "ad2b37b9396d6bbb7940e40c59ddfcb23274a6196f5dfc4ef44df2d324292612"
+    },
+    {
+      "path": "apps/installer/third-party/7zip-26.00/LZMA-SDK-NOTICE.txt",
+      "mode": "100644",
+      "size": 1137,
+      "sha256": "dc7c811f413da4f4b6ad045177bd1c35445e551d230c1017c8879784209b46da"
+    },
+    {
+      "path": "apps/installer/third-party/wix-6.0.0/OSMFEULA.txt",
+      "mode": "100644",
+      "size": 3362,
+      "sha256": "a992056365937ddea181a39c8204dfdc0ae664be356a00a0746df79d7b64283e"
+    },
+    {
+      "path": "apps/package.json",
+      "mode": "100644",
+      "size": 9522,
+      "sha256": "dc0ddc8225c525b829e3537a56ed8d4ca1cf2aceb3000db3f7f55836fd316ecf"
+    },
+    {
+      "path": "apps/prettier.config.mjs",
+      "mode": "100644",
+      "size": 164,
+      "sha256": "bcf8a3571c680aa287543d679a7c14dc9631cc9ed76a5805beacccb430a5e2db"
+    },
+    {
+      "path": "apps/prisma.config.ts",
+      "mode": "100644",
+      "size": 129,
+      "sha256": "4be62ae2ecc3b667114f5f2affe04fb63ea8daa7f210566028b4814f56e18e8a"
+    },
+    {
+      "path": "apps/rust-toolchain.toml",
+      "mode": "100644",
+      "size": 86,
+      "sha256": "24ef3b9d3edbd850aa386cb0a98e10450b0030991a4537cb359f54d49dbbb33a"
+    },
+    {
+      "path": "apps/scripts/check-toolchain.ts",
+      "mode": "100644",
+      "size": 900,
+      "sha256": "3637cbdfdcb85d18b019799ac973d1e2bffebee9f76b3911bdaf33154904b13f"
+    },
+    {
+      "path": "apps/scripts/check-workspace.ts",
+      "mode": "100644",
+      "size": 4800,
+      "sha256": "add857d14cebab7b1819fa80822d2c24d390455b1439353246d4a63337c0da64"
+    },
+    {
+      "path": "apps/scripts/community-edge-contract.test.ts",
+      "mode": "100644",
+      "size": 6076,
+      "sha256": "1dcc75b5e596e64841d57b2ec6c7eb5f1685173a26a7e469c230156c8636d0a9"
+    },
+    {
+      "path": "apps/scripts/community-edge-contract.ts",
+      "mode": "100644",
+      "size": 16548,
+      "sha256": "b9a31dec313eb2e4349e7618769698c9cdfc5d47f10bacbdebe6236595f0f0b1"
+    },
+    {
+      "path": "apps/scripts/community-edition.test.ts",
+      "mode": "100644",
+      "size": 9439,
+      "sha256": "60939ec2d75835a31ab4d57b20f1625d4e1e436be70eafb226361d5ca8fcc584"
+    },
+    {
+      "path": "apps/scripts/community-edition.ts",
+      "mode": "100644",
+      "size": 5736,
+      "sha256": "a0d026f4f4bb2a1146b880b47bb9c3b5fac1f168b7f33630400f2665b65e5ef1"
+    },
+    {
+      "path": "apps/scripts/community-release-bundle.test.ts",
+      "mode": "100644",
+      "size": 8959,
+      "sha256": "3110cfbf91309dccfc31ebe3b774250c62d5cfc8995f4e67ade6a394a319e6d4"
+    },
+    {
+      "path": "apps/scripts/community-release-bundle.ts",
+      "mode": "100644",
+      "size": 20230,
+      "sha256": "9acf32d6fad555a8e28b614c949b6eac7259293386c3d6b3f9d85debfe153c77"
+    },
+    {
+      "path": "apps/scripts/community-release-pipeline-contract.test.ts",
+      "mode": "100644",
+      "size": 4888,
+      "sha256": "19ca884f0cfd3299226d561e23d213f3f58b0a543234728618fded39d3160c63"
+    },
+    {
+      "path": "apps/scripts/community-release-pipeline-contract.ts",
+      "mode": "100644",
+      "size": 16646,
+      "sha256": "1f4a3e4164c6946fa77e45e1538239595839bb658e4313429fc5775fbc48e345"
+    },
+    {
+      "path": "apps/scripts/community-release-promotion.test.ts",
+      "mode": "100644",
+      "size": 2959,
+      "sha256": "38e308e0d09111211015eb577fb637bb308d26a4a65131042f8bd64e59f0ab6f"
+    },
+    {
+      "path": "apps/scripts/community-release-version.test.ts",
+      "mode": "100644",
+      "size": 1449,
+      "sha256": "54d4b7c04f05041e244ac0b1388b135824487bb147e71f1609ff444e85a75981"
+    },
+    {
+      "path": "apps/scripts/community-release-version.ts",
+      "mode": "100644",
+      "size": 2096,
+      "sha256": "ec054c35e39aacf301f839d403babbce0bfb08a35ed446e6b93fdda1267bb1d1"
+    },
+    {
+      "path": "apps/scripts/compose-environment-isolation.test.ts",
+      "mode": "100644",
+      "size": 6567,
+      "sha256": "a3cfde0da4695bc5e5d60b00750a05ebe8e0311e1e6f6ba3b12dd952432f6d02"
+    },
+    {
+      "path": "apps/scripts/compose-loopback-bindings.test.ts",
+      "mode": "100644",
+      "size": 1906,
+      "sha256": "4be40971ca97f32cfa19eff26f4a620838e2ec3f32b575e238f063dacd97f39e"
+    },
+    {
+      "path": "apps/scripts/debug-environment.test.ts",
+      "mode": "100644",
+      "size": 7745,
+      "sha256": "eb6ade3a7654b0a1c9580e6126ede78e47783a35677e2acfe853bde3548cef66"
+    },
+    {
+      "path": "apps/scripts/debug-environment.ts",
+      "mode": "100644",
+      "size": 7126,
+      "sha256": "5ebcf3deb322554fb1709850c19bbce68cf8512436c1cd12397654449470e45a"
+    },
+    {
+      "path": "apps/scripts/development-secret-contract.test.ts",
+      "mode": "100644",
+      "size": 1333,
+      "sha256": "53d07649bafa858b964e9d8902f21d356d645ca51754e84437c0c4f1548a2d92"
+    },
+    {
+      "path": "apps/scripts/docker-image-exists.ts",
+      "mode": "100644",
+      "size": 297,
+      "sha256": "d85cb140e1893ac2301d9ffa84302bbee0a0558978d7a8df3f57576cc52371a9"
+    },
+    {
+      "path": "apps/scripts/docker-local-env.test.ts",
+      "mode": "100644",
+      "size": 1936,
+      "sha256": "108094b3c97dc5a34c93f2e0b5847fb87847c5a23a368bfcd9d43e4971211bf9"
+    },
+    {
+      "path": "apps/scripts/docker-local-env.ts",
+      "mode": "100644",
+      "size": 4583,
+      "sha256": "63dafcb2c873c8fa8e2d7bc024fd9df23068086e930791a81ae11ccdb7ea9a85"
+    },
+    {
+      "path": "apps/scripts/ensure-app-web-build.test.ts",
+      "mode": "100644",
+      "size": 804,
+      "sha256": "be80aa4615e652d92096507219008a7bd592a06ff22b9127257e9d802c5ff843"
+    },
+    {
+      "path": "apps/scripts/ensure-app-web-build.ts",
+      "mode": "100644",
+      "size": 5479,
+      "sha256": "550e34b9dc69a57b76b2a4c2a934039ccf80a1eea4de922695c6aeebae5be3c4"
+    },
+    {
+      "path": "apps/scripts/ensure-db.ts",
+      "mode": "100644",
+      "size": 3231,
+      "sha256": "287e8faba8d56810d564e477d703e9781c348775aa28b4feef437aef2bbc0a4d"
+    },
+    {
+      "path": "apps/scripts/ensure-relay-url.test.ts",
+      "mode": "100644",
+      "size": 1005,
+      "sha256": "6d040986d565a8b9233d8b1ad96f0338709cebb6f149e78ee2e83f70df21020e"
+    },
+    {
+      "path": "apps/scripts/ensure-relay-url.ts",
+      "mode": "100644",
+      "size": 1816,
+      "sha256": "e09254ed9abc3215b9f94f9a71cb204da0d813f3577e4af6464804e5d0f285ea"
+    },
+    {
+      "path": "apps/scripts/ensure-rust-servers-build.ts",
+      "mode": "100644",
+      "size": 4219,
+      "sha256": "0e6c63cdd82ff198e9261df36d70f2af4a8ff942132dfa96e034a60e201e2ec9"
+    },
+    {
+      "path": "apps/scripts/installer-signing-contract.test.ts",
+      "mode": "100644",
+      "size": 11658,
+      "sha256": "e422c40b0dccfd09450ad345f90f86b220caef083414e555b6e8448c5b144b6e"
+    },
+    {
+      "path": "apps/scripts/installer-signing-contract.ts",
+      "mode": "100644",
+      "size": 17769,
+      "sha256": "4ed85216e02875dbcb5b49939ad081a5e66ab3a7347457dbddbb153033c6b653"
+    },
+    {
+      "path": "apps/scripts/installer-version-contract.test.ts",
+      "mode": "100644",
+      "size": 2834,
+      "sha256": "2af93aff651d3ffb4b0992c8ed42e44cae1130e4ea6c41705af6b90d6a173bf1"
+    },
+    {
+      "path": "apps/scripts/installer-version-contract.ts",
+      "mode": "100644",
+      "size": 8486,
+      "sha256": "7c9cb7c45161040bdb7da12445ce567e34950f8d705c144b56f098dda601bb7c"
+    },
+    {
+      "path": "apps/scripts/kill-dev.ts",
+      "mode": "100644",
+      "size": 8336,
+      "sha256": "8ae5f98b90262dc278acaab427a1a15db97ce00222363dc9fd6d11f7b102637d"
+    },
+    {
+      "path": "apps/scripts/license-policy.test.ts",
+      "mode": "100644",
+      "size": 3460,
+      "sha256": "b40d1b31a746268dafb5f1d942e51309a9a9e0568d77ba185efa1068b2242589"
+    },
+    {
+      "path": "apps/scripts/license-policy.ts",
+      "mode": "100644",
+      "size": 15117,
+      "sha256": "4f663d72602dcd3d1e98f3c6eeb131ad3c4610dd5b6262ef73c0c617b2dd335c"
+    },
+    {
+      "path": "apps/scripts/linux-build-context.test.ts",
+      "mode": "100644",
+      "size": 3158,
+      "sha256": "a92ea54172efa9c29fe54112cb302529463f6e767408a904f0f9354e8a02d451"
+    },
+    {
+      "path": "apps/scripts/production-compose-contract.test.ts",
+      "mode": "100644",
+      "size": 2767,
+      "sha256": "075e999fa535cf23e51016f0bf15037437db15334f6a2a393480fff6e2d8f5d2"
+    },
+    {
+      "path": "apps/scripts/production-compose-contract.ts",
+      "mode": "100644",
+      "size": 11058,
+      "sha256": "b14a3f4a1297066393f873fb2300c4e7d84aba673ba7f8fcd04015f49e57ac74"
+    },
+    {
+      "path": "apps/scripts/public-source-export.test.ts",
+      "mode": "100644",
+      "size": 9983,
+      "sha256": "050af20ac7ff362849be2b540173a016081eef06cd4a0c7570271dbc1c63b304"
+    },
+    {
+      "path": "apps/scripts/public-source-export.ts",
+      "mode": "100644",
+      "size": 20927,
+      "sha256": "ad76946b30e69fb422b72006cb3b9fe7e1483eec7c27128113087a8476f22bba"
+    },
+    {
+      "path": "apps/scripts/publication-readiness-contract.test.ts",
+      "mode": "100644",
+      "size": 6286,
+      "sha256": "165e353cadf0634017adf75188a6afb699437445417f83e6a1c3e7827dddd8a6"
+    },
+    {
+      "path": "apps/scripts/publication-readiness-contract.ts",
+      "mode": "100644",
+      "size": 12973,
+      "sha256": "9ef7dd9f27c170cfcbd13efff0bd917c6c81cbfeab5ddd28752cc16dd2a4932b"
+    },
+    {
+      "path": "apps/scripts/relay-certificates.test.ts",
+      "mode": "100644",
+      "size": 3716,
+      "sha256": "22e938a3a78d6d52a795ef619de2a70ae61f005d98c06785d4f9db2760b09520"
+    },
+    {
+      "path": "apps/scripts/relay-certificates.ts",
+      "mode": "100644",
+      "size": 3600,
+      "sha256": "c19eda76ae94418d2ff165d7d76c1abc50ddb5e0ad792e629a86460d2846597d"
+    },
+    {
+      "path": "apps/scripts/release-input-contract.test.ts",
+      "mode": "100644",
+      "size": 6436,
+      "sha256": "be8ec1f13a72ea8e57871ed0045b15ab536112ae7750276773289530d9136b71"
+    },
+    {
+      "path": "apps/scripts/release-input-contract.ts",
+      "mode": "100644",
+      "size": 13327,
+      "sha256": "d6ecd1664e29bc8b8dbd8f2b1cc64db817c78b9d0030d5102ab12c2bd7884626"
+    },
+    {
+      "path": "apps/scripts/run-debug.ts",
+      "mode": "100644",
+      "size": 16848,
+      "sha256": "ecf290dee016b78e61d95a66450cf0bd09174d414b6f974c330ad42d0eca1c85"
+    },
+    {
+      "path": "apps/scripts/run-dev.ts",
+      "mode": "100644",
+      "size": 1872,
+      "sha256": "fd1c25ba1a8c9d6e7326da77f95bac440c3413f1b02af8704c0bbec9a26adbbd"
+    },
+    {
+      "path": "apps/scripts/run-docker.mts",
+      "mode": "100644",
+      "size": 885,
+      "sha256": "575d1323404b62c0d9ba3ed40846e057cea2cd4e6503ab9915042bec637cd284"
+    },
+    {
+      "path": "apps/scripts/run-rust-tests.test.ts",
+      "mode": "100644",
+      "size": 1224,
+      "sha256": "9ff9e734f2e448d8dd22e9244a8ced1e5d12259eac2e9c7094e44242a745f123"
+    },
+    {
+      "path": "apps/scripts/run-rust-tests.ts",
+      "mode": "100644",
+      "size": 1350,
+      "sha256": "2649cc6f555f66a2a701d8b0705e006309e99e74684343981be8f37273a5afb8"
+    },
+    {
+      "path": "apps/scripts/run-with-log.ts",
+      "mode": "100644",
+      "size": 2669,
+      "sha256": "686932c4cb4ddaff7bc63783a375d3a2b68201590450d7128b8f588a8f992bc9"
+    },
+    {
+      "path": "apps/scripts/runtime-network-defaults.test.ts",
+      "mode": "100644",
+      "size": 4158,
+      "sha256": "1ca8754082be7c894accb4defa1a7a596ac82b0c2f69ca48173628090c05ad7d"
+    },
+    {
+      "path": "apps/scripts/signing-secret-policy.test.ts",
+      "mode": "100644",
+      "size": 1493,
+      "sha256": "e4e543a559df99faca7d5dd4f2e2be0c3db8238cdd94ec160c5c90bba4319f0f"
+    },
+    {
+      "path": "apps/scripts/signing-secret-policy.ts",
+      "mode": "100644",
+      "size": 2863,
+      "sha256": "7e948e58bd9b6d6759c962729de3b19a3511bdb9fddabd9a46d5bd0f1594a1ca"
+    },
+    {
+      "path": "apps/scripts/third-party-acquisition.test.ts",
+      "mode": "100644",
+      "size": 7950,
+      "sha256": "33cf3402c7a4ab57b4a2f75d79568ba3b40de35220a528f0c89bc84eb94e3e61"
+    },
+    {
+      "path": "apps/scripts/third-party-acquisition.ts",
+      "mode": "100644",
+      "size": 20684,
+      "sha256": "c23f2768fea6b7d783753536ea1e426dd1d25db4694cbb27c334c39ad497fa16"
+    },
+    {
+      "path": "apps/scripts/tsconfig.json",
+      "mode": "100644",
+      "size": 304,
+      "sha256": "adc2230b1d1eabef1d266b928ca3bf36210bfd682243f1ad4665c218da24d8fe"
+    },
+    {
+      "path": "apps/scripts/up-app-services.ts",
+      "mode": "100644",
+      "size": 1478,
+      "sha256": "5dd00e0b402fe170f1007f07bc9a98ac10a50ad826baacbcbe1a76c4216fd5a0"
+    },
+    {
+      "path": "apps/scripts/up-rust-servers.ts",
+      "mode": "100644",
+      "size": 1314,
+      "sha256": "2e7d1954716bc05f31159db040e5bd15e1a4f046fdb7cb0ad700f2880cf79677"
+    },
+    {
+      "path": "apps/talos_ai_runner/Cargo.toml",
+      "mode": "100644",
+      "size": 827,
+      "sha256": "5fa48611f749f3c0b50b186845c099d188307e3b5570f92e19d5011b2c78b49a"
+    },
+    {
+      "path": "apps/talos_ai_runner/src/main.rs",
+      "mode": "100644",
+      "size": 276376,
+      "sha256": "f67ec175dce721952965e2a79a9b1a350d942fee27a4a50e356a4dbf3bd4e587"
+    },
+    {
+      "path": "apps/talos_appliance/Cargo.toml",
+      "mode": "100644",
+      "size": 568,
+      "sha256": "edc7304149ed1b3c557b2e8712760ee80eb2f7ea449e07f08e5c907d031b70d4"
+    },
+    {
+      "path": "apps/talos_appliance/README.md",
+      "mode": "100644",
+      "size": 6241,
+      "sha256": "d60e1114725d1ebf20b3f2d4f6f8ae0bb17efd527920039f2033642ab6d3a46f"
+    },
+    {
+      "path": "apps/talos_appliance/src/backup.rs",
+      "mode": "100644",
+      "size": 13066,
+      "sha256": "e98650d8cdc9a5229dae40bcf9545401ec2faee3f2ee50bf47003e96f6078969"
+    },
+    {
+      "path": "apps/talos_appliance/src/cli.rs",
+      "mode": "100644",
+      "size": 13238,
+      "sha256": "370078aac3010ffdc9936e9462a4802dae93955d40ff92243ecfe53957e3c9d8"
+    },
+    {
+      "path": "apps/talos_appliance/src/compose.rs",
+      "mode": "100644",
+      "size": 42158,
+      "sha256": "4ddbeb4d96306db3447628a9307870cad9ca29f20a11be3371903429d1559108"
+    },
+    {
+      "path": "apps/talos_appliance/src/config.rs",
+      "mode": "100644",
+      "size": 30282,
+      "sha256": "7ff2e34cbdb6342ad6873cc28d56bc752dc3323bf581be2b1280217300ff6395"
+    },
+    {
+      "path": "apps/talos_appliance/src/diagnostics.rs",
+      "mode": "100644",
+      "size": 8547,
+      "sha256": "02d20dd49e23aa4d7d0caa840011e4fb2618de79b4a529f72a4e0cb155dbef56"
+    },
+    {
+      "path": "apps/talos_appliance/src/images.rs",
+      "mode": "100644",
+      "size": 6730,
+      "sha256": "1e460ca45cdd809564abb100327eceb75c11c41e74cbf702e41000427f459540"
+    },
+    {
+      "path": "apps/talos_appliance/src/lib.rs",
+      "mode": "100644",
+      "size": 236,
+      "sha256": "02bc027503314f9fbc3cc5e4c6fd2cdb3474417613a3a4fe953b361c33fb052b"
+    },
+    {
+      "path": "apps/talos_appliance/src/main.rs",
+      "mode": "100644",
+      "size": 173,
+      "sha256": "715d1a78d46c92717c309ad96a7ad75421061e8c5dab6112eb8d7611b9e086ef"
+    },
+    {
+      "path": "apps/talos_appliance/src/network.rs",
+      "mode": "100644",
+      "size": 3888,
+      "sha256": "da4fe5ed52762734ed07dccf4280fb31a1d692b717f781fe7b2b3afe06078070"
+    },
+    {
+      "path": "apps/talos_appliance/src/orchestrator.rs",
+      "mode": "100644",
+      "size": 45083,
+      "sha256": "206fdcf9e47a33fec27c37324cc13c7113bce92cbc4472523294ded64f4f9e60"
+    },
+    {
+      "path": "apps/talos_appliance/src/process.rs",
+      "mode": "100644",
+      "size": 14430,
+      "sha256": "3b53fe64cc1d7712edda3504c53fe6b46c154eade54c022bf9c62555210a34e4"
+    },
+    {
+      "path": "apps/talos_appliance/src/redaction.rs",
+      "mode": "100644",
+      "size": 2601,
+      "sha256": "25ffbee82854b0d4b34e9770083520f7b4e4d0cac59d65c672afa158593ee433"
+    },
+    {
+      "path": "apps/talos_appliance/src/secure_fs.rs",
+      "mode": "100644",
+      "size": 19797,
+      "sha256": "55165ee21cd039d5bf3f49a9127acb37bb104e4d79881721c7bd90e09c6e2520"
+    },
+    {
+      "path": "apps/talos_appliance/src/state.rs",
+      "mode": "100644",
+      "size": 10376,
+      "sha256": "b68ee9344ba5a17fabc38cbb6d23e1972ecdda88822eec98a2d7079267b51192"
+    },
+    {
+      "path": "apps/talos_appliance/talos-server.example.json",
+      "mode": "100644",
+      "size": 1083,
+      "sha256": "dce12f80c153bccb0f65951e90119118bb556bf47f5838089e9790b030d699f5"
+    },
+    {
+      "path": "apps/talos_collector/Cargo.toml",
+      "mode": "100644",
+      "size": 1631,
+      "sha256": "ba77156e46c7d3fc72b5f12d7a105e8d6f5371dcbb1d87bd195a319698e6db9f"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/ad_ds.rs",
+      "mode": "100644",
+      "size": 2860,
+      "sha256": "16892e78567afb70c82c79b62b41bc77ab5c5d93282770fde69f7a9b66e53f79"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/certificates.rs",
+      "mode": "100644",
+      "size": 3487,
+      "sha256": "5a636c25b64032878813d3b21c2f8d6e88cd02aa0bd8b492d8a22fbf4506ca51"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/dhcp_server.rs",
+      "mode": "100644",
+      "size": 2513,
+      "sha256": "ae98f1f780aa5e0b796c4f6b9ea5a74b17a9bb3213f47747d448e107d7af5d78"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/dns_server.rs",
+      "mode": "100644",
+      "size": 2850,
+      "sha256": "229cf0d81609c9363ffec371df1a99969fa3c9b6c1dcac20010d866bee1a95ae"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/entra_intune.rs",
+      "mode": "100644",
+      "size": 11686,
+      "sha256": "987364aefb62a345d8193d192e044e4b6898d616ef00599f2084ae025cdbce8f"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/events.rs",
+      "mode": "100644",
+      "size": 10681,
+      "sha256": "fbb66b9a90b0d6bee9f5dd9c94ac23f6d9ebd0a2fbc3edc25efd699135bc52fe"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/hardware.rs",
+      "mode": "100644",
+      "size": 25156,
+      "sha256": "9bc6a38b78b596b27dcf05f13cbabaab323aef4d0c19534e09237ae187bf4232"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/iis.rs",
+      "mode": "100644",
+      "size": 2780,
+      "sha256": "0715d585f8cfdd527e716301528da09bd34e56d1671bc396f764b37f903b5540"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/mod.rs",
+      "mode": "100644",
+      "size": 20691,
+      "sha256": "ddba3212b4011de35fd0a6107ff1b69054f09cda866b47db64ea7c46393a9e03"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/network.rs",
+      "mode": "100644",
+      "size": 14075,
+      "sha256": "8fd088afe4539d24072fe2afc55cd65745a9f3df8e5debeb1df88022907734ba"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/office365.rs",
+      "mode": "100644",
+      "size": 14276,
+      "sha256": "4dfc22d410dcb245432c2886e2380eecf0c05bff6487e80b22df15dec826d3b0"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/onedrive.rs",
+      "mode": "100644",
+      "size": 12093,
+      "sha256": "035c1d2f2af1992bb92ce631266ffffbad7f32b915b229342937a766c982cfc3"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/print_server.rs",
+      "mode": "100644",
+      "size": 6020,
+      "sha256": "daba1d65b1a6e205dff12c56d2ba265559de8327259e8c332336b6cc9165c726"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/scheduled_tasks.rs",
+      "mode": "100644",
+      "size": 11346,
+      "sha256": "ce4ff1bc71d03a560db0ae31b4cf77cec300bc56f9baa5869be6a512299e9318"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/security.rs",
+      "mode": "100644",
+      "size": 20743,
+      "sha256": "601f3f2fab57001f7000cbb6ac3fefbf404766d7120148697714fa786bb214fe"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/services.rs",
+      "mode": "100644",
+      "size": 5701,
+      "sha256": "867dad7996c18f5f1f00ad2bc44479afb7ceeea5b160a9a396a9555da19a67c9"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/sessions.rs",
+      "mode": "100644",
+      "size": 3675,
+      "sha256": "27e0a5ccccdd08b6c9dd9206a36216bbb75c7ed933c1504978eb3909bb2041e8"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/software.rs",
+      "mode": "100644",
+      "size": 16220,
+      "sha256": "7ae2409795af604d55f649935881ff91f6e06edab79fbca889da1c25cbdad2fb"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/system.rs",
+      "mode": "100644",
+      "size": 9019,
+      "sha256": "3642a5f04964e90b4a6788187bbffde46173b408d64eaa37380fb08a7c2bf827"
+    },
+    {
+      "path": "apps/talos_collector/src/collectors/updates.rs",
+      "mode": "100644",
+      "size": 7348,
+      "sha256": "e858920eb75a3586f105c4875f13186cb42cc005a3eb4b9fcd6a2a3b85db99ab"
+    },
+    {
+      "path": "apps/talos_collector/src/error.rs",
+      "mode": "100644",
+      "size": 7589,
+      "sha256": "516c2fed7622eaa105eade9e041effc458e95b65eba2008e5dbc1a5d113a28a0"
+    },
+    {
+      "path": "apps/talos_collector/src/event_stream/mod.rs",
+      "mode": "100644",
+      "size": 148,
+      "sha256": "0fce1e21ea5e227ca67a8020915544c871b3245b7f3fc68c75b27f0d9bedfd6c"
+    },
+    {
+      "path": "apps/talos_collector/src/event_stream/monitors.rs",
+      "mode": "100644",
+      "size": 28672,
+      "sha256": "a0cb03f46a0a799d4700ee10784d333ea1179ef8cbdafca9225a5d2e772cbf92"
+    },
+    {
+      "path": "apps/talos_collector/src/event_stream/run.rs",
+      "mode": "100644",
+      "size": 1298,
+      "sha256": "d3bc3fcd8e64dddf0e8c9834254356cc907d17dc16c72999a99955936f892509"
+    },
+    {
+      "path": "apps/talos_collector/src/event_stream/schema_v2.rs",
+      "mode": "100644",
+      "size": 1765,
+      "sha256": "998bd754105f60f9133fd28c3160362c4157ff1f9d28aa946cd1fc435be2677f"
+    },
+    {
+      "path": "apps/talos_collector/src/event_stream/schema.rs",
+      "mode": "100644",
+      "size": 11129,
+      "sha256": "5378242f67013799c978fc75db4de4150d0b8151a290a86823c0925488eac85c"
+    },
+    {
+      "path": "apps/talos_collector/src/event_stream/writer.rs",
+      "mode": "100644",
+      "size": 6037,
+      "sha256": "8c89cc1c8c783f664e183b062c1b370d6b1088681b578c88f21036f34af79744"
+    },
+    {
+      "path": "apps/talos_collector/src/lib.rs",
+      "mode": "100644",
+      "size": 3368,
+      "sha256": "2e31262d5fceade41388b61e46fdf2812f7c142ba8a9803976a86307c531b98e"
+    },
+    {
+      "path": "apps/talos_collector/src/models.rs",
+      "mode": "100644",
+      "size": 27521,
+      "sha256": "17e293fb73222b3a2fcfb704165df96e51ec90b81883f7b428d33dcd60b4231d"
+    },
+    {
+      "path": "apps/talos_collector/src/snapshot_v2.rs",
+      "mode": "100644",
+      "size": 2487,
+      "sha256": "ff4751d517380677ee0b24c85902ff69bd9092bf4f6ef27822c4a8f8840246a4"
+    },
+    {
+      "path": "apps/talos_collector/src/windows_utils/event_log.rs",
+      "mode": "100644",
+      "size": 3949,
+      "sha256": "3b4d65791cd5e12344a6052b0a7a567c59574b418d1959a70556f509b1ef6f36"
+    },
+    {
+      "path": "apps/talos_collector/src/windows_utils/mod.rs",
+      "mode": "100644",
+      "size": 9879,
+      "sha256": "5b9f44978591e3388465ee71bdd999876b7c4c3a2cef535bea9450b22c9ab439"
+    },
+    {
+      "path": "apps/talos_collector/src/windows_utils/registry.rs",
+      "mode": "100644",
+      "size": 20322,
+      "sha256": "f8e13f6ae410d74162dde4f025bcebbf11c13bd7e8cfce4a02e93bc24e5fd8cc"
+    },
+    {
+      "path": "apps/talos_collector/src/windows_utils/winapi_helpers.rs",
+      "mode": "100644",
+      "size": 12312,
+      "sha256": "bbae2b2668f1fcd27cd6c59ea5d66e7d34697e10b1e75d20fe8f7d5af0cead6e"
+    },
+    {
+      "path": "apps/talos_collector/src/windows_utils/windows_update.rs",
+      "mode": "100644",
+      "size": 24446,
+      "sha256": "cb0dc29c17bd70090a47b1dc4d6792085c15377997ce28589965c0b431ec75fd"
+    },
+    {
+      "path": "apps/talos_collector/src/windows_utils/wmi.rs",
+      "mode": "100644",
+      "size": 13916,
+      "sha256": "590bb49aede0d7c633e2c9a19b8588983a00eec8c3dd34e5e25f89a0e7c14430"
+    },
+    {
+      "path": "apps/talos_log_util/Cargo.toml",
+      "mode": "100644",
+      "size": 389,
+      "sha256": "0f3d2bbd2c5ac1a62811493e9b5cb76d859f1d6418690247edf71556c88e3c7e"
+    },
+    {
+      "path": "apps/talos_log_util/src/lib.rs",
+      "mode": "100644",
+      "size": 16079,
+      "sha256": "535084688ba0a00da923ec2ce9b1daaf39fa95a48e837ef01c07d503acea4152"
+    },
+    {
+      "path": "apps/talos_permissions_helper/.gitignore",
+      "mode": "100644",
+      "size": 14,
+      "sha256": "4d56952b0fb13bf8f9b6c13a6d4c34a075bac3af447636a1df4335d7576e2f97"
+    },
+    {
+      "path": "apps/talos_permissions_helper/index.html",
+      "mode": "100644",
+      "size": 309,
+      "sha256": "c6d668c33cc5602b62a6bbe710cd27e54d14c770cbc259fb89f21b303b41bedf"
+    },
+    {
+      "path": "apps/talos_permissions_helper/package.json",
+      "mode": "100644",
+      "size": 703,
+      "sha256": "044615e8c6813b31d7b4dbff4ceec833d2e8fa023d29f8c3781b7e7e6feb79e1"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/build.rs",
+      "mode": "100644",
+      "size": 187,
+      "sha256": "110d5608637ac51c5f8ecb4f4937b3252fc05f077fcc79691bd4f6666e354dbf"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/capabilities/default.json",
+      "mode": "100644",
+      "size": 521,
+      "sha256": "e54638457857df7ead36a94fb040d5476fdc4ec831d49f9149ba47de2ace4fbc"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/Cargo.toml",
+      "mode": "100644",
+      "size": 733,
+      "sha256": "a94ad019af4bca39c44b518ff456ad2aa6b816ffabfae2bfc9490952d6be4661"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/icons/icon.icns",
+      "mode": "100644",
+      "size": 220686,
+      "sha256": "c0cbc0dda1835cdbb623497cd9733e83e94e1fe7f69a23d8aadfa360c5ead7c6"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/icons/icon.ico",
+      "mode": "100644",
+      "size": 31341,
+      "sha256": "1f53ad648f5e129f277b0f8ed2d58b11e637f5da3f738b2eec84bb9e6746ec4a"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/icons/icon.png",
+      "mode": "100644",
+      "size": 38058,
+      "sha256": "108e8652e711173fd1dbf11023dfd40b6fdd3e5428289ab84931b5a74962e361"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/src/main.rs",
+      "mode": "100644",
+      "size": 39151,
+      "sha256": "70bc206597ae8be1ae29923751bc1a104c95854f13287a260683dcfb8f45fc58"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/tauri.conf.json",
+      "mode": "100644",
+      "size": 900,
+      "sha256": "cd2c51048eb80445508775c3cb4f7163a5a41aca64c8cd489eb8f0bd2c885468"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src/app.css",
+      "mode": "100644",
+      "size": 7710,
+      "sha256": "031a181076d20a3448a768a04008f81259c3f674b76a02d6b434d63ea8c90a76"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src/App.svelte",
+      "mode": "100644",
+      "size": 28450,
+      "sha256": "a7ab63b5cca1a4b86ddf4389239e78b9e6befc06a20174393b9e8ba11411b7e6"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src/main.ts",
+      "mode": "100644",
+      "size": 122,
+      "sha256": "c76543fe1c49182b7ec4353a30135d00e3c439dfdf2577e2435272ff9f35930b"
+    },
+    {
+      "path": "apps/talos_permissions_helper/svelte.config.js",
+      "mode": "100644",
+      "size": 199,
+      "sha256": "016857e1fc6db22ed2cac66d6dad00d2e387e84d8d16399938633628097c8abf"
+    },
+    {
+      "path": "apps/talos_permissions_helper/tests/svelte-config.test.ts",
+      "mode": "100644",
+      "size": 754,
+      "sha256": "1de0ae4d3288ea8ca60ea19c86bda08a6e0fb52b580932fc0591ed503cc2c7b6"
+    },
+    {
+      "path": "apps/talos_permissions_helper/tsconfig.json",
+      "mode": "100644",
+      "size": 280,
+      "sha256": "965d3967b8e90276b65ebf6af7cecfa841357baeec18ec1d1a1272dea710bb00"
+    },
+    {
+      "path": "apps/talos_permissions_helper/vite.config.ts",
+      "mode": "100644",
+      "size": 164,
+      "sha256": "8b5970f8b212987aa005477ae268f3033edc74777c0754224676eb9c7700e435"
+    },
+    {
+      "path": "apps/talos_protocol_types/package.json",
+      "mode": "100644",
+      "size": 287,
+      "sha256": "6bf35215a182bd22b51772b752c202bf58c2255183e1adbc96f130f6f28d66ec"
+    },
+    {
+      "path": "apps/talos_protocol_types/src/generated.ts",
+      "mode": "100644",
+      "size": 2513,
+      "sha256": "0591d0ca45dfdc441874bd84ad2cf899c2a96b0d7240697427f2833a525af1e1"
+    },
+    {
+      "path": "apps/talos_protocol_types/src/index.ts",
+      "mode": "100644",
+      "size": 34,
+      "sha256": "48f65bcff382d9cca9b323ca3244ba31815e3a2ff4fe0a05db7681d5daea70a2"
+    },
+    {
+      "path": "apps/talos_protocol_types/tsconfig.json",
+      "mode": "100644",
+      "size": 324,
+      "sha256": "6b715595d7694a064a582729bcd5660f0526fcc4869d9cad615e84353dfcc352"
+    },
+    {
+      "path": "apps/talos_protocol/Cargo.toml",
+      "mode": "100644",
+      "size": 1252,
+      "sha256": "ad0430d4eca0b2e528ebd3935ad1dbff862158d516bf14f440e3f6028c317d52"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/agent_check_in.json",
+      "mode": "100644",
+      "size": 574,
+      "sha256": "35be4faa1f4f8502ff10aa84d5d7687bc638a66c06b3da029ac1ae74e7764beb"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/capability_report.json",
+      "mode": "100644",
+      "size": 928,
+      "sha256": "a4a17487b521d618cd71c40bd42c0ea596f4791c0c3a47c3412f4eb3f88c1ea7"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/command_execution_request.json",
+      "mode": "100644",
+      "size": 114,
+      "sha256": "85a88b599655700f166e52cccb7d6b6ae30899277aadc16aeff256976b45aaa8"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/command_execution_response.json",
+      "mode": "100644",
+      "size": 116,
+      "sha256": "181a52c8a228381ac605b3cbbea2bb998c3145189a6f3638898f239082538ba8"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/file_transfer_json_frame.hex",
+      "mode": "100644",
+      "size": 126,
+      "sha256": "b07523806706fd908c141794de90378eb7a456cc0280366cb105ee39b62c7232"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/file_transfer_upload_request.json",
+      "mode": "100644",
+      "size": 253,
+      "sha256": "0d095725f70289255041e4fd38861fd8c9aafd350e03d168c2dcd56c04ac6ecd"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/quality_update_control_frame.hex",
+      "mode": "100644",
+      "size": 21,
+      "sha256": "ef39981e7264a298ea1fac94058d43e2bcdd325cf2bfc9092d9c40e71693ffd1"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/registry_set_value_request.json",
+      "mode": "100644",
+      "size": 203,
+      "sha256": "adc9c4fb06ca1ef56a8c170943894b8807be07084782873349d31cb46120a113"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/remote_desktop_negotiation.json",
+      "mode": "100644",
+      "size": 574,
+      "sha256": "a774627c91d91ce4cf365f99efcaaf4ad6dfe3bb46872ded386ce429cdfcb0e4"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/request_full_snapshot.json",
+      "mode": "100644",
+      "size": 91,
+      "sha256": "5928ee574c3b3943680ebb5674374927ed379fa6585e4508457aad19e2a9d503"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/shell_frame_input.hex",
+      "mode": "100644",
+      "size": 30,
+      "sha256": "bb09e41c2113a8849f964017b9c308e80725e7f75ce785adc921d64bb80cd4d8"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/shell_session_start.json",
+      "mode": "100644",
+      "size": 440,
+      "sha256": "d91463e7ee6be5923ec78e607b32d50c53015df67d0d90fe41c1463b0cd80b25"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/current/telemetry_snapshot.json",
+      "mode": "100644",
+      "size": 557,
+      "sha256": "5881bb45a48131f08d9a0db94a67502428d42f2358b619703be28d22234dc444"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/old/agent_check_in_v0.json",
+      "mode": "100644",
+      "size": 188,
+      "sha256": "c4550bff8d924643d1752ddf00f76f112a1c9a5432959632ab8afeb9f1a6686d"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/old/capability_report_v0.json",
+      "mode": "100644",
+      "size": 283,
+      "sha256": "47973ea3aab64a68b16e798e345426b72667e1a86a5c0450e2c4fbba10f20831"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/old/file_transfer_error_unknown_code.json",
+      "mode": "100644",
+      "size": 138,
+      "sha256": "c46d19f60dd83302f5f835770e4b0139dccc96d34fb109e5156568115d015b12"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/old/file_transfer_upload_v0.json",
+      "mode": "100644",
+      "size": 231,
+      "sha256": "130ee0a8c3c735b64dd18203acd1a5c4fd89b22c19cbe3e61543dfde320fd91d"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/old/request_full_snapshot_snake_case_v0.json",
+      "mode": "100644",
+      "size": 100,
+      "sha256": "fe0b69ffa72764da6777dbe91f7006a0c9e4dd40c10698c066558d512a368ccd"
+    },
+    {
+      "path": "apps/talos_protocol/fixtures/old/telemetry_snapshot_v0.json",
+      "mode": "100644",
+      "size": 300,
+      "sha256": "e1ce683a31c8d01da6ce6f3c9427ff11f88526b2b0d7124a921ea235817d87a4"
+    },
+    {
+      "path": "apps/talos_protocol/PROTOCOL_VERSIONING.md",
+      "mode": "100644",
+      "size": 1940,
+      "sha256": "a02049da606a09059c2a36ee64adbd789b8e90a0406ffd59a9ad577eb8e2060b"
+    },
+    {
+      "path": "apps/talos_protocol/src/bin/export_typescript.rs",
+      "mode": "100644",
+      "size": 2863,
+      "sha256": "4faa22f8b15437cea7e8f2d9c44826333f75a3f08b8d7b0cc1ddcc6a168b498f"
+    },
+    {
+      "path": "apps/talos_protocol/src/lib.rs",
+      "mode": "100644",
+      "size": 108374,
+      "sha256": "7b148d1f7d231ad4942d28786d16271340f01b0679d50e7e6dda92c31246b70d"
+    },
+    {
+      "path": "apps/talos_protocol/src/relay_transport.rs",
+      "mode": "100644",
+      "size": 9375,
+      "sha256": "fbbf81f2f66573926efd9cd7bb34bfd79e4047480ce04981d74c8f06192778cc"
+    },
+    {
+      "path": "apps/talos_protocol/tests/golden_fixtures.rs",
+      "mode": "100644",
+      "size": 13970,
+      "sha256": "9a7275f26126697555e3d6b60eac5f722461f90e1f94fcb0b324f2e6f2633b0a"
+    },
+    {
+      "path": "apps/talos_relay/Cargo.toml",
+      "mode": "100644",
+      "size": 487,
+      "sha256": "8bed7533adf5fbf2e9f1c9ed9902d0f38cf17e29c2e5332d3669b5bc1846af5c"
+    },
+    {
+      "path": "apps/talos_relay/Dockerfile",
+      "mode": "100644",
+      "size": 757,
+      "sha256": "e660b018b3f769d7c61e6a33efe23fc758b799d014bc3e0848564e5d9e6f601d"
+    },
+    {
+      "path": "apps/talos_relay/src/main.rs",
+      "mode": "100644",
+      "size": 33693,
+      "sha256": "2f5034149789a018a09c244232dc12ed856646d36df33cc10feb7dba93a7dd28"
+    },
+    {
+      "path": "apps/talos_server/Cargo.toml",
+      "mode": "100644",
+      "size": 841,
+      "sha256": "540aec5d18c4dda284312c0088bc57dbe8e7cf057598921068fe2982af23f5bc"
+    },
+    {
+      "path": "apps/talos_server/Dockerfile",
+      "mode": "100644",
+      "size": 766,
+      "sha256": "cb6b88720e4878748c68e9ab2d9589a5c89a6145ead82bf8efb4c7ec36b95c15"
+    },
+    {
+      "path": "apps/talos_server/src/agent_directory.rs",
+      "mode": "100644",
+      "size": 5822,
+      "sha256": "c0be6751e2ba2ab79b8a8809ac72d0ee7cad5c46051502330ac00b4cbc0c42c6"
+    },
+    {
+      "path": "apps/talos_server/src/config.rs",
+      "mode": "100644",
+      "size": 7699,
+      "sha256": "5d732702c60c9c536417115b4c29050e0462bc1a1896ed099fd856043a7bec8a"
+    },
+    {
+      "path": "apps/talos_server/src/main.rs",
+      "mode": "100644",
+      "size": 263224,
+      "sha256": "5fc6fc3903dfec55de487acfd6d67a254021399d0c571eba67e8f2f7699790c9"
+    },
+    {
+      "path": "apps/talos_server/src/remediation.rs",
+      "mode": "100644",
+      "size": 7156,
+      "sha256": "156bc1297e734db67a7872915a66fdd81711b8f6b83a1a91564e77edfc26f2cb"
+    },
+    {
+      "path": "apps/talos_supervisor/build.rs",
+      "mode": "100644",
+      "size": 1140,
+      "sha256": "55b3aa435fc84c6893389055522e17fbe3fce57422d1a249e0a8f8cf11d0fc31"
+    },
+    {
+      "path": "apps/talos_supervisor/Cargo.toml",
+      "mode": "100644",
+      "size": 1058,
+      "sha256": "1c93066722d2c5b15fc0d8b1ffca83d4e57de58e080b892a4ee7fefb6d9f4019"
+    },
+    {
+      "path": "apps/talos_supervisor/src/main.rs",
+      "mode": "100644",
+      "size": 36479,
+      "sha256": "931913d1b012e7b59b022694242298ab52b302e2edb83b4d29004310f68e3f1b"
+    },
+    {
+      "path": "apps/talos_supervisor/src/service_manager.rs",
+      "mode": "100644",
+      "size": 34429,
+      "sha256": "7de1bbc34c379a691eb4b49fbe5ac5b644990b69a62e4b28d849c6c7889ed6e8"
+    },
+    {
+      "path": "apps/talos_supervisor/src/supervisor_service.rs",
+      "mode": "100644",
+      "size": 3731,
+      "sha256": "925188424b904f861130fb9b68ba55c6abe8a9e295a06562ce12e878cd9d59a5"
+    },
+    {
+      "path": "apps/talos_supervisor/src/supervisor.rs",
+      "mode": "100644",
+      "size": 43824,
+      "sha256": "23307d95661a4c701f18e22eff84707d95accdcc49cf5e5fd9ba2ee196f98b72"
+    },
+    {
+      "path": "apps/talos_telemetry_consumer/Cargo.toml",
+      "mode": "100644",
+      "size": 847,
+      "sha256": "9d10a00d99e8fc507231745482ce848335d07caf58d251ae33ac5276514ddd97"
+    },
+    {
+      "path": "apps/talos_telemetry_consumer/Dockerfile",
+      "mode": "100644",
+      "size": 837,
+      "sha256": "702b7c7d41f7ec7e30d1562f31e1cd40c5e84f8bc066535cfb643fc791db534b"
+    },
+    {
+      "path": "apps/talos_telemetry_consumer/src/consumer_main.rs",
+      "mode": "100644",
+      "size": 26726,
+      "sha256": "9f3a487075bdf36c6dce4b1a636e773acf46853487036a3aaf12b7acb969d65d"
+    },
+    {
+      "path": "apps/talos_telemetry_consumer/src/consumer_v2.rs",
+      "mode": "100644",
+      "size": 146864,
+      "sha256": "cb32e8a4cb602c7e3931c9cfc2d00e8614c7e38ee494caa76b620786600036f7"
+    },
+    {
+      "path": "apps/talos_telemetry_producer/.env.example",
+      "mode": "100644",
+      "size": 360,
+      "sha256": "53a6f5c3c36ddde3362610c01ea1f297b30cce41af5097a1064c7db18bd012a6"
+    },
+    {
+      "path": "apps/talos_telemetry_producer/Cargo.toml",
+      "mode": "100644",
+      "size": 587,
+      "sha256": "7b556dbd8700f160f41e04c2cae7b99f556ff734c0989bcd7ccd3744ba86bca3"
+    },
+    {
+      "path": "apps/talos_telemetry_producer/Dockerfile",
+      "mode": "100644",
+      "size": 850,
+      "sha256": "8653151616c07b7bce799d785459507bedcceeb5fe65a4c0f046a47fbb9d9a7f"
+    },
+    {
+      "path": "apps/talos_telemetry_producer/src/main.rs",
+      "mode": "100644",
+      "size": 16941,
+      "sha256": "29be76df8fe1312b6590cfa14e27569681bed55c63b795d7b23c7d906d4938d9"
+    },
+    {
+      "path": "apps/talos_telemetry/.gitignore",
+      "mode": "100644",
+      "size": 5,
+      "sha256": "69aa73cf5bc3377a7d97f2e8d2bb773195815efe225af7f1be6f5b9306bbe14f"
+    },
+    {
+      "path": "apps/talos_telemetry/README.md",
+      "mode": "100644",
+      "size": 348,
+      "sha256": "09263a90378aba7e50f8476c60c122c0423192397234fd9b5fa1473ac811bf30"
+    },
+    {
+      "path": "apps/talos_update_common/Cargo.toml",
+      "mode": "100644",
+      "size": 480,
+      "sha256": "d762db2504c22d86424e842affa31a0f5a26713675c4f6c1decc1679476a21c1"
+    },
+    {
+      "path": "apps/talos_update_common/src/lib.rs",
+      "mode": "100644",
+      "size": 21800,
+      "sha256": "3773bbccaee4f96f453a2bfcb2709c4b33d604d49d45648da3f34f51ea394717"
+    },
+    {
+      "path": "apps/talos_viewer_updater/build.rs",
+      "mode": "100644",
+      "size": 1384,
+      "sha256": "b65c9a6a53cc10f02d67b2bffd24d61694d6ddb95b132ed62837f33d5d3a88e6"
+    },
+    {
+      "path": "apps/talos_viewer_updater/Cargo.toml",
+      "mode": "100644",
+      "size": 657,
+      "sha256": "60562d2826b40beded47e708260212afaedcb8059ba96f0577cfd9d671871dc0"
+    },
+    {
+      "path": "apps/talos_viewer_updater/src/main.rs",
+      "mode": "100644",
+      "size": 17895,
+      "sha256": "d362e0fb9bd61c38b4ef42fd069ee4d7ece444207edc25b6fba80b85af148edc"
+    },
+    {
+      "path": "apps/talos_viewer/.gitignore",
+      "mode": "100644",
+      "size": 38,
+      "sha256": "4a43b9ca1ac7ce8d8b8a2e585013307cf1e538a1c6f8bfe77f32950cd2d2889e"
+    },
+    {
+      "path": "apps/talos_viewer/index.html",
+      "mode": "100644",
+      "size": 297,
+      "sha256": "215d856f54136f6349c86d0443f8a3b2350d215f35f33da8d49ab1aa8046c174"
+    },
+    {
+      "path": "apps/talos_viewer/package.json",
+      "mode": "100644",
+      "size": 799,
+      "sha256": "61f7731857a55bfa30cea3a20221e87c0764e73481b96ad0b803317d09677501"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/build_manifest_public_key.rs",
+      "mode": "100644",
+      "size": 8045,
+      "sha256": "70a59374afc9d25ac86af9229638c331d44bb9834403e6ea24df6ceeb30958cb"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/build.rs",
+      "mode": "100644",
+      "size": 2210,
+      "sha256": "27e8259f0fab4a01f75f878850d8db0fa48a8b2d1b6b46c0f49e5b377a56d4d2"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/capabilities/default.json",
+      "mode": "100644",
+      "size": 496,
+      "sha256": "df04f1551fcacde6fa089c1d7097c228e11cfea5edc1079a43e3aae7ae51c7eb"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/Cargo.toml",
+      "mode": "100644",
+      "size": 3436,
+      "sha256": "878ca89b56f5864640b3ace471f1055325e7d380da184ba4d143cd4f5223bd95"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/icons/icon.icns",
+      "mode": "100644",
+      "size": 220686,
+      "sha256": "c0cbc0dda1835cdbb623497cd9733e83e94e1fe7f69a23d8aadfa360c5ead7c6"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/icons/icon.ico",
+      "mode": "100644",
+      "size": 31341,
+      "sha256": "1f53ad648f5e129f277b0f8ed2d58b11e637f5da3f738b2eec84bb9e6746ec4a"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/icons/icon.png",
+      "mode": "100644",
+      "size": 38058,
+      "sha256": "108e8652e711173fd1dbf11023dfd40b6fdd3e5428289ab84931b5a74962e361"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/Info.plist",
+      "mode": "100644",
+      "size": 223,
+      "sha256": "cecbd82c20702b8b313f702ba33ec2f51407a90fc7a8e4ce84eaded4f1f77093"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/native/win_key_block.cpp",
+      "mode": "100644",
+      "size": 1882,
+      "sha256": "ab5977a04c9c34cb843879668cd87fe9a17ea39487cbf06e23c231511f648425"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/display_delta.rs",
+      "mode": "100644",
+      "size": 37852,
+      "sha256": "97f2dbd5af25b181ea798d9238dada63febc5104a561c4fa5e0129262605a765"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/display_processing.rs",
+      "mode": "100644",
+      "size": 1914,
+      "sha256": "000b7aeb5780c93f9e70a4e903321cbd126f98caf9a443ea651a0a4329c60888"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/main.rs",
+      "mode": "100644",
+      "size": 385598,
+      "sha256": "15342d81ad6906174c50d7e985680692bb2d0af9ef713187dea231d0dabbcc9e"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/mf_h264.rs",
+      "mode": "100644",
+      "size": 27289,
+      "sha256": "825ede1744887126d3388b3956c9e9427791c43f8b64b05a7a84aab187f7bdf0"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/updater.rs",
+      "mode": "100644",
+      "size": 31528,
+      "sha256": "65cb2a156da6ef27d0d5427dc49ed5576bc69ab074fd8d5514459d2a15861289"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/viewer_chat.rs",
+      "mode": "100644",
+      "size": 35623,
+      "sha256": "7967c87cd16d5f87f4346cb33db0126a47744ae4f50fdf7588b71912da42fd62"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/viewport_cpu.rs",
+      "mode": "100644",
+      "size": 58876,
+      "sha256": "06abe148c77409dac0a925fd3af0e37274d983cd6cf523441886e0f52fe4ae18"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/viewport_d3d11.rs",
+      "mode": "100644",
+      "size": 74265,
+      "sha256": "5cf6f3a0f6409e1d9b81d164dd1c1c189c35e5aac0642943e55f08dc602548b2"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/viewport_macos.rs",
+      "mode": "100644",
+      "size": 40525,
+      "sha256": "8972184621a5f3a4b60e5c5e645aad2e4a589cb26d9b3cfd183f059a53914daf"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/viewport_video.rs",
+      "mode": "100644",
+      "size": 32123,
+      "sha256": "d1428487cbdc2cc41a10f741bccc54a66ea2a140107c47d982df21eeee705e1c"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/src/vt_h264.rs",
+      "mode": "100644",
+      "size": 18044,
+      "sha256": "4b55181fa7dda0e36ab3dc2c78be78c465666721230e5a304a53336a1a30398e"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/tauri.conf.json",
+      "mode": "100644",
+      "size": 664,
+      "sha256": "bb9582c525d48e0384557a3c39e3e4ed86facefcfae6b6493158cdd5652c5e87"
+    },
+    {
+      "path": "apps/talos_viewer/src/app.css",
+      "mode": "100644",
+      "size": 98110,
+      "sha256": "7ec3fdc69fc29c4921cf445d0462150421af18988de3344cd7eb732f02466429"
+    },
+    {
+      "path": "apps/talos_viewer/src/App.svelte",
+      "mode": "100644",
+      "size": 324521,
+      "sha256": "3d3f542c00ff58baef3bd75605c280c3ac338b36b9f36a3830c7dfcff7653644"
+    },
+    {
+      "path": "apps/talos_viewer/src/main.ts",
+      "mode": "100644",
+      "size": 3940,
+      "sha256": "4a5f6c648b130db60c4c5111a2c3c25338e11db1239ed06748e28cccf9e5df42"
+    },
+    {
+      "path": "apps/talos_viewer/src/RemoteRegistry.svelte",
+      "mode": "100644",
+      "size": 43543,
+      "sha256": "ab1f2ca322d722d7448548970f79d41dce1b75999f3e9d8f8668b1d4ed15dd08"
+    },
+    {
+      "path": "apps/talos_viewer/svelte.config.js",
+      "mode": "100644",
+      "size": 319,
+      "sha256": "ea1d7ce82acbe51f17d2eab1a9925800186604bd3559f833f41c2487959c2a33"
+    },
+    {
+      "path": "apps/talos_viewer/tests/svelte-config.test.ts",
+      "mode": "100644",
+      "size": 754,
+      "sha256": "1de0ae4d3288ea8ca60ea19c86bda08a6e0fb52b580932fc0591ed503cc2c7b6"
+    },
+    {
+      "path": "apps/talos_viewer/tsconfig.json",
+      "mode": "100644",
+      "size": 437,
+      "sha256": "79fa7e59376a68f4ef7c870ad2e0391dc90eeba118dae7539b9aae9cc2376d5e"
+    },
+    {
+      "path": "apps/talos_viewer/vite.config.ts",
+      "mode": "100644",
+      "size": 212,
+      "sha256": "73e9ec8f550c01adfab530bea9a5e2895f062616313a7c74fd5076dacce1d4ca"
+    },
+    {
+      "path": "apps/talos_worker_chat/index.html",
+      "mode": "100644",
+      "size": 293,
+      "sha256": "697765a656c076205ab977f7c25f342e341ef1dd7768a865124eaf590f09d69a"
+    },
+    {
+      "path": "apps/talos_worker_chat/package.json",
+      "mode": "100644",
+      "size": 644,
+      "sha256": "65178db37fac8fd5bfb0124e917e7ffaa6647b5343816b63fb36b95b3c526457"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/build.rs",
+      "mode": "100644",
+      "size": 2324,
+      "sha256": "84049da632e1f24df1e888a78ada69182257255471cfd7070c29e606cc248ccb"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/capabilities/default.json",
+      "mode": "100644",
+      "size": 344,
+      "sha256": "c91ec1b35b12b5ad398b2cf477a8f59c4d7c9b2360852b533fac5162bcccbafb"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/Cargo.toml",
+      "mode": "100644",
+      "size": 819,
+      "sha256": "d800c2fc22b0b93af9cfb1a8da2c5d1794da52ea0172b8fec69ad855fb866468"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/icons/icon.icns",
+      "mode": "100644",
+      "size": 220686,
+      "sha256": "c0cbc0dda1835cdbb623497cd9733e83e94e1fe7f69a23d8aadfa360c5ead7c6"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/icons/icon.ico",
+      "mode": "100644",
+      "size": 31341,
+      "sha256": "1f53ad648f5e129f277b0f8ed2d58b11e637f5da3f738b2eec84bb9e6746ec4a"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/icons/icon.png",
+      "mode": "100644",
+      "size": 38058,
+      "sha256": "108e8652e711173fd1dbf11023dfd40b6fdd3e5428289ab84931b5a74962e361"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/src/main.rs",
+      "mode": "100644",
+      "size": 38706,
+      "sha256": "dcc184fe410ae7f38818d76ebfe16eb955c009427dec629f7f84488112092d8c"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/tauri.conf.json",
+      "mode": "100644",
+      "size": 821,
+      "sha256": "eb4eb891c3b6ced97472da3820a3eaf16082fdcb37899cf2c9c65486c10f13c2"
+    },
+    {
+      "path": "apps/talos_worker_chat/src/app.css",
+      "mode": "100644",
+      "size": 5698,
+      "sha256": "f0fafd28cf5043de7383f84352d61210fecd766e272d3e18d62418b082786006"
+    },
+    {
+      "path": "apps/talos_worker_chat/src/App.svelte",
+      "mode": "100644",
+      "size": 20876,
+      "sha256": "ed0071b8db8861d6d001737a19ea60271283671c1f9d00a7fc44ed4406bfd291"
+    },
+    {
+      "path": "apps/talos_worker_chat/src/main.ts",
+      "mode": "100644",
+      "size": 122,
+      "sha256": "ce32a5a78176ce073e42b541352471ecd2a3399e552e22cc85300fce3a38b6a6"
+    },
+    {
+      "path": "apps/talos_worker_chat/svelte.config.js",
+      "mode": "100644",
+      "size": 199,
+      "sha256": "016857e1fc6db22ed2cac66d6dad00d2e387e84d8d16399938633628097c8abf"
+    },
+    {
+      "path": "apps/talos_worker_chat/tests/svelte-config.test.ts",
+      "mode": "100644",
+      "size": 754,
+      "sha256": "1de0ae4d3288ea8ca60ea19c86bda08a6e0fb52b580932fc0591ed503cc2c7b6"
+    },
+    {
+      "path": "apps/talos_worker_chat/tsconfig.json",
+      "mode": "100644",
+      "size": 208,
+      "sha256": "b487d228274bd1bd425978ec5da6ab04f8b19f760c59dd159fafefb79d28533c"
+    },
+    {
+      "path": "apps/talos_worker_chat/vite.config.ts",
+      "mode": "100644",
+      "size": 164,
+      "sha256": "8b5970f8b212987aa005477ae268f3033edc74777c0754224676eb9c7700e435"
+    },
+    {
+      "path": "apps/talos_worker_helper/build.rs",
+      "mode": "100644",
+      "size": 1401,
+      "sha256": "4b97c6f2212768e0a4ea987b1172478afe902b9fc41ffe8c75792692c5fdab2c"
+    },
+    {
+      "path": "apps/talos_worker_helper/Cargo.toml",
+      "mode": "100644",
+      "size": 1631,
+      "sha256": "a0f9db168b0948c3476e9335c91fa24ca505089cc6e200520babf7c90ade835b"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/atlas.rs",
+      "mode": "100644",
+      "size": 23065,
+      "sha256": "54db78af66a6c0e7d9ca231be88b3d3822ab39541c6bc494c6bf7ded2829d198"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/dump.rs",
+      "mode": "100644",
+      "size": 3389,
+      "sha256": "397d01f3ad9bed82a794cf90ec6a02ac8258b3c2c8ef2b00f7fab1216f78c299"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/dxgi_atlas_dump.rs",
+      "mode": "100644",
+      "size": 23791,
+      "sha256": "c2c87d55fdf717b9df69f5df555bcd8811497332aae067f4ca097be64c2c8b0f"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/dxgi_capture.rs",
+      "mode": "100644",
+      "size": 16241,
+      "sha256": "a6fe943d0cdc4230b4decca16c9ae5e981eccc388ccde431193e3e8c60c892d2"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/experimental_stream.rs",
+      "mode": "100644",
+      "size": 45265,
+      "sha256": "d09cc0ccb2e7e0fae0c8b2b2bb001a1f481497a4bb5baa69c9bb115fd6b4eedb"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/logging.rs",
+      "mode": "100644",
+      "size": 2131,
+      "sha256": "4a05b637f8b8799b7893eb0864d742ebb7d3a57b1c0c23cf79e752ece618d2ef"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/macos_h264.rs",
+      "mode": "100644",
+      "size": 15970,
+      "sha256": "69ccba032bf0db42f172ea6ed5a0d915b64caa826b713026a66071ed30ca6678"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/macos.rs",
+      "mode": "100644",
+      "size": 144572,
+      "sha256": "0c3918896d4ba1ad9d057d59fbbe9a5e30504e586cca5060ebbbe7305d9d70a6"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/main.rs",
+      "mode": "100644",
+      "size": 43041,
+      "sha256": "a6a7750987212ca5de0e925e0408f97c4be9bd1ec4709c1e1dcdc7a503411140"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/replay.rs",
+      "mode": "100644",
+      "size": 7123,
+      "sha256": "c64b83e750d12c794cbdcf89e40314203d6bd8fa707b65d0fc45e9a70636eb53"
+    },
+    {
+      "path": "apps/talos_worker_helper/src/tile_commands.rs",
+      "mode": "100644",
+      "size": 95336,
+      "sha256": "d782340d62e20cdaf2f366be4702a0bc6ac778c037c0cb2b4c57d52fd90c9c43"
+    },
+    {
+      "path": "apps/talos_worker_helper/talos_worker_helper.exe.manifest",
+      "mode": "100644",
+      "size": 370,
+      "sha256": "3a033a14d08555676bc0387e383e7b9c06980b0c85e6a16e4b49ea590669c4c9"
+    },
+    {
+      "path": "apps/talos_worker/build.rs",
+      "mode": "100644",
+      "size": 958,
+      "sha256": "6487862dd9026316082b88e3db0c9b3b554ae3aa576112d0f4484b6bfefe1caa"
+    },
+    {
+      "path": "apps/talos_worker/Cargo.toml",
+      "mode": "100644",
+      "size": 2611,
+      "sha256": "49cb5523842b3bccdaeb3ccfef4199c827b62f4e05babcf561de93db10c76f89"
+    },
+    {
+      "path": "apps/talos_worker/linux/install.sh",
+      "mode": "100755",
+      "size": 2087,
+      "sha256": "ad236b32d1dfca8ae2e62cdf923aefc1f23d1ceb5cd540dde92bfce6cebd7bc0"
+    },
+    {
+      "path": "apps/talos_worker/linux/README.md",
+      "mode": "100644",
+      "size": 3844,
+      "sha256": "e0d4a08cf59e65c3151045e07b584a1456369e3c7694723416663bca7bd7de56"
+    },
+    {
+      "path": "apps/talos_worker/linux/rmm-agent.env.example",
+      "mode": "100644",
+      "size": 403,
+      "sha256": "90091b0bfc5b7039f0e6125393451e20f89b75afbaed75040e16ef54eed06930"
+    },
+    {
+      "path": "apps/talos_worker/linux/talos-supervisor.env.example",
+      "mode": "100644",
+      "size": 518,
+      "sha256": "39ed1fc5673f1fef6261169b05dd9c06a4e55b78b8338b129a5769111d9792fc"
+    },
+    {
+      "path": "apps/talos_worker/linux/talos-supervisor.service",
+      "mode": "100644",
+      "size": 469,
+      "sha256": "1aef3d9a9e2eb68ec2152a7e5d8a1a5ab11fe7cda60405878401c0a6a7ad531f"
+    },
+    {
+      "path": "apps/talos_worker/linux/uninstall.sh",
+      "mode": "100755",
+      "size": 584,
+      "sha256": "2e72f1070a0bd6956d9d17bd6c21ae83abe09c1f5b6361f675b00242b6c072f1"
+    },
+    {
+      "path": "apps/talos_worker/macos/com.talos.talos-supervisor.plist",
+      "mode": "100644",
+      "size": 722,
+      "sha256": "d9f783e8e6703e6e2ceada371cde3b235237bd5901e608f74875bfdf4144390d"
+    },
+    {
+      "path": "apps/talos_worker/macos/com.talos.talos-worker.plist",
+      "mode": "100644",
+      "size": 885,
+      "sha256": "7be1c587113dbe12ee4d87f2bcb7e5272a4d74edec1824116f0b1511c9899366"
+    },
+    {
+      "path": "apps/talos_worker/macos/install.sh",
+      "mode": "100755",
+      "size": 5799,
+      "sha256": "f7ff4de66a269fbafefcd1fc518b4a24e06635b84a6b883a313c8a056f5ed008"
+    },
+    {
+      "path": "apps/talos_worker/macos/README.md",
+      "mode": "100644",
+      "size": 7923,
+      "sha256": "0a500bfa8c544fd69467d2bb8e8dd83846c54b7ff63c3fcc514dbe10159fc46e"
+    },
+    {
+      "path": "apps/talos_worker/macos/rmm-agent.env.example",
+      "mode": "100644",
+      "size": 534,
+      "sha256": "1c2c1d5bc284bab29f7e52740827246ffb4b9c55d3a06a5a4914e249989818e9"
+    },
+    {
+      "path": "apps/talos_worker/macos/talos-supervisor.env.example",
+      "mode": "100644",
+      "size": 717,
+      "sha256": "884be6d603c44fa13b80ddd347f68d859d3128a6c7a4440639e048e27a2405bc"
+    },
+    {
+      "path": "apps/talos_worker/macos/uninstall.sh",
+      "mode": "100755",
+      "size": 1051,
+      "sha256": "cfdbc4d51c4cd86346ae7e508c91f13f0998975f8aa3b1004ebc6af2584e9bad"
+    },
+    {
+      "path": "apps/talos_worker/README.md",
+      "mode": "100644",
+      "size": 6155,
+      "sha256": "c4e2021451aec6d36f821040d6a0588fd0f24152e65e44242cd2cc39855e3825"
+    },
+    {
+      "path": "apps/talos_worker/src/capture/d3d11_duplication.rs",
+      "mode": "100644",
+      "size": 31361,
+      "sha256": "0bdd1a9db90d1f0d6398c6bfc285f8fe5cf60f8af7dbc420eee5e4455e070036"
+    },
+    {
+      "path": "apps/talos_worker/src/capture/dump.rs",
+      "mode": "100644",
+      "size": 2720,
+      "sha256": "eb9770b065b3a0194a57100477363e134d92ce44db79a50fa5466d4587161bd5"
+    },
+    {
+      "path": "apps/talos_worker/src/capture/mod.rs",
+      "mode": "100644",
+      "size": 4656,
+      "sha256": "1af174d932cfb7dcdc6827f91556db202c097272ebef05795e98485c23f1e050"
+    },
+    {
+      "path": "apps/talos_worker/src/capture/windows.rs",
+      "mode": "100644",
+      "size": 7819,
+      "sha256": "22fcb742daa4ae855ac170449074af4be32a4786cd8d014653af11fd2cc768e4"
+    },
+    {
+      "path": "apps/talos_worker/src/chat_launch.rs",
+      "mode": "100644",
+      "size": 27580,
+      "sha256": "4664a0fd8b23e3d54cd2baa25559753216da90f07644e4fcaa09131bd65c27c0"
+    },
+    {
+      "path": "apps/talos_worker/src/chat.rs",
+      "mode": "100644",
+      "size": 36709,
+      "sha256": "fd817d8b7263e701c25c781eefd77a9ab2901e507767cb68d170b4476a30b237"
+    },
+    {
+      "path": "apps/talos_worker/src/control.rs",
+      "mode": "100644",
+      "size": 28594,
+      "sha256": "399586905b479ce78d545ff8c226c48ce42427f1adf120bc987797ed30094a28"
+    },
+    {
+      "path": "apps/talos_worker/src/display_processing.rs",
+      "mode": "100644",
+      "size": 7793,
+      "sha256": "4700f9b9edd4e0ecf469d6b654168c0e40b4f3bcbb48d48e560f627b2263feed"
+    },
+    {
+      "path": "apps/talos_worker/src/display.rs",
+      "mode": "100644",
+      "size": 61386,
+      "sha256": "7aafd4c8e3568c413f82303fb76a7836b793e1a70cdb6f10dad5902d2efb39c6"
+    },
+    {
+      "path": "apps/talos_worker/src/encode/dirty_rect_classifier.rs",
+      "mode": "100644",
+      "size": 21243,
+      "sha256": "1c1c158c5fbdff4e928f0e58adb74fa1f3cfb6f2fe36a5508c3b7f917764d2c1"
+    },
+    {
+      "path": "apps/talos_worker/src/encode/ivf.rs",
+      "mode": "100644",
+      "size": 1878,
+      "sha256": "01e5fa9236d6b1293475f6b28e0ef7afb9d4b4a5be474d7fd81a82741c2f8193"
+    },
+    {
+      "path": "apps/talos_worker/src/encode/libyuv_convert.rs",
+      "mode": "100644",
+      "size": 7710,
+      "sha256": "3e27e14c0c74f9d9c1b3f122b8083727cd9e3d1c1a6748860803ea54a1054c81"
+    },
+    {
+      "path": "apps/talos_worker/src/encode/mf_h264.rs",
+      "mode": "100644",
+      "size": 32731,
+      "sha256": "7bf48605dadb6901bb27ea95cd7ead7caaefc56a0072948753459a40966e1867"
+    },
+    {
+      "path": "apps/talos_worker/src/encode/mod.rs",
+      "mode": "100644",
+      "size": 204430,
+      "sha256": "6f54199413b5762709a72776dada9dfa946d2517315381ff0f8f4c9cf83da286"
+    },
+    {
+      "path": "apps/talos_worker/src/encode/vp8.rs",
+      "mode": "100644",
+      "size": 1889,
+      "sha256": "6bc220f34cb9c0461b1a0be3d45b8260ff298bb5296815a89e8c71077cc1c9a5"
+    },
+    {
+      "path": "apps/talos_worker/src/feature_upgrade_preflight.rs",
+      "mode": "100644",
+      "size": 12147,
+      "sha256": "d79710f86f9f2d016fdc44d08a92a2f1cfc25dc0bf9dc96b6a5012238b889b7d"
+    },
+    {
+      "path": "apps/talos_worker/src/feature_upgrade_stage_iso.rs",
+      "mode": "100644",
+      "size": 24774,
+      "sha256": "5c87cfc41504d9ee84810169f688089204a46803bd2d807d397fb318c6613783"
+    },
+    {
+      "path": "apps/talos_worker/src/feature_upgrade_start.rs",
+      "mode": "100644",
+      "size": 59613,
+      "sha256": "22c7f041e38af3e509eb6ce61efe09dbb0a43f9356080abbef5e64199d940e1d"
+    },
+    {
+      "path": "apps/talos_worker/src/file_transfer.rs",
+      "mode": "100644",
+      "size": 45139,
+      "sha256": "49b7731550d460e71894b3ea54110fdaebe740342db0b6df402ea8f694bdbda3"
+    },
+    {
+      "path": "apps/talos_worker/src/lib.rs",
+      "mode": "100644",
+      "size": 684,
+      "sha256": "9d406a5d7eb668be0c99b7e167ca200ac4ccfb24e0aef887b791877a7bab2b9a"
+    },
+    {
+      "path": "apps/talos_worker/src/linux_account.rs",
+      "mode": "100644",
+      "size": 15724,
+      "sha256": "4a151ea66edb55eca07f77984b4113b2f256463238b382e04b43277475255e22"
+    },
+    {
+      "path": "apps/talos_worker/src/linux_telemetry.rs",
+      "mode": "100644",
+      "size": 44182,
+      "sha256": "04f803cf2d6a726144c2d76f99f58a09feaf6e142f19c2ee4c5f68dc9818b4ce"
+    },
+    {
+      "path": "apps/talos_worker/src/macos_desktop.rs",
+      "mode": "100644",
+      "size": 81563,
+      "sha256": "6f7976287fdce1f3621bc54fd47361099a21da67c243a25bf472a4146228b356"
+    },
+    {
+      "path": "apps/talos_worker/src/macos_events.rs",
+      "mode": "100644",
+      "size": 31210,
+      "sha256": "154a1ff1e20cadd3c00c335356811f4023e1ee80e19b713330420c8dba634213"
+    },
+    {
+      "path": "apps/talos_worker/src/macos_telemetry.rs",
+      "mode": "100644",
+      "size": 83736,
+      "sha256": "e44c745529c17eac6901c4624b7f85ecc7a32b200068be905bfc9464e27cdc11"
+    },
+    {
+      "path": "apps/talos_worker/src/macos_update_account.rs",
+      "mode": "100644",
+      "size": 73065,
+      "sha256": "c706cb83b3c4a2f63a38ac53ef1b4f7b7aa15b7b48e27a2607072985a881750f"
+    },
+    {
+      "path": "apps/talos_worker/src/main.rs",
+      "mode": "100644",
+      "size": 381059,
+      "sha256": "d1eed9d0afce7c8771f45fe39813d33c176c11a1de0d59f4eaee80a1658aafa5"
+    },
+    {
+      "path": "apps/talos_worker/src/monitor.rs",
+      "mode": "100644",
+      "size": 4569,
+      "sha256": "5980c7b1cb557b46a4ee321b028f03f8f22eed447dbb7d6a49060299649176fd"
+    },
+    {
+      "path": "apps/talos_worker/src/patching.rs",
+      "mode": "100644",
+      "size": 228340,
+      "sha256": "3a5d455c9c4b89225700bd1167c75d9d4f4a2c7bb474afa10750630742ceeda1"
+    },
+    {
+      "path": "apps/talos_worker/src/registry.rs",
+      "mode": "100644",
+      "size": 22410,
+      "sha256": "eab317f1440a3ebc98177d385280e643d2fe4da146112e822fd8839fc6230183"
+    },
+    {
+      "path": "apps/talos_worker/src/remediation.rs",
+      "mode": "100644",
+      "size": 23243,
+      "sha256": "777c13f208a064aa7a4444ddd9ce11a8cdf05369586858159889cc73cc9abb2e"
+    },
+    {
+      "path": "apps/talos_worker/src/shell.rs",
+      "mode": "100644",
+      "size": 82642,
+      "sha256": "ac8cb0a6fdc256c6b9627d21f3b136ac6bf6b6ac8e5d46a400424977fd6e94ed"
+    },
+    {
+      "path": "apps/third-party-patches/vpx-encode-0.6.2-talos.patch",
+      "mode": "100644",
+      "size": 6116,
+      "sha256": "da4a296ccaef077b6eb68b15fa67cee0cbd296cf5c18dc6590c250236956aaf1"
+    },
+    {
+      "path": "apps/tsconfig.json",
+      "mode": "100644",
+      "size": 12981,
+      "sha256": "fb1757743d8e575c4bbaefeb8071e03502821f5137c5469cdaac4cdfdc9ac8ad"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/.cargo_vcs_info.json",
+      "mode": "100644",
+      "size": 94,
+      "sha256": "38969ca383fb07a3afbe976f44407c0b8e01499e3e4cf77c2b0d9eede6f27c26"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/.cargo-ok",
+      "mode": "100644",
+      "size": 7,
+      "sha256": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/.cargo/config.toml",
+      "mode": "100644",
+      "size": 113,
+      "sha256": "05543067a07417308197da28c7dbf9b6446aa7f40ec8c0b658238b2765b2288e"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/.gitattributes",
+      "mode": "100644",
+      "size": 13,
+      "sha256": "bea1cebd4e04e10c5bc95fb216aef03c637f82327d1ae07b41b2fadee67a26fc"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/.github/workflows/ci.yml",
+      "mode": "100644",
+      "size": 2128,
+      "sha256": "027d09463fc0901d27bee4a011bcd89ab83a701aac23cc384b205f3d7af043f2"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/.gitignore",
+      "mode": "100644",
+      "size": 105,
+      "sha256": "1c75a909e9a14d4cb855449a70a8b58920232b2c996f79b1c251e912dfbb6b93"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/.taplo.toml",
+      "mode": "100644",
+      "size": 134,
+      "sha256": "80051e5d2bd27d0cf2fe2b867ed6cd45cb56a2f7c69bb2b92d2a00bd7bb98ea0"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/benches/capture_benchmarks.rs",
+      "mode": "100644",
+      "size": 6255,
+      "sha256": "f21e88ee8d28b3a18318a97146a06be8a7bdb676da8a4eee34ebdbb5c74ea02c"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/Cargo.toml",
+      "mode": "100644",
+      "size": 1905,
+      "sha256": "ebf067bd5c686c8f06157ec5d19d5d4247d069c5e9cd2081d0ac713dd04526bb"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/Cargo.toml.orig",
+      "mode": "100644",
+      "size": 1164,
+      "sha256": "45de56afd2cb9269b2ddd597d831f017a1af0c85f07a5c8f5b36947d1663336e"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/justfile",
+      "mode": "100644",
+      "size": 988,
+      "sha256": "20f392e502674a4c6c60b12f7c894c9aa205281ca58b2c1932938e60c8fda501"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/LICENSE",
+      "mode": "100644",
+      "size": 1064,
+      "sha256": "e187671b3afebf4f9d85a0a0b87f8b1ba4aa56dae1cc6f97d52e83cd45ddd04f"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/README.md",
+      "mode": "100644",
+      "size": 10487,
+      "sha256": "97b3e737fed6a19ed93a58a714335a0ffe4189ab8489134cc3ff728cbb165435"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/rustfmt.toml",
+      "mode": "100644",
+      "size": 426,
+      "sha256": "a80b294fea567a83d1c7e15c619550cfb212e763ed33f56471c3611785cf6dff"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/src/lib.rs",
+      "mode": "100644",
+      "size": 58373,
+      "sha256": "021204f67184fee6e9edbbf495e86326fbc66ff04ef9bd1cc386b46213ffc44a"
+    },
+    {
+      "path": "apps/vendor/dxgi-capture-rs/tests/tests.rs",
+      "mode": "100644",
+      "size": 34816,
+      "sha256": "7fe71170209e0c343caedaa912d3817188a6858be24ab0d23f5b45b41bdc8f6e"
+    },
+    {
+      "path": "apps/vendor/permission-flow/.cargo_vcs_info.json",
+      "mode": "100644",
+      "size": 124,
+      "sha256": "74a148e0186e1caa7842872fede8aa8d2584ca9e21d67496a8cc5198d984a23a"
+    },
+    {
+      "path": "apps/vendor/permission-flow/.cargo-ok",
+      "mode": "100644",
+      "size": 7,
+      "sha256": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91"
+    },
+    {
+      "path": "apps/vendor/permission-flow/.gitignore",
+      "mode": "100644",
+      "size": 8,
+      "sha256": "44c92e3a70ad3307b7056871c2bdb096d8bfa9373f5bf06a79bb6324a20ff2fb"
+    },
+    {
+      "path": "apps/vendor/permission-flow/build.rs",
+      "mode": "100644",
+      "size": 702,
+      "sha256": "63556052cb8815f19fdf3294b1a4a49a22ce656760b99cd98a27d1a551eaff6b"
+    },
+    {
+      "path": "apps/vendor/permission-flow/Cargo.lock",
+      "mode": "100644",
+      "size": 110695,
+      "sha256": "d1f47915ded35fef26fa8c0ec14cf3215eaeec61af0421584aa43b4da4b1142b"
+    },
+    {
+      "path": "apps/vendor/permission-flow/Cargo.toml",
+      "mode": "100644",
+      "size": 1524,
+      "sha256": "73aca3db46b78dfc50cd6fce3dc5e0d0163c06e0662d4d18d4668ee56419bce6"
+    },
+    {
+      "path": "apps/vendor/permission-flow/Cargo.toml.orig",
+      "mode": "100644",
+      "size": 723,
+      "sha256": "f60dc10c773bc4b3fcfcd0f0e56a7e271776a7fc2cc052b08620fb49a5770726"
+    },
+    {
+      "path": "apps/vendor/permission-flow/examples/fire_and_forget.rs",
+      "mode": "100644",
+      "size": 2720,
+      "sha256": "1f1cf8142d14bfd3b754a490e1a003a10a9be2e6ae87a79400df02ba714e45ed"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/.github/FUNDING.yml",
+      "mode": "100644",
+      "size": 118,
+      "sha256": "3c211d569faf9c251ab3fc710683401015a8d24f65f2780c24f01cef26aa86dd"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/.github/workflows/tag.yml",
+      "mode": "100644",
+      "size": 651,
+      "sha256": "3ab9a9be1a742e2b41c4f6a78d6906d3f8faacea47839702c8b405c4dec75bcc"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/.gitignore",
+      "mode": "100644",
+      "size": 159,
+      "sha256": "835a922c21f2f2c481698793aec2bbcb1f9723889b93f1928be851af9ec2e6f7"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Example/Example.xcodeproj/project.pbxproj",
+      "mode": "100644",
+      "size": 16067,
+      "sha256": "34d54c6d7247f67e7abeb54e6780851f2763f7c50e2502248b944c83f1f692ca"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Example/Example.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "mode": "100644",
+      "size": 135,
+      "sha256": "7f3b00b5c3fdb45242d7b87e1e5c4e25d1fa8129a16c94295ecc4e8ea2235c5f"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Example/Example/Assets.xcassets/AccentColor.colorset/Contents.json",
+      "mode": "100644",
+      "size": 123,
+      "sha256": "9af65086fa30b49252fae1a1225731691de794f7775af74d71befeb507d12b7c"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Example/Example/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "mode": "100644",
+      "size": 904,
+      "sha256": "a93d059297d6108109bbdf46e8424cb53bb45d141a98de62122c9ab8ec8709b7"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Example/Example/Assets.xcassets/Contents.json",
+      "mode": "100644",
+      "size": 63,
+      "sha256": "0fd49ba3c3585c709678e0046a821c3c60685ec7063720d30d3a3448be3a208b"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Example/Example/ContentView.swift",
+      "mode": "100644",
+      "size": 45471,
+      "sha256": "4825636d56731723e6fbc6db85809f69d7362e9d081b290b2f5e3b6e4b9f0975"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Example/Example/ExampleApp.swift",
+      "mode": "100644",
+      "size": 361,
+      "sha256": "b33d014d10d09ce4400ee0601bc962067fd0abf74131c64bd06edee6b9900430"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/LICENSE",
+      "mode": "100644",
+      "size": 1069,
+      "sha256": "d65f906c8116c14921f841867969d6dc3f9dd7b99fca34071671ff5896a3fa94"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Package.swift",
+      "mode": "100644",
+      "size": 2869,
+      "sha256": "b45b4b3d71ee6f33dffe3d8918a6877811c9dd5440eed3e867ca9f48828341c8"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/README.md",
+      "mode": "100644",
+      "size": 25887,
+      "sha256": "d5918e8d19f8509c669abf2f4353d29eb57799134b0df578db1796ba6667ce99"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/README.zh.md",
+      "mode": "100644",
+      "size": 25591,
+      "sha256": "3830eb267b797b35e22e8f6fcde0ef5a063a329d76c0aa46e6eaf5dac7df6e48"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionAuthorizationState.swift",
+      "mode": "100644",
+      "size": 422,
+      "sha256": "72d3d1eb098b6576445e229a46020d7029881d7ab1facf47f05a44cf525f5289"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionFlow.swift",
+      "mode": "100644",
+      "size": 427,
+      "sha256": "2659bd252ecdbd7d699bfe5fd68308a9e86e95f16bfaae847c27b0f74d817a69"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionFlowButton.swift",
+      "mode": "100644",
+      "size": 3127,
+      "sha256": "5cbc8c3c57190311700dcab6dbb5f6a0a3551087790df5bf1c553ba687355045"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionFlowButtonState.swift",
+      "mode": "100644",
+      "size": 1602,
+      "sha256": "fe7240221ecaf320d660b66d3cd08932f0cf429d86b5611b8749125ba54c9c2d"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionFlowConfiguration.swift",
+      "mode": "100644",
+      "size": 917,
+      "sha256": "2fe39df84668e532bb58a06df4155ca220e0f210fc4bbfa4bcdbd35ca3da6f65"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionFlowController.swift",
+      "mode": "100644",
+      "size": 13609,
+      "sha256": "131095710c543595c58ae834ec4e9f83cd6b3ed0abf5bf6b149ad9cb9dd642ce"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionFlowLocalizer.swift",
+      "mode": "100644",
+      "size": 4396,
+      "sha256": "5daf8e4ac032a5241b506038a971f0aba74cfe01103a3a30303a7666b167ae94"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionFlowPane.swift",
+      "mode": "100644",
+      "size": 3592,
+      "sha256": "6e46ad9960aef7d8ccfb6080c83a6bb82c0897f4fabbef1899acdb7e5ee42194"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionStatusCapability.swift",
+      "mode": "100644",
+      "size": 357,
+      "sha256": "245b453142589c28623b97f0a45e38e0ad483db250214337f3b185de2844e40f"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionStatusProviders/AccessibilityPermissionStatusProvider.swift",
+      "mode": "100644",
+      "size": 525,
+      "sha256": "b3a3f5611a357b954e4487378b295625daa08dbd12e22bd9bafff08fc1c1a9d9"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionStatusProviders/FullDiskAccessPermissionStatusProvider.swift",
+      "mode": "100644",
+      "size": 3328,
+      "sha256": "1468ab8579826dc0c7fa327046498c39d7f93830c6d630a8e8fa663bd5da3974"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionStatusProviders/UnsupportedPermissionStatusProvider.swift",
+      "mode": "100644",
+      "size": 505,
+      "sha256": "e39c6a358c3ac2b67230b065d43cb291ffb3563f63859042d265995208952eac"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/PermissionStatusRegistry.swift",
+      "mode": "100644",
+      "size": 1719,
+      "sha256": "7166816945cc0810e714697f8482929318052a469cabd8b11e45ca1e5354f8cb"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/ar.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 1166,
+      "sha256": "50b429c581c87e194de39ae2d507b71cff28de823a947b921629abbb06d62a58"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/de.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 1019,
+      "sha256": "65f5b3ff14e3b1958d5ade0bc3df7a399ec090a77f49033e52b35e7ceafd7395"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/en.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 913,
+      "sha256": "429c22c21f15e6f323bb968415e40fb6497117c494fa7c2767ba6ed17b5aba43"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/es.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 1043,
+      "sha256": "c538b6cfce153b9b4fc249acc2c0e9c1bb1d14c5d182010875235384cd544d24"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/fr.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 1078,
+      "sha256": "4553bba785d04a98351355a448c1ea58dddddb2d7c504f33fc23cab3735c940b"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/ja.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 1086,
+      "sha256": "fd615e5bfbe05c8475d19749577dd7f1fd68efa22c9f817d735bcd9734a409f6"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/ko.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 1035,
+      "sha256": "768dac6e383cc6b1660e39b5a832ad3e8babfcdb6db6a848ea04b8cdbae74afe"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/pt.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 1039,
+      "sha256": "6bc20b5dbadb531df9164bbee5d0f4fcc375d85af9178d9c1a0425add39e41eb"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/ru.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 1317,
+      "sha256": "850e89c33083345f975bb355ea85a9e13bab00ed2a3f015b32705a1405747553"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/zh-Hans.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 965,
+      "sha256": "81b1ed24d8d397fa2e159e5d5313ab5d45e04974efa5430c9588d4d5e2e05b22"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Resources/zh-Hant.lproj/Localizable.strings",
+      "mode": "100644",
+      "size": 962,
+      "sha256": "e9ad7eefe5efc5c14cd00be8c48a84e7232f86ea83fc641ae02b19ee3ab533fa"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/TalosPermissionFlowDebugLog.swift",
+      "mode": "100644",
+      "size": 2249,
+      "sha256": "85e9eef337ee7e48aab38582657d5e6627dd5d84483fd68bb9c850d480c4d710"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/Tracking/SettingsWindowTracker.swift",
+      "mode": "100644",
+      "size": 20924,
+      "sha256": "3a196e02b7c30c52adb8d6e1d5e4fd21d36f243fc13f4fe0f88264281c45b6c2"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/UI/AppDropArea.swift",
+      "mode": "100644",
+      "size": 6985,
+      "sha256": "b56201e51c7f83553bd0047b24903cc7bbf3503ab64cec1668fd16ef6f413d9d"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/UI/FloatingDropPanel.swift",
+      "mode": "100644",
+      "size": 17550,
+      "sha256": "a653900772a1627e3e25f4768f1fa9a31978b661aa6c711ee23952ae3e3e130d"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlow/UI/PermissionFlowPanelView.swift",
+      "mode": "100644",
+      "size": 6880,
+      "sha256": "1d33fc26036ac07e10f6a1bdead6612cdc5ef2250ac7446943504d049bd7fcb5"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlowBluetoothStatus/BluetoothPermissionStatusProvider.swift",
+      "mode": "100644",
+      "size": 589,
+      "sha256": "e077786c9753be3a549559206c3057e747f9d7abb8713bb3d9bc00a7bb468a0c"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlowBluetoothStatus/PermissionFlowBluetoothStatus.swift",
+      "mode": "100644",
+      "size": 331,
+      "sha256": "d67c0984598cb37b8529c6523fb825a8cc5c7030336636207d9bdc682e581a3d"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlowExtendedStatus/PermissionFlowExtendedStatus.swift",
+      "mode": "100644",
+      "size": 528,
+      "sha256": "3a7c2e8e4c836726b2025c7cc920f0ecdca9ff8effc4c473b9792ec5d60e65b8"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlowInputMonitoringStatus/InputMonitoringPermissionStatusProvider.swift",
+      "mode": "100644",
+      "size": 470,
+      "sha256": "a9748041e1bf12d2a1d1941ca01b187dd724f9e22978f76d2f6abacda44294e1"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlowInputMonitoringStatus/PermissionFlowInputMonitoringStatus.swift",
+      "mode": "100644",
+      "size": 349,
+      "sha256": "037258e32e17794fa228984c5f96e36ca9991ed8e95b132032070b3a2743bead"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlowMediaStatus/MediaAppleMusicPermissionStatusProvider.swift",
+      "mode": "100644",
+      "size": 989,
+      "sha256": "9741ba0a931ac5c4fe88783b6d2ff253eb18a97a1100100766500a26db556960"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlowMediaStatus/PermissionFlowMediaStatus.swift",
+      "mode": "100644",
+      "size": 339,
+      "sha256": "71e184ab234ee3fd3f39550cf76ec3fd9bb819b3e55f2933f5111614faa798bb"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlowScreenRecordingStatus/PermissionFlowScreenRecordingStatus.swift",
+      "mode": "100644",
+      "size": 349,
+      "sha256": "aef3a0bd94a10d9b8bca739b0f2dd07be15eecc84ac8c0384f4e229ba0dbf540"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/PermissionFlowScreenRecordingStatus/ScreenRecordingPermissionStatusProvider.swift",
+      "mode": "100644",
+      "size": 478,
+      "sha256": "d826716b7f411d8d9fa97a401cb175c983e861795b3abdcbf75f9b17ec4623f9"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/SystemSettingsKit/SettingsNavigator.swift",
+      "mode": "100644",
+      "size": 2410,
+      "sha256": "16235b8c2402e1faac6000827911d13444435d2490471ded99c48413e4d11dec"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/SystemSettingsKit/SystemSettings.swift",
+      "mode": "100644",
+      "size": 2161,
+      "sha256": "415d4cadbd8bdda3af114787a131508ea3b98100eed260ec964ad437d3594fbe"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/SystemSettingsKit/SystemSettingsDestination.swift",
+      "mode": "100644",
+      "size": 7674,
+      "sha256": "65d285c781c8240c1e57025a5a36e509236a09f9ea393be4836136fef8d7d259"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Sources/SystemSettingsKit/TalosPermissionFlowDebugLog.swift",
+      "mode": "100644",
+      "size": 1479,
+      "sha256": "f06b19f7582028d6ab616a58bfdae898334a4758ab29e08f310cf1f538b92ae6"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlow/Tests/PermissionFlowTests/PermissionFlowTests.swift",
+      "mode": "100644",
+      "size": 991,
+      "sha256": "11f564a46b6f6f78f2d58ea9b48628b86dcdf793030d299b5fb8ebc5ac16061f"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlowShim/Package.resolved",
+      "mode": "100644",
+      "size": 386,
+      "sha256": "4d139c8d70e5b9ba8402f8090222b3b8219f87b6b4bf6024fbf879780ed63fcf"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlowShim/Package.swift",
+      "mode": "100644",
+      "size": 709,
+      "sha256": "2dbe9b02500706aa0dd7440dffd296bfd9607bbc9072637aad6f3d698a17869f"
+    },
+    {
+      "path": "apps/vendor/permission-flow/PermissionFlowShim/Sources/PermissionFlowShimFFI/PermissionFlowShimFFI.swift",
+      "mode": "100644",
+      "size": 12247,
+      "sha256": "4adc212821fa2adc0d3dceb125bf88e1f9e2b5691f50885b2f7c87029b55f85c"
+    },
+    {
+      "path": "apps/vendor/permission-flow/README.md",
+      "mode": "100644",
+      "size": 3062,
+      "sha256": "2935ab315b2e93f4f820c3fb494d1ca266eb65bca63c2f2317638df4155c92dc"
+    },
+    {
+      "path": "apps/vendor/permission-flow/src/lib.rs",
+      "mode": "100644",
+      "size": 19583,
+      "sha256": "8a046e33abd62336cb167d558610037567873aaeb12066400382baee9cd5acf7"
+    },
+    {
+      "path": "apps/vendor/samsa/.cargo_vcs_info.json",
+      "mode": "100644",
+      "size": 94,
+      "sha256": "3111c14c017c932789d9e0ddd71f3d67b79d1c7014c41ecf5b59f3eeea1b0d2c"
+    },
+    {
+      "path": "apps/vendor/samsa/.cargo-ok",
+      "mode": "100644",
+      "size": 7,
+      "sha256": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91"
+    },
+    {
+      "path": "apps/vendor/samsa/.github/workflows/rust.yml",
+      "mode": "100644",
+      "size": 1559,
+      "sha256": "7782994dbfa7448774d6b742f7f00c0bedb7fb301a42ca54f668558787673a6c"
+    },
+    {
+      "path": "apps/vendor/samsa/.gitignore",
+      "mode": "100644",
+      "size": 34,
+      "sha256": "b6227374233a66d2abb46dc2bcc7e7a9265cfa30632cea0e499f3655cfb9860b"
+    },
+    {
+      "path": "apps/vendor/samsa/benches/consumer.rs",
+      "mode": "100644",
+      "size": 1608,
+      "sha256": "a74d99a0398900c5dcb2b0f64333048fe596067e9ce7d0c3d04b25a21aec1d70"
+    },
+    {
+      "path": "apps/vendor/samsa/benches/encoder.rs",
+      "mode": "100644",
+      "size": 5344,
+      "sha256": "6361692a08a94011e7d1dd8755fd25bb1a8e1170fc78a2ed7afbec602903d80a"
+    },
+    {
+      "path": "apps/vendor/samsa/benches/parser.rs",
+      "mode": "100644",
+      "size": 8977,
+      "sha256": "c799932c4fc91d90b80409b14403d2ae5a7360ca763f428134a621ac858ea6ab"
+    },
+    {
+      "path": "apps/vendor/samsa/benches/producer.rs",
+      "mode": "100644",
+      "size": 1725,
+      "sha256": "feaa7a68db76a6135fdcb2ab56f45445bc2a862f0bc4de4a63537d0a65695f69"
+    },
+    {
+      "path": "apps/vendor/samsa/Cargo.lock",
+      "mode": "100644",
+      "size": 61653,
+      "sha256": "0992f3f324d7c67fe10132b5d44c999e89520596b9890b8ad864f36d689e5a8a"
+    },
+    {
+      "path": "apps/vendor/samsa/Cargo.toml",
+      "mode": "100644",
+      "size": 4577,
+      "sha256": "e370539503199992e40995db53052c4d9896e0c9560be2d586667eeeb3baab7e"
+    },
+    {
+      "path": "apps/vendor/samsa/Cargo.toml.orig",
+      "mode": "100644",
+      "size": 1616,
+      "sha256": "4b76c6000dcacc112308def9196bbcd9ec6bdda431da4f666ef28b5b98ba6fa2"
+    },
+    {
+      "path": "apps/vendor/samsa/CHANGELOG.md",
+      "mode": "100644",
+      "size": 2745,
+      "sha256": "d0bd5333a0d94629e211c7173d867fe483eac14c1bb2de33c82cca25dd39e10c"
+    },
+    {
+      "path": "apps/vendor/samsa/docker-compose-kafka-kraft.yaml",
+      "mode": "100644",
+      "size": 3302,
+      "sha256": "03853066e1300320399ec288b5b26cb748a815d632707101224d028bf9a7c83f"
+    },
+    {
+      "path": "apps/vendor/samsa/docker-compose-kafka-zookeeper.yaml",
+      "mode": "100644",
+      "size": 2716,
+      "sha256": "193591b98b00279f19976c76d4d9a90d17d2dc098908b1b1522e4aba38201ccf"
+    },
+    {
+      "path": "apps/vendor/samsa/docker-compose.yaml",
+      "mode": "100644",
+      "size": 2254,
+      "sha256": "aaf1120824d5e5a8135c47490adfd1d05f11c5407117b3c975cf3e676eef6650"
+    },
+    {
+      "path": "apps/vendor/samsa/DockerCompose.README.md",
+      "mode": "100644",
+      "size": 1188,
+      "sha256": "e1d9b65963111c695628df77e40be5fafac95e45aaba4eb91f34c58660a55c3e"
+    },
+    {
+      "path": "apps/vendor/samsa/etc/redpanda/.bootstrap.yaml",
+      "mode": "100644",
+      "size": 30,
+      "sha256": "16c44ed2c004ccea7336dc0bfc71d1f3b5b79dc9ae707423a0b61407bfce8c6c"
+    },
+    {
+      "path": "apps/vendor/samsa/examples/consumer_group.rs",
+      "mode": "100644",
+      "size": 1274,
+      "sha256": "6e7fdb61b74eee771e459ac06d6dd9f95ffaff4d698fcd524334f6dbbb12e5fe"
+    },
+    {
+      "path": "apps/vendor/samsa/examples/consumer.rs",
+      "mode": "100644",
+      "size": 1398,
+      "sha256": "b2883d63f518d80cc03b33ea0bc729465a433838fedb48dd31a36eca16680890"
+    },
+    {
+      "path": "apps/vendor/samsa/examples/metadata.rs",
+      "mode": "100644",
+      "size": 792,
+      "sha256": "60f2468fe1a74f52b92eb2ff15918a0ae190e8af702871a501b29f620893a0f6"
+    },
+    {
+      "path": "apps/vendor/samsa/examples/producer.rs",
+      "mode": "100644",
+      "size": 1455,
+      "sha256": "838593ec29910f977a178a4613c8935f93da20ef50143f5c5c1e8fed33c32944"
+    },
+    {
+      "path": "apps/vendor/samsa/examples/sasl_tls.rs",
+      "mode": "100644",
+      "size": 1469,
+      "sha256": "b8496a57601ab1aa138e918189c16d8f18c21731ad2d53e0dce57abb7eccc66c"
+    },
+    {
+      "path": "apps/vendor/samsa/examples/sasl.rs",
+      "mode": "100644",
+      "size": 1893,
+      "sha256": "d72d0f7462220a6f56a02a25b4c53365c404dd1444b04e8486865871617477a8"
+    },
+    {
+      "path": "apps/vendor/samsa/examples/tls_consume.rs",
+      "mode": "100644",
+      "size": 1234,
+      "sha256": "b3b0618d8dae9703edb9d17edb5b81226cae63183f05158085fce9945c8b69c9"
+    },
+    {
+      "path": "apps/vendor/samsa/examples/tls_produce.rs",
+      "mode": "100644",
+      "size": 1905,
+      "sha256": "63d6ac6aefc1fc4564462019768c89f9b59401824ed4e3e1629bb98bb2a832f7"
+    },
+    {
+      "path": "apps/vendor/samsa/LICENSE",
+      "mode": "100644",
+      "size": 11341,
+      "sha256": "106f9576da64a4d8240850a3fee0672f275f6041fd47901e7e06dcfeb3f0b9b9"
+    },
+    {
+      "path": "apps/vendor/samsa/Makefile",
+      "mode": "100644",
+      "size": 392,
+      "sha256": "6213bb6c83018b3edd6b82a78f19a16fdcec83ea227b392ddf0651d88ed364c6"
+    },
+    {
+      "path": "apps/vendor/samsa/README.md",
+      "mode": "100644",
+      "size": 12720,
+      "sha256": "b65bc0295193e603a5dec98df550ca35275d0c0d619d41b40e1f10576e650ff8"
+    },
+    {
+      "path": "apps/vendor/samsa/rust-toolchain.toml",
+      "mode": "100644",
+      "size": 55,
+      "sha256": "3c99ee7dadf4c274aedb76feac4492aecd266079f4ed6061cfa5fd69a309e36c"
+    },
+    {
+      "path": "apps/vendor/samsa/src/admin.rs",
+      "mode": "100644",
+      "size": 1570,
+      "sha256": "57c7ea0d318aa5ec501dc4e4b13c558901051016150cd27e73f996210c4f2d4f"
+    },
+    {
+      "path": "apps/vendor/samsa/src/assignor.rs",
+      "mode": "100644",
+      "size": 4064,
+      "sha256": "354afd595d789fd355976f251283f712d4fe52a87b6274eda252bc58229cfd32"
+    },
+    {
+      "path": "apps/vendor/samsa/src/consumer_builder.rs",
+      "mode": "100644",
+      "size": 12151,
+      "sha256": "71ef6ae0015c6c6f420a364f891f08ce8716725d6101a83b85e0af0fb7593067"
+    },
+    {
+      "path": "apps/vendor/samsa/src/consumer_group_builder.rs",
+      "mode": "100644",
+      "size": 6422,
+      "sha256": "4f6276bd5c4af443428f4dc80da56c29444c1c8a0d75a9086be67a83cb13ef02"
+    },
+    {
+      "path": "apps/vendor/samsa/src/consumer_group.rs",
+      "mode": "100644",
+      "size": 13332,
+      "sha256": "22e64096d06b25db441bb05cb0d0b31244123e38fda7a22f82bf3f14a9f981b3"
+    },
+    {
+      "path": "apps/vendor/samsa/src/consumer.rs",
+      "mode": "100644",
+      "size": 16087,
+      "sha256": "639a242d23123ced5c68c9fee3aa4d5de41d0fe5c780f4cfc6b32ac785310e6b"
+    },
+    {
+      "path": "apps/vendor/samsa/src/encode.rs",
+      "mode": "100644",
+      "size": 7872,
+      "sha256": "09dd9ab4d939c08e078c485b5bd215db3dbf26cd1c7aee02552797a77fc0c67d"
+    },
+    {
+      "path": "apps/vendor/samsa/src/error.rs",
+      "mode": "100644",
+      "size": 7846,
+      "sha256": "052b35316c7c3c694f5ff82f09a2b8b8c7e8d6f7ade826daf04425e45a592aeb"
+    },
+    {
+      "path": "apps/vendor/samsa/src/lib.rs",
+      "mode": "100644",
+      "size": 26394,
+      "sha256": "191d18453f03bdd3608cf0bd0c8d189b797478d5964b8feeded8b4d6f2c4e809"
+    },
+    {
+      "path": "apps/vendor/samsa/src/metadata.rs",
+      "mode": "100644",
+      "size": 13632,
+      "sha256": "1caf158f96241ca40e62f72c5bd03de096edaad8add49239276aad50cc560c78"
+    },
+    {
+      "path": "apps/vendor/samsa/src/network/mod.rs",
+      "mode": "100644",
+      "size": 3866,
+      "sha256": "20044c1c3791d72cea178060888840ce585a5bc115d1339fe8246f81e52031de"
+    },
+    {
+      "path": "apps/vendor/samsa/src/network/sasl.rs",
+      "mode": "100644",
+      "size": 7742,
+      "sha256": "1db055784dea2cd0de785297343bb0beefd02403d77363fbf920bc77a50ea677"
+    },
+    {
+      "path": "apps/vendor/samsa/src/network/tcp.rs",
+      "mode": "100644",
+      "size": 8877,
+      "sha256": "2d44e9d0e0771f2d31bb1bef0b8bfc8dc184b52ebf8a590c1aaf156aabae63fb"
+    },
+    {
+      "path": "apps/vendor/samsa/src/network/tls.rs",
+      "mode": "100644",
+      "size": 10128,
+      "sha256": "e71f5a71fbe860c31663f2877bd7dd49a8e7c1ed651b3490d3f1177759d25467"
+    },
+    {
+      "path": "apps/vendor/samsa/src/parser.rs",
+      "mode": "100644",
+      "size": 5563,
+      "sha256": "2bd9167d8483bd2ad962c69946778b2da763126242d6e669bbc9893caa244395"
+    },
+    {
+      "path": "apps/vendor/samsa/src/producer_builder.rs",
+      "mode": "100644",
+      "size": 7122,
+      "sha256": "f3e93c90176c5536739d905954feefced054f3fea98ff2ee9bc333db39318e14"
+    },
+    {
+      "path": "apps/vendor/samsa/src/producer.rs",
+      "mode": "100644",
+      "size": 6133,
+      "sha256": "26d0374d87cbc1f89ea85bd930467d984a3738fc7d4e6473b2a258d761add23b"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/commit_offset/mod.rs",
+      "mode": "100644",
+      "size": 3770,
+      "sha256": "f13a871035ddf3734860159e9b3ee67144236c4fdede43a69521fc871a99433d"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/commit_offset/request.rs",
+      "mode": "100644",
+      "size": 6923,
+      "sha256": "3d8b029adf5a97da235474ea0006d42cb03b4d43bdd7e64f8b2fd8bcbbd7b7ae"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/commit_offset/response.rs",
+      "mode": "100644",
+      "size": 3804,
+      "sha256": "bc3cd602457b7627d845e10b3d906085ec7138960dc88fd06e55b1508c2c6683"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/create_topics/mod.rs",
+      "mode": "100644",
+      "size": 1612,
+      "sha256": "29f23d3c5a55524c62851168c26a06015504d5e01779dd54da4459baa0f939eb"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/create_topics/request.rs",
+      "mode": "100644",
+      "size": 5567,
+      "sha256": "3dc8a9459e5b6a92e905d71c3b8ceecd46ad60d6c6fe9ac0a5ac225b15562277"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/create_topics/response.rs",
+      "mode": "100644",
+      "size": 3768,
+      "sha256": "57ae95299413e347a037baacbef15b083d9914ff00881e7715c884a372cf4982"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/delete_topics/mod.rs",
+      "mode": "100644",
+      "size": 1435,
+      "sha256": "dd282c809b7deddb04adccbec72b4eafc015c10aaaafac87096c9a3f3678447d"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/delete_topics/request.rs",
+      "mode": "100644",
+      "size": 2944,
+      "sha256": "ac4fab49a8f71f03e62c136bdce1d13912ac80377e1d1c6001aa881c708a17a4"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/delete_topics/response.rs",
+      "mode": "100644",
+      "size": 3376,
+      "sha256": "f88fa458fada91e80d940b9109d2c6d8102210b9b51698221930d8d64f3ee4bd"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/fetch/mod.rs",
+      "mode": "100644",
+      "size": 20047,
+      "sha256": "c848752b440e60b9d0911d4ad8036a078806469be9d7c42c33924289a55bcb52"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/fetch/request.rs",
+      "mode": "100644",
+      "size": 4771,
+      "sha256": "8153c7de87a12cc3b481640819f94c44b5d3dd8fcdf44267925cf4154c3ab1e6"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/fetch/response_optimized.rs",
+      "mode": "100644",
+      "size": 6224,
+      "sha256": "e343a2b1b1ba7cb1630f62db798a33cef7406218c5ebfb5da1da463cbea7f542"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/fetch/response.rs",
+      "mode": "100644",
+      "size": 12611,
+      "sha256": "f798480efa3d14566ebf45688f6b600029d0c4d5d7a7ffa97e3eab2e20c3f245"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/find_coordinator/mod.rs",
+      "mode": "100644",
+      "size": 1309,
+      "sha256": "59f6fc3cc835e5588eff4e29d45826e41b4caaaf9c665b456c56d4233e651bac"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/find_coordinator/request.rs",
+      "mode": "100644",
+      "size": 1818,
+      "sha256": "d28f826c23a470bbbc6bf4beccf2caa5868389ec826f6536bc7f87e550709bd2"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/find_coordinator/response.rs",
+      "mode": "100644",
+      "size": 2390,
+      "sha256": "fea2553eac027c5aab9661132d867d76c9d1b15c30f46296e3b7a14ab225f220"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/heartbeat/mod.rs",
+      "mode": "100644",
+      "size": 1502,
+      "sha256": "391be5a20bc7c133753e7272bb4b968c317326c6a803728890e4466877ee59fa"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/heartbeat/request.rs",
+      "mode": "100644",
+      "size": 2457,
+      "sha256": "e0df14cb60bfcfd639903fbd80582732081a55261db82bd3380b6781484d0b06"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/heartbeat/response.rs",
+      "mode": "100644",
+      "size": 1776,
+      "sha256": "fe7899cf682cf05ca7d48ffea9db3c1920211308330a0c3e4dbdb9e175eeb9ed"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/join_group/mod.rs",
+      "mode": "100644",
+      "size": 5101,
+      "sha256": "ed01434a76ffb0d72c63bdc8d3d22ee3f7c5db44a64a4a080bbc2a6a926f29e1"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/join_group/request.rs",
+      "mode": "100644",
+      "size": 6649,
+      "sha256": "fc3120343d57e8a2846dcdc278c00aa42b75335ecc98f97e4c29f6341dc282e9"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/join_group/response.rs",
+      "mode": "100644",
+      "size": 4813,
+      "sha256": "a7e473c5a4e3d0d48a24cb3b075e09c99d691b81e0bb54468086530066bbce00"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/leave_group/mod.rs",
+      "mode": "100644",
+      "size": 1261,
+      "sha256": "114248ef0f037badfd4b98a38e075d23a7f433e2ee26f7028e9dbc12107b6ad0"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/leave_group/request.rs",
+      "mode": "100644",
+      "size": 2275,
+      "sha256": "8c95abbf508fbe8455d1560e3098bc428c7d1aea9dcc8130e12014983a3382f2"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/leave_group/response.rs",
+      "mode": "100644",
+      "size": 1876,
+      "sha256": "a058a1ab1628ada2ae73942dd9c7f048eb5b85bfa3e472716fe607e65fcc9db0"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/list_offsets/mod.rs",
+      "mode": "100644",
+      "size": 3343,
+      "sha256": "662aeb529abc994707373d07152f9ce24a6907a2209201dff4792819f4020ee5"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/list_offsets/request.rs",
+      "mode": "100644",
+      "size": 3986,
+      "sha256": "a1e7949f2154ed4875f7a2c6bdcb4bd6ef4870e03fa9e3c2a5f91a185dde3b86"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/list_offsets/response.rs",
+      "mode": "100644",
+      "size": 3726,
+      "sha256": "c96d9adbad5fc7739fc1627766c0c348e0d0cfcc9a5c958778cd1964c4b491aa"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/metadata/mod.rs",
+      "mode": "100644",
+      "size": 3955,
+      "sha256": "c9626520458f22c1aee92598e05f5263899a235fa45c0a33001149ae7395629c"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/metadata/request.rs",
+      "mode": "100644",
+      "size": 2007,
+      "sha256": "d415dd2c3d3980d2b19b097430aff0a2f642b1c55e1ee80d92ceadcb52f6e830"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/metadata/response.rs",
+      "mode": "100644",
+      "size": 6551,
+      "sha256": "4a95792064ce9f802575f75a8d182dd28bd63de0bbdf44c50b594f35159fedae"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/mod.rs",
+      "mode": "100644",
+      "size": 3667,
+      "sha256": "21668a8291281e8930ce48bbde39770ffa423851fb3b9325c0b5bf9c3db16a7b"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/offset_fetch/mod.rs",
+      "mode": "100644",
+      "size": 2966,
+      "sha256": "7a140d0134b1cdb18a06c7532ea6508ecdf5e7756c8dbfc961d3c6d5a44a7502"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/offset_fetch/request.rs",
+      "mode": "100644",
+      "size": 2951,
+      "sha256": "eb06d4ee2531382547feb410fd81573dcbf92267f65a2224a89b44f4c3b89dc6"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/offset_fetch/response.rs",
+      "mode": "100644",
+      "size": 4222,
+      "sha256": "8c668cd1588c81b09ad4aae61426c8fcdbbb7039dbaacec905f71bd1f4caa0fb"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/produce/mod.rs",
+      "mode": "100644",
+      "size": 11289,
+      "sha256": "f34827d79bd655696aff39c839cb0be558ee48b7a1a31f64dcb7a88c81cd67f4"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/produce/request.rs",
+      "mode": "100644",
+      "size": 16806,
+      "sha256": "d97d5e287a1f92b95865579c1661995596b6cd54cbc71539be9b7a6894d77b98"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/produce/response.rs",
+      "mode": "100644",
+      "size": 3801,
+      "sha256": "b7a77f7b3d9a55cdad69cd418adfb06a71c99775d9f515a03a891e7e4dc6b1d7"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/sasl_authenticate/mod.rs",
+      "mode": "100644",
+      "size": 35,
+      "sha256": "9d3bef2c5ccdfd0ed5e73ef303bf03f464965126611ab96c91cbe27a31655bc3"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/sasl_authenticate/request.rs",
+      "mode": "100644",
+      "size": 1755,
+      "sha256": "30168913ad038c26534db3eca2be21e2676b8067d5be76a15993a1630a14c801"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/sasl_authenticate/response.rs",
+      "mode": "100644",
+      "size": 2848,
+      "sha256": "e318e0e9bb99617fe2cd4d3b2cbacee441e8f4a64d65b536726878bfcc472a5e"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/sasl_handshake/mod.rs",
+      "mode": "100644",
+      "size": 35,
+      "sha256": "9d3bef2c5ccdfd0ed5e73ef303bf03f464965126611ab96c91cbe27a31655bc3"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/sasl_handshake/request.rs",
+      "mode": "100644",
+      "size": 1621,
+      "sha256": "fbb8a03f5f5c4afb16dd079ab1f9367634b6b6a7a5e03e1e970551a56053bd59"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/sasl_handshake/response.rs",
+      "mode": "100644",
+      "size": 2156,
+      "sha256": "e7f42766f47152030be15747709d1b563c82e4a535d85263d00d904051aa7066"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/sync_group/mod.rs",
+      "mode": "100644",
+      "size": 2418,
+      "sha256": "58779301bb4d029417780571ae1685ad74f539a4b98a1e65e6a6deabdae9b76b"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/sync_group/request.rs",
+      "mode": "100644",
+      "size": 5053,
+      "sha256": "d34e94007a54613d2e235e22be6c11125f9025456c104552fdaed55aea7bc958"
+    },
+    {
+      "path": "apps/vendor/samsa/src/protocol/sync_group/response.rs",
+      "mode": "100644",
+      "size": 4296,
+      "sha256": "a6a596df4388c516b3460978052cf46b5ea5025cd8d8f0c605a097b1e367c85f"
+    },
+    {
+      "path": "apps/vendor/samsa/src/redpanda/adminapi/builder.rs",
+      "mode": "100644",
+      "size": 716,
+      "sha256": "27d28f6b4135c13d1d825ced9136c3d6086393ed61e867aae3fc4f586a23425b"
+    },
+    {
+      "path": "apps/vendor/samsa/src/redpanda/adminapi/environment_variable.rs",
+      "mode": "100644",
+      "size": 165,
+      "sha256": "4b040e130389e4b1975c0b47f103ed71ede4ec167c21764d49f94e0d284e0323"
+    },
+    {
+      "path": "apps/vendor/samsa/src/redpanda/adminapi/mod.rs",
+      "mode": "100644",
+      "size": 9826,
+      "sha256": "99a45af4155fd46897485673168608681bfe93eea545fd9eb591ef18ac404c86"
+    },
+    {
+      "path": "apps/vendor/samsa/src/redpanda/adminapi/node_config.rs",
+      "mode": "100644",
+      "size": 173,
+      "sha256": "cce766ec0202067248e08e0a032fbac0c2d7d765755b694ec1b75cae2b167965"
+    },
+    {
+      "path": "apps/vendor/samsa/src/redpanda/adminapi/partition_transform_status.rs",
+      "mode": "100644",
+      "size": 214,
+      "sha256": "03ce30cac37401243ba70a6b64b4ebe163b3c8e659b45d8ad0d73620c068a2ea"
+    },
+    {
+      "path": "apps/vendor/samsa/src/redpanda/adminapi/partition.rs",
+      "mode": "100644",
+      "size": 312,
+      "sha256": "2541a2d2a8a3a505d10b55ee5df4dab29b1e8d8e04ca121f18a6d9771d6c3be6"
+    },
+    {
+      "path": "apps/vendor/samsa/src/redpanda/adminapi/transform_metadata.rs",
+      "mode": "100644",
+      "size": 603,
+      "sha256": "f89070381375752498f48f5749960c9bd3f120f676d9ae495739717645568694"
+    },
+    {
+      "path": "apps/vendor/samsa/src/redpanda/adminapi/transform.rs",
+      "mode": "100644",
+      "size": 507,
+      "sha256": "8c3be3431e71b63de382a0cef57ebb66d8dfb3cfe5e45886e826467d6f80e289"
+    },
+    {
+      "path": "apps/vendor/samsa/src/redpanda/mod.rs",
+      "mode": "100644",
+      "size": 18,
+      "sha256": "b3053c98726fc911f371b31af64cae90c0106e1f2b132fa3afc99a2d5677ff3c"
+    },
+    {
+      "path": "apps/vendor/samsa/src/utils.rs",
+      "mode": "100644",
+      "size": 5095,
+      "sha256": "3d953b4628522a588246ca267aaf1b40e9d6cac0525b539dfedbc09677d6e425"
+    },
+    {
+      "path": "apps/vendor/samsa/testdata/add_one.wasm",
+      "mode": "100644",
+      "size": 44,
+      "sha256": "8f581f8899890a7479c20494f53cc5d60156a4d42e39d6a587a9f3089f198fe0"
+    },
+    {
+      "path": "apps/vendor/samsa/testdata/redpanda-identity.wasm",
+      "mode": "100644",
+      "size": 1776407,
+      "sha256": "ecf48344f9205472b9eae291119c1bacbd198fb389b20e00584873f698915a50"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/compression_setup.rs",
+      "mode": "100644",
+      "size": 2992,
+      "sha256": "f111d0b30f4610edabdf5a8fd5de6f36ec9370b967b84b752d127ada519f23f5"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/consumer_builder.rs",
+      "mode": "100644",
+      "size": 828,
+      "sha256": "17e32d5f97156eb88b9cd8012be73746e4b31b9070a9c101d6a129a7fe2a7e14"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/consumer_group_builder.rs",
+      "mode": "100644",
+      "size": 2238,
+      "sha256": "72b9fb0092b57c2a6ed55210b7f851f143b48ba5df83f02eeee419a3a79d33a5"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/create_delete_topic.rs",
+      "mode": "100644",
+      "size": 2545,
+      "sha256": "a913b076b6b725c20c1a1d32c74b6f837baf570988e079de9b3c13a5e5789f5c"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/group.rs",
+      "mode": "100644",
+      "size": 9949,
+      "sha256": "f07fd1fc84f1a46240ac0deaf13e48c32af54cb4ab870eb02deeb931f1b6acd4"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/metadata.rs",
+      "mode": "100644",
+      "size": 2678,
+      "sha256": "0b0d686f0ba7f63cd9e05b1246df705c7218200524bf4e274699c99a00d18393"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/multi_partitions_setup.rs",
+      "mode": "100644",
+      "size": 3523,
+      "sha256": "d48fc9498ab23853e45f10a4927af6899ac2f86d779b690077a320d78137f269"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/offset.rs",
+      "mode": "100644",
+      "size": 7026,
+      "sha256": "8fe8af3718bd02daff88418d2134a8acc422854a92b1092f1b888df37158af5c"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/produce_fetch.rs",
+      "mode": "100644",
+      "size": 6317,
+      "sha256": "712dc0e97c10148b27fb93051f30d063fbf130ced6c93611fac7e1a4b115bb18"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/redpanda_adminapi_get_leader_id.rs",
+      "mode": "100644",
+      "size": 460,
+      "sha256": "3441a8bcb216cae9a763648480ccf4c7e82f0d61cc2405f49dc37e9e4b386a8f"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/redpanda_adminapi_transform.rs",
+      "mode": "100644",
+      "size": 1921,
+      "sha256": "b88460a8fd09e8b7bc2c816a175b66eb91578b1e98558d7e4dbfbce48eb1c9e4"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/testsupport.rs",
+      "mode": "100644",
+      "size": 3632,
+      "sha256": "88bcd90774badf55f5dd461fa55b1e30d0ace8d5c44aa4aafc00a3058e40be2e"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/write_and_read_1m_messages_with_multi_partitions_and_compression.rs",
+      "mode": "100644",
+      "size": 3201,
+      "sha256": "a40107fccdbbde7daca18aa864cdd63e4b4a552833c034d64794472ddeccb04a"
+    },
+    {
+      "path": "apps/vendor/samsa/tests/write_and_read_1m_messages.rs",
+      "mode": "100644",
+      "size": 2786,
+      "sha256": "171c7a9d610c8c7496a8d67f6cf41b0cc0431b925e4e87a748bc454e9f35bae3"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/.cargo_vcs_info.json",
+      "mode": "100644",
+      "size": 148,
+      "sha256": "47a89a6b7c0db4fb7098c6c464e6c331f5a53b4d8cb0e00279cd850a6f0027e0"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/.cargo-ok",
+      "mode": "100644",
+      "size": 7,
+      "sha256": "afbf9d0f3560b0fd7795e81c42a0a79ee6b6fc67e064f77826aee642cad28d91"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/.gitignore",
+      "mode": "100644",
+      "size": 142,
+      "sha256": "07c2f6eea0462a847eb868a34952637a168dd38ed210b610e96747c12f4f4fdb"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/build.rs",
+      "mode": "100644",
+      "size": 359,
+      "sha256": "d56e7e1907a0cf69bad5a6cf1862b7afa429de44dd88a4946954e884aae3e3f4"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/Cargo.toml",
+      "mode": "100644",
+      "size": 1474,
+      "sha256": "4d6681bee87c1d3e514fd10dbc711df97aa7109c7b06a5c42fbb1384981f1199"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/Cargo.toml.orig",
+      "mode": "100644",
+      "size": 750,
+      "sha256": "1e4db32568cd0aef6754724a5089f1581a7261bfb10921455c356f5267cdcfc6"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/package-lock.json",
+      "mode": "100644",
+      "size": 21925,
+      "sha256": "04de3178422fcbf1ba01e2be4efc193aa29127c980bfa5582aec632b2d6ed452"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/package.json",
+      "mode": "100644",
+      "size": 1112,
+      "sha256": "c7feca00125b9da4c1c65bfee61ce0ddbdf23f14f742244759f6dc3264693c9c"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/permissions/autogenerated/commands/authorization_state.toml",
+      "mode": "100644",
+      "size": 455,
+      "sha256": "630d440b05283f7e8385b5eea5d4ee4e04e1a3b8d2b88cbf10cf7e005e75973e"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/permissions/autogenerated/commands/create.toml",
+      "mode": "100644",
+      "size": 377,
+      "sha256": "0bcf16f2b9ca84d9c89accef659ab0b8adc9443bb6d30928d4782ee085f4efa1"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/permissions/autogenerated/commands/start_flow.toml",
+      "mode": "100644",
+      "size": 401,
+      "sha256": "20d1ede145eef68563161507934fa070a97f9fe8f7e2f09c2fad5f44219d310e"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/permissions/autogenerated/commands/stop_current_flow.toml",
+      "mode": "100644",
+      "size": 443,
+      "sha256": "2476900233d3e972c2239b07153c5ba7b978759c07a72604a144eee03b4f86e5"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/permissions/autogenerated/commands/suggested_host_app_path.toml",
+      "mode": "100644",
+      "size": 479,
+      "sha256": "221ea68090f7b6dc87c12c0677011b4d2d752e69ab5a632e1a71382842d9a1a7"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/permissions/autogenerated/reference.md",
+      "mode": "100644",
+      "size": 1809,
+      "sha256": "c870a8e887883b03423615e96cd9456b5345be05d6963266560cce857f98d213"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/permissions/default.toml",
+      "mode": "100644",
+      "size": 224,
+      "sha256": "759f1f3d76e9a8da49238b3c6349e11b6f61d4aa47a68807d4bbde5ed5cc2dfc"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/permissions/schemas/schema.json",
+      "mode": "100644",
+      "size": 11912,
+      "sha256": "df443287289c5490315c8efeaac5a79b80c234c2946b6b32b564dadc28a15daa"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/README.md",
+      "mode": "100644",
+      "size": 4790,
+      "sha256": "01ee1079699cf0a49468eab01fd6754a870865564a5a230a4bc8796d2606f5bb"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/rollup.config.js",
+      "mode": "100644",
+      "size": 690,
+      "sha256": "4ae3c2c9bcc93348834f0c6b1ecdadff9a30193666b6afd6b1f52efbc89e09d2"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/src/commands.rs",
+      "mode": "100644",
+      "size": 1997,
+      "sha256": "906266f891cd012a6c0ce94e422099cef4abac5cce09732d8bacaf58bc5762d3"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/src/desktop.rs",
+      "mode": "100644",
+      "size": 8139,
+      "sha256": "44a0e58ca4fd7053aac5833656620c4c4f23e451699e929644a98531376edf56"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/src/error.rs",
+      "mode": "100644",
+      "size": 1331,
+      "sha256": "8750960184d9a52fc1b3fd4fbe2a5777d916a3acb5247f8ceb27758291d77d49"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/src/lib.rs",
+      "mode": "100644",
+      "size": 1728,
+      "sha256": "782017b6ab3e5c7691f079955f779b3837781cf08af42da22ec9cbaff9d9ee5a"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/src/mobile.rs",
+      "mode": "100644",
+      "size": 2214,
+      "sha256": "f635f8a5dc1a30b570628d671dca58fb0e1d2027a359c4201fb200e1456c061b"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/src/models.rs",
+      "mode": "100644",
+      "size": 1340,
+      "sha256": "908220710ae3324f0c87d6cb6eda566dd1a68bc4f93ce5e1b9ca7bc977533564"
+    },
+    {
+      "path": "apps/vendor/tauri-plugin-permission-flow/tsconfig.json",
+      "mode": "100644",
+      "size": 308,
+      "sha256": "b5a7fe008118360d50ea3f26628dad9e18216727b9bc92897252c385cf33bdfa"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "mode": "100644",
+      "size": 1429,
+      "sha256": "424735a247b388c46701252247c0430562c6d26ae4954beee28ebde58785cf79"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "mode": "100644",
+      "size": 2685,
+      "sha256": "3be1ff41d7fb37276f902971343fe2c0d862810ef6cd0158e2da48a78ad8c41f"
+    },
+    {
+      "path": "docs/architecture/decisions/0001-bun-isolated-workspace.md",
+      "mode": "100644",
+      "size": 3899,
+      "sha256": "643c81bf013e9f13536acb208747cd22b5a2dc8226e323ea90965b467e8513d1"
+    },
+    {
+      "path": "docs/architecture/decisions/0002-generated-session-contracts.md",
+      "mode": "100644",
+      "size": 3897,
+      "sha256": "594b7d1445b5e3e0f29fa4e2b00558260025792fc15ad14c5f4cc730010a4f90"
+    },
+    {
+      "path": "docs/architecture/decisions/0003-keyed-partition-aware-telemetry.md",
+      "mode": "100644",
+      "size": 7805,
+      "sha256": "d44e5d21d515832ce044e02383c94146a02e6ef0832a932e12fac753b324eb18"
+    },
+    {
+      "path": "docs/architecture/decisions/0004-community-edition-topology.md",
+      "mode": "100644",
+      "size": 11314,
+      "sha256": "34bd5da0b545b83712a51444f778949fae9746cd836ff1a6ff66c0d4df5ea593"
+    },
+    {
+      "path": "docs/architecture/decisions/0005-durable-remediation-dispatch.md",
+      "mode": "100644",
+      "size": 8902,
+      "sha256": "c2b334bb1044670af8966064433fa885ea40b307853c1400ae315dc298110f04"
+    },
+    {
+      "path": "docs/architecture/decisions/0006-cargo-owned-windows-installer-versions.md",
+      "mode": "100644",
+      "size": 5045,
+      "sha256": "150ab272ec3081c92bdf352b508413cef20405db78828aad971138ce289a6ace"
+    },
+    {
+      "path": "docs/architecture/decisions/0007-opt-in-self-hosted-updates.md",
+      "mode": "100644",
+      "size": 5843,
+      "sha256": "f71d07fcc7aee879b3df5fe0950b956d26f161c707e28a2b2300223286e105cf"
+    },
+    {
+      "path": "docs/architecture/decisions/0008-community-manifest-signing-keys.md",
+      "mode": "100644",
+      "size": 9789,
+      "sha256": "16879ada9d242f68345c89e584f4bb83d43f38ec407ea5dc682509227142a1bf"
+    },
+    {
+      "path": "docs/architecture/decisions/0009-fail-closed-local-credentials-and-network-exposure.md",
+      "mode": "100644",
+      "size": 9811,
+      "sha256": "a15e81a286e9c7be174ab421d71002193a23c6f5663aa85e1e778547d23314cd"
+    },
+    {
+      "path": "docs/architecture/decisions/0010-disable-runtime-sfx-assembly.md",
+      "mode": "100644",
+      "size": 3930,
+      "sha256": "deaf41907a3b8474df22e003ab855e334d8ab88bb3bf5b18849dbc17cd2981f1"
+    },
+    {
+      "path": "docs/architecture/decisions/0011-traefik-community-edge-and-acme.md",
+      "mode": "100644",
+      "size": 7038,
+      "sha256": "c968ebf35baf1cfa190e30e15992a39ff5899e31329170b5bde75e81f52919b6"
+    },
+    {
+      "path": "docs/architecture/decisions/0012-native-community-appliance-launcher.md",
+      "mode": "100644",
+      "size": 11574,
+      "sha256": "3a66686bdef87a6a1371c6ccd3e67fc47a1308ea67921baa973079d0d0262f0f"
+    },
+    {
+      "path": "docs/architecture/decisions/0013-community-first-user-registration.md",
+      "mode": "100644",
+      "size": 2971,
+      "sha256": "92687f548159e6fde4a68857582770e7f67b78e9ecbb80501a151dd423c72828"
+    },
+    {
+      "path": "docs/architecture/dependency-risk-register.md",
+      "mode": "100644",
+      "size": 17686,
+      "sha256": "10851e9d59873e25e2cdd410d0ce69ae19250eb832f0dc5b68b9ba514dfe19d1"
+    },
+    {
+      "path": "docs/architecture/README.md",
+      "mode": "100644",
+      "size": 2853,
+      "sha256": "1089fae1a495ea7b1e8978f69810b03d27a4ad1bbd4248fefe5bc665acf3e8a3"
+    },
+    {
+      "path": "docs/architecture/state-ownership.md",
+      "mode": "100644",
+      "size": 5042,
+      "sha256": "5408a2cfdfb521281b56fa11acc0ab8b32d363d802f81cea721fd5da8c2ff969"
+    },
+    {
+      "path": "docs/community-deployment.md",
+      "mode": "100644",
+      "size": 13598,
+      "sha256": "cc56244c407d30960737f0a540ae2e6b776696a9894d3a68dae3465e1a9a5312"
+    },
+    {
+      "path": "docs/community-edge.md",
+      "mode": "100644",
+      "size": 13902,
+      "sha256": "7a79026c35eed8d9a6c97c11eeb1cfb0526e1667d67cb054ff9b1eed8326a43d"
+    },
+    {
+      "path": "docs/community-edition.md",
+      "mode": "100644",
+      "size": 13304,
+      "sha256": "306c1f462ef4f900b4275fd36f5c3087b36bd78c615d7f8e1e4b696d18c16651"
+    },
+    {
+      "path": "docs/community-release-process.md",
+      "mode": "100644",
+      "size": 9606,
+      "sha256": "04657b0b5c95e77b55aceb385f7cc589f9c5d72041fb6d67a708fbf6fcd43e9e"
+    },
+    {
+      "path": "docs/development.md",
+      "mode": "100644",
+      "size": 10382,
+      "sha256": "b5e0cdc890d6e3ccdde52547a075ad86ad3d4d9fe8bb47ba2f7f9217eda74385"
+    },
+    {
+      "path": "docs/licensing-and-provenance.md",
+      "mode": "100644",
+      "size": 18969,
+      "sha256": "ad61be21d7150770895556d8e385ef9a07720b5565413ce8370cf37c75ba138a"
+    },
+    {
+      "path": "docs/open-source-readiness.md",
+      "mode": "100644",
+      "size": 8887,
+      "sha256": "70868653927a017f1be057288e39112589aa074885c0d57a8d29a3351f939a54"
+    },
+    {
+      "path": "docs/public-repository-readiness-report.md",
+      "mode": "100644",
+      "size": 7907,
+      "sha256": "2c85578c45861a86faf61702a9e6d772fa625a262c8874d08d99c8130c81afe4"
+    },
+    {
+      "path": "docs/public-source-export.md",
+      "mode": "100644",
+      "size": 4054,
+      "sha256": "178b8fea3c9bb75cdd61694e5868b3ef195bcc4866e2dd1c1e5f3bcd194cdc68"
+    },
+    {
+      "path": "docs/README.md",
+      "mode": "100644",
+      "size": 1711,
+      "sha256": "7af2daead7c15476478580ef0790d1c5e7d8bb9fa97b17d2e9b71167b415ff64"
+    },
+    {
+      "path": "docs/release-signing.md",
+      "mode": "100644",
+      "size": 11280,
+      "sha256": "ccae5f211e4fdaeec3a14432feb8d13f3b3ee07d46465fc8ac7926cb6c4ed627"
+    },
+    {
+      "path": "docs/screenshots/community-edition/README.md",
+      "mode": "100644",
+      "size": 857,
+      "sha256": "8ffbcf367442b4de85e4ee53e17cefc767981a2831a058a794d4b5939ee4835e"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-baseline-observatory.jpg",
+      "mode": "100644",
+      "size": 104106,
+      "sha256": "7b6cccdebb17838b530f53c4b4225de29f2b64864179e7ed9609c83c2ccd38d7"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-command-center.jpg",
+      "mode": "100644",
+      "size": 91283,
+      "sha256": "5470d1717ddee51a05f6cc8ca22aa8f6a2df4071b0eb43969b7300ef5b752a6e"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-customers.jpg",
+      "mode": "100644",
+      "size": 77772,
+      "sha256": "74076f2d2dfc62675f641a06fa93538f9505b68a3f4a2ef50c8b31fd9b78f897"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-device-details.jpg",
+      "mode": "100644",
+      "size": 138984,
+      "sha256": "6992fc46f728e8f0920e69a5040bc7e3768c943855104aabe5ca68bda8c5428a"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-devices.jpg",
+      "mode": "100644",
+      "size": 90462,
+      "sha256": "a5e712aa2f3efa5daeb8144fc76623d72d74914b0c5663067882f92cd96cae33"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-installers.jpg",
+      "mode": "100644",
+      "size": 111198,
+      "sha256": "4d1d4d3d5885cc51144afc05ebcd727acd923d0447714a786aad956acc504c0c"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-patch-management.jpg",
+      "mode": "100644",
+      "size": 74776,
+      "sha256": "7c795008ef29e70fa0785b14f7a70f2ca937c5f45069fbda6fa3d0b96a789811"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-reports.jpg",
+      "mode": "100644",
+      "size": 126717,
+      "sha256": "26b69a8b9729b621e27af45b501ba9e8559cd0a9f75e32dffa1f2c47952881a6"
+    },
+    {
+      "path": "docs/source-alpha-publication.md",
+      "mode": "100644",
+      "size": 3712,
+      "sha256": "de9f7c9667420825a4ac1227895d44434305595a5dd40ad9f0c6a0733741d3a5"
+    },
+    {
+      "path": "ENGINEERING_QUALITY.md",
+      "mode": "100644",
+      "size": 19687,
+      "sha256": "09e3023939a84a9a8d281a6e87bb9611927fe0ac33ea477d1543b4783ce9f3e4"
+    },
+    {
+      "path": "infra/compose.community-postgres.yml",
+      "mode": "100644",
+      "size": 1961,
+      "sha256": "ef2af5772448e5800ba2e772358939cf95d6676765de18184899bddb553319d4"
+    },
+    {
+      "path": "infra/compose.community-traefik-custom.yml",
+      "mode": "100644",
+      "size": 4245,
+      "sha256": "8b628529e3dd187d0f98383716d0fc453944a72bdba38f36b32ad47e2620d5d3"
+    },
+    {
+      "path": "infra/compose.community-traefik-local.yml",
+      "mode": "100644",
+      "size": 4174,
+      "sha256": "2cf252a859f971c3dd15f49abcf46d23597b480ca8ac8df7d4e32009c89e7eee"
+    },
+    {
+      "path": "infra/compose.community-traefik.yml",
+      "mode": "100644",
+      "size": 5063,
+      "sha256": "bef0ae3e8d64bb5d52c02de8a6114597583896326bded351c3f4fce50a8c123d"
+    },
+    {
+      "path": "infra/compose.community.yml",
+      "mode": "100644",
+      "size": 7744,
+      "sha256": "ab32a9009dbdf9daec06ed0e962dd0734e7f6bb69eae9e0c53a6b91f5e7eb04e"
+    },
+    {
+      "path": "infra/docker-compose.dev.yml",
+      "mode": "100644",
+      "size": 19170,
+      "sha256": "c0b18127bc79190b36d609f5586cdd0f80d13c3a6b2e60b67dfd294902aac34a"
+    },
+    {
+      "path": "infra/Dockerfile.rust-servers",
+      "mode": "100644",
+      "size": 3172,
+      "sha256": "556b05ae5e461ec9f42039abd90447994970d1197cb8f29a8b90d299ff9e0c50"
+    },
+    {
+      "path": "infra/README.md",
+      "mode": "100644",
+      "size": 10749,
+      "sha256": "17e1fc59f8ffd0c44691cdf52ab8c9176ea0812e19b77f40e77e3c30e77c9005"
+    },
+    {
+      "path": "infra/traefik/dynamic-acme.yml",
+      "mode": "100644",
+      "size": 2586,
+      "sha256": "8e76bc4454ea5b005a679cfbfe203fce34ba041b37e5349b35168d07a0c2559f"
+    },
+    {
+      "path": "infra/traefik/dynamic-custom.yml",
+      "mode": "100644",
+      "size": 2435,
+      "sha256": "4529b85063d0c06942c0c29a0b566ac6a7853889e94f4d9819e3d90e83261097"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "size": 34523,
+      "sha256": "0d96a4ff68ad6d4b6f1f30f713b18d5184912ba8dd389f86aa7710db079abcb0"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "size": 1956,
+      "sha256": "5ea530e3f8e8330f6f00ddac536ba58e21bf8f58f07891eb4a0830d192cee469"
+    },
+    {
+      "path": "scripts/build-installers.ps1",
+      "mode": "100644",
+      "size": 145493,
+      "sha256": "d103613e873e4810a67f7006756f61dc35b9cdc4fecf382087a68882c84d97ad"
+    },
+    {
+      "path": "scripts/build-linux-agent.sh",
+      "mode": "100755",
+      "size": 21641,
+      "sha256": "222b999ce0d4ba28e1f9eea03e9e279283c56dea9a68436dbb96137f6b48a6ad"
+    },
+    {
+      "path": "scripts/build-macos-agent.sh",
+      "mode": "100755",
+      "size": 51305,
+      "sha256": "72518abf49ff8c74d21f2adec590b4073de988736dd7b6a8443fabef6e702b7d"
+    },
+    {
+      "path": "scripts/build-macos-viewer.sh",
+      "mode": "100755",
+      "size": 23660,
+      "sha256": "5189ff63e8c130d0132620873263945dabaeb7156de923c9045af0eef5a76ffd"
+    },
+    {
+      "path": "scripts/DevEnvironmentSecrets.ps1",
+      "mode": "100644",
+      "size": 585,
+      "sha256": "cc1fc5c63055be8c5ddcd7a09b13c1ef32091b96560fd5b6222ff20fc23a017b"
+    },
+    {
+      "path": "scripts/New-CommunityManifestSigningCertificate.ps1",
+      "mode": "100644",
+      "size": 4568,
+      "sha256": "9dfd8d899221365d12c25e222c8f7ef11f0996e80b9f3615c4100ed026d4a610"
+    },
+    {
+      "path": "scripts/Setup-DevEnviroment.ps1",
+      "mode": "100644",
+      "size": 34807,
+      "sha256": "2e22f1f61a63ece59265305c5b8c0e8092d78bd48fe03eec1051880ee5464930"
+    },
+    {
+      "path": "scripts/vcpkg-overlays/libvpx/0002-Fix-nasm-debug-format-flag.patch",
+      "mode": "100644",
+      "size": 782,
+      "sha256": "e7f1549ae581324b3997c40678f9b4f1f0839c4584db0c525adad52c467d5551"
+    },
+    {
+      "path": "scripts/vcpkg-overlays/libvpx/0003-add-uwp-v142-and-v143-support.patch",
+      "mode": "100644",
+      "size": 6756,
+      "sha256": "519e3316b33ccdccc58a3deffbe0536f328d51e88bd9cdbdc204f0571a7200bf"
+    },
+    {
+      "path": "scripts/vcpkg-overlays/libvpx/0004-remove-library-suffixes.patch",
+      "mode": "100644",
+      "size": 487,
+      "sha256": "3a7edcb553b1191b48696fc5a56ad5a43ae0cedb658ca42ba07473fa32bbc209"
+    },
+    {
+      "path": "scripts/vcpkg-overlays/libvpx/0005-fix-arm64-build.patch",
+      "mode": "100644",
+      "size": 647,
+      "sha256": "83252fbce0aa63dcaf9d89ac9a5aaf9ccf61ae154cc26e7c33e2f0d254b93f50"
+    },
+    {
+      "path": "scripts/vcpkg-overlays/libvpx/portfile.cmake",
+      "mode": "100644",
+      "size": 13171,
+      "sha256": "a8388a5680adb230313e9b2e59b9b8e3c68899d4b4aaa8a6e043ab6e60f9dbff"
+    },
+    {
+      "path": "scripts/vcpkg-overlays/libvpx/unofficial-libvpx-config.cmake.in",
+      "mode": "100644",
+      "size": 2164,
+      "sha256": "72681c6ae8cdda847854e728a8e7b4f1ebf6d7a83da2fbcf4ec66fa163850262"
+    },
+    {
+      "path": "scripts/vcpkg-overlays/libvpx/vcpkg.json",
+      "mode": "100644",
+      "size": 663,
+      "sha256": "4a568c2967710f090c7ba09efe69b071e023d8a7a6963ac1b71d496c590d35f0"
+    },
+    {
+      "path": "scripts/vcpkg-overlays/libvpx/vpx.pc.in",
+      "mode": "100644",
+      "size": 249,
+      "sha256": "acf70fc877efe7c3e0eded8ff9e16cb798bf5e56a127bc8c6e00bf231258095e"
+    },
+    {
+      "path": "scripts/VcpkgProvenance.ps1",
+      "mode": "100644",
+      "size": 3512,
+      "sha256": "2f050224f53b49e9c6277f33e2a9e039511cc64989114f9631647e0b65b3f69d"
+    },
+    {
+      "path": "SECURITY.md",
+      "mode": "100644",
+      "size": 1982,
+      "sha256": "aeebf24e422e962c2fcf54a8d628f4cdfa479694c7fbff6a4d1dce182946e241"
+    },
+    {
+      "path": "SUPPORT.md",
+      "mode": "100644",
+      "size": 1007,
+      "sha256": "bb76cd1b769894f0f8961a6c0153b9c2c77b439d4616b7e31250c408294ff32a"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "mode": "100644",
+      "size": 8680,
+      "sha256": "fc5ae0ee11e2ad1e0b914abbf99c6071d0f3398575052cae8d8c9c04c3b0f090"
+    }
+  ]
+}

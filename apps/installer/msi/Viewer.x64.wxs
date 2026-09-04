@@ -1,0 +1,150 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package
+    Name="Talos Viewer (x64)"
+    Manufacturer="Talos"
+    Version="$(var.ProductVersion)"
+    UpgradeCode="{E4125D1D-560A-49BE-A1B2-8610FA4E4ACF}"
+    InstallerVersion="500"
+    Scope="perUserOrMachine"
+    Language="1033">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Talos Viewer is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+    <Property Id="ApplicationFolderName" Value="Talos" />
+    <Property Id="WixAppFolder" Value="WixPerUserFolder" />
+    <WixVariable Id="WixUILicenseRtf" Value="viewer-license.rtf" />
+    <ui:WixUI Id="TalosViewerWizardUI" />
+
+    <Feature Id="MainFeature" Title="Talos Viewer" Level="1">
+      <ComponentGroupRef Id="ViewerComponents" />
+    </Feature>
+
+    <CustomAction
+      Id="LaunchTalosViewerAfterInstall"
+      FileRef="FilViewerExe"
+      ExeCommand=""
+      Return="asyncNoWait" />
+
+    <InstallExecuteSequence>
+      <Custom
+        Action="LaunchTalosViewerAfterInstall"
+        After="InstallFinalize"
+        Condition="NOT REMOVE AND (NOT Installed OR WIX_UPGRADE_DETECTED OR PATCH)" />
+    </InstallExecuteSequence>
+  </Package>
+
+  <Fragment>
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="APPLICATIONFOLDER" Name="Talos" />
+    </StandardDirectory>
+  </Fragment>
+
+  <?foreach WIXUIARCH in X86;X64;A64 ?>
+  <Fragment>
+    <UI Id="TalosViewerWizardUI_$(WIXUIARCH)" />
+    <UIRef Id="TalosViewerWizardUI" />
+  </Fragment>
+  <?endforeach?>
+
+  <Fragment>
+    <WixVariable Id="virtual WixUISupportPerUser" Value="1" />
+    <WixVariable Id="virtual WixUISupportPerMachine" Value="1" />
+
+    <UI Id="TalosViewerWizardUI">
+      <TextStyle Id="WixUI_Font_Normal" FaceName="Segoe UI" Size="9" />
+      <TextStyle Id="WixUI_Font_Bigger" FaceName="Segoe UI" Size="12" />
+      <TextStyle Id="WixUI_Font_Title" FaceName="Segoe UI" Size="9" Bold="yes" />
+      <TextStyle Id="WixUI_Font_Emphasized" FaceName="Segoe UI" Size="9" Bold="yes" />
+
+      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+
+      <DialogRef Id="CancelDlg" />
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="ExitDialog" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="InstallScopeDlg" />
+      <DialogRef Id="LicenseAgreementDlg" />
+      <DialogRef Id="MaintenanceTypeDlg" />
+      <DialogRef Id="MaintenanceWelcomeDlg" />
+      <DialogRef Id="MsiRMFilesInUse" />
+      <DialogRef Id="OutOfDiskDlg" />
+      <DialogRef Id="OutOfRbDiskDlg" />
+      <DialogRef Id="PrepareDlg" />
+      <DialogRef Id="ProgressDlg" />
+      <DialogRef Id="ResumeDlg" />
+      <DialogRef Id="UserExit" />
+      <DialogRef Id="VerifyReadyDlg" />
+      <DialogRef Id="WaitForCostingDlg" />
+      <DialogRef Id="WelcomeDlg" />
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999" />
+
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg" Condition="NOT Installed AND NOT PATCH" />
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Condition="Installed AND PATCH" />
+      <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" />
+      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="InstallScopeDlg" Order="2" Condition="LicenseAccepted = &quot;1&quot;" />
+
+      <Publish Dialog="InstallScopeDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg" />
+      <Publish Dialog="InstallScopeDlg" Control="Next" Property="ALLUSERS" Value="{}" Order="1" Condition="WixAppFolder = &quot;WixPerUserFolder&quot;" />
+      <Publish Dialog="InstallScopeDlg" Control="Next" Property="ALLUSERS" Value="1" Order="2" Condition="WixAppFolder = &quot;WixPerMachineFolder&quot;" />
+      <Publish Dialog="InstallScopeDlg" Control="Next" Property="APPLICATIONFOLDER" Value="[WixPerUserFolder]" Order="3" Condition="WixAppFolder = &quot;WixPerUserFolder&quot;" />
+      <Publish Dialog="InstallScopeDlg" Control="Next" Property="APPLICATIONFOLDER" Value="[WixPerMachineFolder]" Order="4" Condition="WixAppFolder = &quot;WixPerMachineFolder&quot;" />
+      <Publish Dialog="InstallScopeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="5" Condition="WixAppFolder = &quot;WixPerUserFolder&quot;" />
+      <Publish Dialog="InstallScopeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="6" Condition="WixAppFolder = &quot;WixPerMachineFolder&quot;" />
+
+      <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg" />
+      <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg" />
+      <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg" />
+      <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg" />
+
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallScopeDlg" Order="1" Condition="NOT Installed" />
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2" Condition="Installed AND NOT PATCH" />
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="3" Condition="Installed AND PATCH" />
+    </UI>
+
+    <UIRef Id="WixUI_Common" />
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ViewerComponents" Directory="APPLICATIONFOLDER">
+      <Component Id="CmpViewerExe" Guid="*">
+        <File Id="FilViewerExe" Source="..\payload\viewer\x64\talos_viewer.exe" KeyPath="yes" Checksum="yes" />
+        <RegistryKey Root="HKCR" Key="rmm" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+          <RegistryValue Type="string" Value="URL:Talos RMM Protocol" />
+          <RegistryValue Name="URL Protocol" Type="string" Value="" />
+        </RegistryKey>
+        <RegistryKey Root="HKCR" Key="rmm\DefaultIcon" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+          <RegistryValue Type="string" Value="[#FilViewerExe],0" />
+        </RegistryKey>
+        <RegistryKey Root="HKCR" Key="rmm\shell\open\command" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+          <RegistryValue Type="string" Value="&quot;[#FilViewerExe]&quot; &quot;%1&quot;" />
+        </RegistryKey>
+        <RegistryKey Root="HKCR" Key="Directory\Background\shell\TalosViewer" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+          <RegistryValue Type="string" Value="Open Talos Viewer" />
+          <RegistryValue Name="Icon" Type="string" Value="[#FilViewerExe]" />
+        </RegistryKey>
+        <RegistryKey Root="HKCR" Key="Directory\Background\shell\TalosViewer\command" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+          <RegistryValue Type="string" Value="&quot;[#FilViewerExe]&quot;" />
+        </RegistryKey>
+        <RegistryKey Root="HKCR" Key="*\shell\TalosViewer" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+          <RegistryValue Type="string" Value="Open with Talos Viewer" />
+          <RegistryValue Name="Icon" Type="string" Value="[#FilViewerExe]" />
+        </RegistryKey>
+        <RegistryKey Root="HKCR" Key="*\shell\TalosViewer\command" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes">
+          <RegistryValue Type="string" Value="&quot;[#FilViewerExe]&quot; &quot;%1&quot;" />
+        </RegistryKey>
+      </Component>
+
+      <Component Id="CmpViewerUpdaterExe" Guid="*">
+        <File Id="FilViewerUpdaterExe" Source="..\payload\viewer\x64\talos_viewer_updater.exe" KeyPath="yes" Checksum="yes" />
+      </Component>
+
+      <Component Id="CmpViewerLicenseFiles" Guid="*">
+        <File Id="FilViewerLicense" Source="..\..\..\LICENSE" Name="LICENSE.txt" KeyPath="yes" />
+        <File Id="FilViewerThirdPartyNotices" Source="..\..\..\THIRD_PARTY_NOTICES.md" Name="THIRD_PARTY_NOTICES.txt" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

@@ -1,0 +1,38 @@
+{
+  "name": "frontend",
+  "version": "0.6.41",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "dev": "bun dev.ts",
+    "build": "bunx --bun vite build",
+    "preview": "bunx --bun vite preview",
+    "start": "bun ./build",
+    "check": "bun ./check.ts",
+    "lint": "bun run check",
+    "test": "bun test src"
+  },
+  "dependencies": {
+    "@xterm/addon-fit": "catalog:",
+    "@xterm/xterm": "catalog:",
+    "axios": "1.19.0",
+    "clsx": "2.1.1",
+    "lucide-svelte": "0.563.0",
+    "tailwind-merge": "3.3.1",
+    "tailwindcss-animate": "1.0.7",
+    "zod": "4.0.2"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-node": "5.5.2",
+    "@sveltejs/kit": "2.70.2",
+    "@sveltejs/vite-plugin-svelte": "catalog:",
+    "@tailwindcss/postcss": "4.1.11",
+    "@types/node": "catalog:",
+    "svelte": "5.55.9",
+    "svelte-check": "catalog:",
+    "tailwindcss": "4.1.11",
+    "typescript": "5.8.3",
+    "vite": "7.3.6"
+  }
+}

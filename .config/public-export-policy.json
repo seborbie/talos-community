@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "name": "Talos Community source snapshot",
+  "maximumFileBytes": 2097152,
+  "externalGates": [],
+  "publicationDecision": {
+    "scope": "source-only Community alpha",
+    "owner": "Sebastian Orbe",
+    "date": "2026-09-04",
+    "readmeApproved": true,
+    "reportingEnabled": true,
+    "outstandingReviewException": "https://github.com/seborbie/talos-community/issues/1",
+    "exceptionExpires": "2026-09-11"
+  },
+  "requiredFiles": [
+    ".config/publication-identity.json",
+    ".gitleaks.toml",
+    ".config/third-party-acquisition.json",
+    "AGENTS.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "ENGINEERING_QUALITY.md",
+    "LICENSE",
+    "README.md",
+    "SECURITY.md",
+    "SUPPORT.md",
+    "THIRD_PARTY_NOTICES.md",
+    "apps/Cargo.lock",
+    "apps/Cargo.toml",
+    "apps/bun.lock",
+    "apps/frontend/public/NEXTJS_TEMPLATE_ASSET_LICENSE.md",
+    "apps/installer/third-party/7zip-26.00/License.txt",
+    "apps/installer/third-party/7zip-26.00/LZMA-SDK-NOTICE.txt",
+    "apps/installer/third-party/wix-6.0.0/OSMFEULA.txt",
+    "apps/package.json",
+    "apps/scripts/third-party-acquisition.test.ts",
+    "apps/scripts/third-party-acquisition.ts",
+    "apps/third-party-patches/vpx-encode-0.6.2-talos.patch",
+    "docs/licensing-and-provenance.md",
+    "docs/open-source-readiness.md",
+    "infra/compose.community.yml"
+  ],
+  "includePatterns": [
+    ".config/publication-identity.json",
+    ".config/dotnet-tools.json",
+    ".config/public-export-policy.json",
+    ".config/third-party-acquisition.json",
+    ".dockerignore",
+    ".github/**",
+    ".gitignore",
+    ".gitleaks.toml",
+    ".gitleaksignore",
+    "AGENTS.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "ENGINEERING_QUALITY.md",
+    "LICENSE",
+    "README.md",
+    "SECURITY.md",
+    "SUPPORT.md",
+    "THIRD_PARTY_NOTICES.md",
+    "apps/**",
+    "docs/**",
+    "infra/**",
+    "scripts/**"
+  ],
+  "excludePatterns": [
+    "**/.DS_Store",
+    "**/.env",
+    "**/.env.local",
+    "**/.env.development.local",
+    "**/.env.test.local",
+    "**/.env.production.local",
+    "**/.env.debug.local",
+    "**/.env.codex-stub-backup.*",
+    "**/*.log",
+    "**/node_modules/**",
+    "**/target/**",
+    ".cursor/**",
+    "artifacts/**",
+    "apps/.app-web-build-hashes.json",
+    "apps/.azurite-data/**",
+    "apps/.rust-servers-build-hash",
+    "apps/api_backend/dist/**",
+    "apps/frontend/.svelte-kit/**",
+    "apps/frontend/build/**",
+    "apps/installer/.wix/**",
+    "apps/installer/artifacts/sfx/**",
+    "apps/installer/msi/_ui.wixlib",
+    "apps/installer/msi/_ui_extract/**",
+    "apps/installer/prereqs/**",
+    "apps/installer/tmp/**",
+    "apps/talos_permissions_helper/dist/**",
+    "apps/talos_permissions_helper/src-tauri/gen/**",
+    "apps/talos_viewer/dist/**",
+    "apps/talos_viewer/src-tauri/gen/**",
+    "apps/talos_worker_chat/dist/**",
+    "apps/talos_worker_chat/src-tauri/gen/**",
+    "apps/vpx-encode/**",
+    "docs/plans/**",
+    "docs/pr-artifacts/**",
+    "docs/validation/**"
+  ],
+  "blockedOmissions": [
+    {
+      "id": "PX-004",
+      "patterns": ["apps/frontend/src/lib/assets/talos-cursor-up-left.svg"],
+      "reason": "The cursor artwork requires a recorded origin and redistribution review or a first-party replacement."
+    }
+  ],
+  "forbiddenBinaryExtensions": [
+    ".7z",
+    ".bmp",
+    ".cer",
+    ".crt",
+    ".der",
+    ".dll",
+    ".dmg",
+    ".exe",
+    ".gif",
+    ".gz",
+    ".icns",
+    ".ico",
+    ".jpeg",
+    ".jpg",
+    ".key",
+    ".mov",
+    ".mp3",
+    ".mp4",
+    ".otf",
+    ".p12",
+    ".pdf",
+    ".pem",
+    ".pfx",
+    ".pkg",
+    ".png",
+    ".sfx",
+    ".svg",
+    ".tar",
+    ".ttf",
+    ".wasm",
+    ".wav",
+    ".webp",
+    ".wixlib",
+    ".woff",
+    ".woff2",
+    ".zip"
+  ],
+  "permittedBinaryFiles": [
+    {
+      "path": "apps/brand/talos-app-icon.svg",
+      "sha256": "67af677ac516efc85822b4a6ffdb7365f82f3e97a7d49a6f11ab9dd87b231c28",
+      "provenance": "Deterministic first-party Talos Community icon source created for the public repository on 2026-08-29; AGPL-3.0-only SPDX identifier embedded in the SVG"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/icons/icon.icns",
+      "sha256": "c0cbc0dda1835cdbb623497cd9733e83e94e1fe7f69a23d8aadfa360c5ead7c6",
+      "provenance": "Generated from apps/brand/talos-app-icon.svg with @tauri-apps/cli 2.11.0 on 2026-08-29"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/icons/icon.ico",
+      "sha256": "1f53ad648f5e129f277b0f8ed2d58b11e637f5da3f738b2eec84bb9e6746ec4a",
+      "provenance": "Generated from apps/brand/talos-app-icon.svg with @tauri-apps/cli 2.11.0 on 2026-08-29"
+    },
+    {
+      "path": "apps/talos_permissions_helper/src-tauri/icons/icon.png",
+      "sha256": "108e8652e711173fd1dbf11023dfd40b6fdd3e5428289ab84931b5a74962e361",
+      "provenance": "Generated from apps/brand/talos-app-icon.svg with @tauri-apps/cli 2.11.0 on 2026-08-29"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/icons/icon.icns",
+      "sha256": "c0cbc0dda1835cdbb623497cd9733e83e94e1fe7f69a23d8aadfa360c5ead7c6",
+      "provenance": "Generated from apps/brand/talos-app-icon.svg with @tauri-apps/cli 2.11.0 on 2026-08-29"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/icons/icon.ico",
+      "sha256": "1f53ad648f5e129f277b0f8ed2d58b11e637f5da3f738b2eec84bb9e6746ec4a",
+      "provenance": "Generated from apps/brand/talos-app-icon.svg with @tauri-apps/cli 2.11.0 on 2026-08-29"
+    },
+    {
+      "path": "apps/talos_viewer/src-tauri/icons/icon.png",
+      "sha256": "108e8652e711173fd1dbf11023dfd40b6fdd3e5428289ab84931b5a74962e361",
+      "provenance": "Generated from apps/brand/talos-app-icon.svg with @tauri-apps/cli 2.11.0 on 2026-08-29"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/icons/icon.icns",
+      "sha256": "c0cbc0dda1835cdbb623497cd9733e83e94e1fe7f69a23d8aadfa360c5ead7c6",
+      "provenance": "Generated from apps/brand/talos-app-icon.svg with @tauri-apps/cli 2.11.0 on 2026-08-29"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/icons/icon.ico",
+      "sha256": "1f53ad648f5e129f277b0f8ed2d58b11e637f5da3f738b2eec84bb9e6746ec4a",
+      "provenance": "Generated from apps/brand/talos-app-icon.svg with @tauri-apps/cli 2.11.0 on 2026-08-29"
+    },
+    {
+      "path": "apps/talos_worker_chat/src-tauri/icons/icon.png",
+      "sha256": "108e8652e711173fd1dbf11023dfd40b6fdd3e5428289ab84931b5a74962e361",
+      "provenance": "Generated from apps/brand/talos-app-icon.svg with @tauri-apps/cli 2.11.0 on 2026-08-29"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-baseline-observatory.jpg",
+      "sha256": "7b6cccdebb17838b530f53c4b4225de29f2b64864179e7ed9609c83c2ccd38d7",
+      "provenance": "First-party Talos Community alpha screenshot captured and supplied by the project owner on 2026-08-29 using synthetic demonstration data; visually reviewed for publication"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-command-center.jpg",
+      "sha256": "5470d1717ddee51a05f6cc8ca22aa8f6a2df4071b0eb43969b7300ef5b752a6e",
+      "provenance": "First-party Talos Community alpha screenshot captured and supplied by the project owner on 2026-08-29 using synthetic demonstration data; visually reviewed for publication"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-customers.jpg",
+      "sha256": "74076f2d2dfc62675f641a06fa93538f9505b68a3f4a2ef50c8b31fd9b78f897",
+      "provenance": "First-party Talos Community alpha screenshot captured and supplied by the project owner on 2026-08-29 using synthetic demonstration data; visually reviewed for publication"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-device-details.jpg",
+      "sha256": "6992fc46f728e8f0920e69a5040bc7e3768c943855104aabe5ca68bda8c5428a",
+      "provenance": "First-party Talos Community alpha screenshot captured and supplied by the project owner on 2026-08-29 using synthetic demonstration data; visually reviewed for publication"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-devices.jpg",
+      "sha256": "a5e712aa2f3efa5daeb8144fc76623d72d74914b0c5663067882f92cd96cae33",
+      "provenance": "First-party Talos Community alpha screenshot captured and supplied by the project owner on 2026-08-29 using synthetic demonstration data; visually reviewed for publication"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-installers.jpg",
+      "sha256": "4d1d4d3d5885cc51144afc05ebcd727acd923d0447714a786aad956acc504c0c",
+      "provenance": "First-party Talos Community alpha screenshot captured and supplied by the project owner on 2026-08-29 using synthetic demonstration data; visually reviewed for publication"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-patch-management.jpg",
+      "sha256": "7c795008ef29e70fa0785b14f7a70f2ca937c5f45069fbda6fa3d0b96a789811",
+      "provenance": "First-party Talos Community alpha screenshot captured and supplied by the project owner on 2026-08-29 using synthetic demonstration data; visually reviewed for publication"
+    },
+    {
+      "path": "docs/screenshots/community-edition/talos-reports.jpg",
+      "sha256": "26b69a8b9729b621e27af45b501ba9e8559cd0a9f75e32dffa1f2c47952881a6",
+      "provenance": "First-party Talos Community alpha screenshot captured and supplied by the project owner on 2026-08-29 using synthetic demonstration data; visually reviewed for publication"
+    },
+    {
+      "path": "apps/vendor/samsa/testdata/add_one.wasm",
+      "sha256": "8f581f8899890a7479c20494f53cc5d60156a4d42e39d6a587a9f3089f198fe0",
+      "provenance": "CallistoLabsNYC/samsa revision 33062fce28a7b14a631496409841e252ef7937c4; byte-identical to the Apache-2.0 upstream test fixture"
+    },
+    {
+      "path": "apps/vendor/samsa/testdata/redpanda-identity.wasm",
+      "sha256": "ecf48344f9205472b9eae291119c1bacbd198fb389b20e00584873f698915a50",
+      "provenance": "CallistoLabsNYC/samsa revision 33062fce28a7b14a631496409841e252ef7937c4; byte-identical to the Apache-2.0 upstream test fixture"
+    },
+    {
+      "path": "apps/frontend/public/file.svg",
+      "sha256": "2b67812c325c199a02536cdbeea0c593a72f707d323b72ee3e08dbab06753bd4",
+      "provenance": "vercel/next.js revision 357e514cf7bdc276bfd830003c38027c17d9de05; byte-identical to packages/create-next-app/templates/app/ts/public/file.svg; MIT notice retained at apps/frontend/public/NEXTJS_TEMPLATE_ASSET_LICENSE.md"
+    },
+    {
+      "path": "apps/frontend/public/globe.svg",
+      "sha256": "b614b9bf183925957661ac851498fe1d8029fd43a62fbfed86f9e2624a57e7cf",
+      "provenance": "vercel/next.js revision 357e514cf7bdc276bfd830003c38027c17d9de05; byte-identical to packages/create-next-app/templates/app/ts/public/globe.svg; MIT notice retained at apps/frontend/public/NEXTJS_TEMPLATE_ASSET_LICENSE.md"
+    },
+    {
+      "path": "apps/frontend/public/next.svg",
+      "sha256": "55995dfad6ecb4945a1e856ddca03c5e16aa5bf13fd21b4df6a74ae79357bcfc",
+      "provenance": "vercel/next.js revision 357e514cf7bdc276bfd830003c38027c17d9de05; byte-identical to packages/create-next-app/templates/app/ts/public/next.svg; MIT notice retained at apps/frontend/public/NEXTJS_TEMPLATE_ASSET_LICENSE.md"
+    },
+    {
+      "path": "apps/frontend/public/vercel.svg",
+      "sha256": "f081337b2fee635b455b63275406a3e7f39d6a014e25ad90dab5a67e62a12ac4",
+      "provenance": "vercel/next.js revision 357e514cf7bdc276bfd830003c38027c17d9de05; byte-identical to packages/create-next-app/templates/app/ts/public/vercel.svg; MIT notice retained at apps/frontend/public/NEXTJS_TEMPLATE_ASSET_LICENSE.md"
+    },
+    {
+      "path": "apps/frontend/public/window.svg",
+      "sha256": "644768c4aaeb4767bce293344eeb0c125fb804a94d801440424072202d85e3a1",
+      "provenance": "vercel/next.js revision 357e514cf7bdc276bfd830003c38027c17d9de05; byte-identical to packages/create-next-app/templates/app/ts/public/window.svg; MIT notice retained at apps/frontend/public/NEXTJS_TEMPLATE_ASSET_LICENSE.md"
+    }
+  ]
+}

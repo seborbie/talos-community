@@ -1,0 +1,67 @@
+name: Bug report
+description: Report a reproducible Talos Community defect without private or security-sensitive data.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not report vulnerabilities here. Follow `SECURITY.md` and never attach credentials,
+        customer data, private hostnames, signing material, or unsanitized logs.
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: Use the release version or full source commit you tested.
+      placeholder: community-v0.0.0 or 40-character commit ID
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      options:
+        - Linux server
+        - Windows server
+        - Windows endpoint or Viewer
+        - macOS endpoint or Viewer
+        - Web interface
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: deployment
+    attributes:
+      label: Sanitized deployment details
+      description: Describe the database mode, edge mode, and relevant customizations without real domains or secrets.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest deterministic sequence that demonstrates the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed credentials, customer data, private hostnames, signing material, and unsanitized logs.
+          required: true
+        - label: This is not a vulnerability report.
+          required: true

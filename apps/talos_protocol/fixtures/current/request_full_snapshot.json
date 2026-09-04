@@ -1,0 +1,6 @@
+{
+  "type": "request_full_snapshot",
+  "data": {
+    "snapshotRequestId": "snap-001"
+  }
+}

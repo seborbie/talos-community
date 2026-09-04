@@ -1,0 +1,37 @@
+name: Feature request
+description: Propose a narrowly scoped improvement to Talos Community.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Search existing issues first. Security reports belong in the private channel described by
+        `SECURITY.md`; do not include customer information, credentials, or private infrastructure.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Explain the user or operator problem independently of a preferred implementation.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe observable behavior and important failure modes.
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Deployment and compatibility constraints
+      description: Note platforms, scale, upgrades, rollback, and security boundaries that matter.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: This request contains no secrets, customer data, or private endpoint details.
+          required: true

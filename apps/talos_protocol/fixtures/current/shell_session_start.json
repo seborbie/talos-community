@@ -1,0 +1,13 @@
+{
+  "type": "shell_start",
+  "data": {
+    "sessionId": "shell-001",
+    "token": "shell-token-001",
+    "runAs": "user",
+    "targetSessionId": 2,
+    "relayUrl": "https://relay.example.test:17443",
+    "e2eKey": "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
+    "pskCertPem": "-----BEGIN CERTIFICATE-----\\nMIIB\\n-----END CERTIFICATE-----\\n",
+    "pskKeyPem": "-----BEGIN PRIVATE KEY-----\\nMIIB\\n-----END PRIVATE KEY-----\\n"
+  }
+}

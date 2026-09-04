@@ -1,0 +1,21 @@
+[Unit]
+Description=Talos Supervisor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/talos/talos-supervisor.env
+ExecStart=/opt/talos/supervisor/talos_supervisor
+Restart=always
+RestartSec=10
+User=root
+Group=root
+KillMode=process
+NoNewPrivileges=false
+PrivateTmp=true
+ProtectHome=read-only
+ReadWritePaths=/opt/talos /etc/talos /etc/systemd/system /var/lib/talos /var/log/talos /tmp
+
+[Install]
+WantedBy=multi-user.target

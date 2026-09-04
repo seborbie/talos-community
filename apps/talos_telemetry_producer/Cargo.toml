@@ -1,0 +1,21 @@
+[package]
+name = "talos_telemetry_producer"
+version = "0.5.2"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1.0"
+axum = { version = "0.7", features = ["json"] }
+chrono = { version = "0.4", features = ["serde"] }
+dotenvy = "0.15"
+kafka = { version = "0.10", default-features = false }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.39", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[lints]
+workspace = true

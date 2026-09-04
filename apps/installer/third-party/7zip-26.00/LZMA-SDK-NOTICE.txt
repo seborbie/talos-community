@@ -1,0 +1,25 @@
+LZMA SDK 26.00 provenance and licence notice
+============================================
+
+Authoritative archive: https://www.7-zip.org/a/lzma2600.7z
+Archive SHA-256: 6b7d0c8ed1a67112d5337e4532ecdcb9fd2eab8b1f6bb54199f9b6a627b506cc
+Authoritative notice member: DOC/lzma-sdk.txt
+Notice member SHA-256: a116399131d94426f57e2ad8a811e7212f0934487af38f68e6daa9fd1edcf7a0
+SFX member: bin/7zSD.sfx
+SFX member SHA-256: d47d81ca4233816b5bf66977c92c55773ae8241d03d108e4477abb49333c2522
+
+The following licence statement is reproduced from the authoritative
+DOC/lzma-sdk.txt member:
+
+LZMA SDK is written and placed in the public domain by Igor Pavlov.
+
+Some code in LZMA SDK is based on public domain code from another developers:
+  1) PPMd var.H (2001): Dmitry Shkarin
+  2) SHA-256: Wei Dai (Crypto++ library)
+
+Anyone is free to copy, modify, publish, use, compile, sell, or distribute the
+original LZMA SDK code, either in source code form or as a compiled binary, for
+any purpose, commercial or non-commercial, and by any means.
+
+LZMA SDK code is compatible with open source licenses, for example, you can
+include it to GNU GPL or GNU LGPL code.

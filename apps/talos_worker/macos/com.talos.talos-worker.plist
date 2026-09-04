@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.talos.talos-worker</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Library/Talos/Worker/Talos Worker.app/Contents/MacOS/talos_worker</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>WorkingDirectory</key>
+  <string>/Library/Talos/Worker</string>
+  <key>StandardOutPath</key>
+  <string>/Library/Logs/Talos/talos_worker.launchd.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Library/Logs/Talos/talos_worker.launchd.err.log</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>RMM_AGENT_ID_PATH</key>
+    <string>/Library/Application Support/Talos/talos_worker_id.txt</string>
+  </dict>
+</dict>
+</plist>

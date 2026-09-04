@@ -1,0 +1,8 @@
+{
+  "type": "shell_output",
+  "data": {
+    "request_id": "cmd-001",
+    "output": "ok\n",
+    "exit_code": 0
+  }
+}

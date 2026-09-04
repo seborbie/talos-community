@@ -1,0 +1,33 @@
+[package]
+name = "talos_telemetry_consumer"
+version = "0.5.4"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+autobins = false
+
+[[bin]]
+name = "talos_telemetry_consumer"
+path = "src/consumer_v2.rs"
+
+[dependencies]
+anyhow = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+dotenvy = "0.15"
+flate2 = "1.0"
+kafka = { version = "0.10", default-features = false }
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
+samsa = "0.1.8"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.39", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+base64 = "0.22"
+hmac = "0.12"
+sha2 = "0.10"
+urlencoding = "2.1"
+futures-util = "0.3"
+
+[lints]
+workspace = true

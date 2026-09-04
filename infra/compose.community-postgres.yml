@@ -1,0 +1,48 @@
+# Default Community database overlay. Combine this file with compose.community.yml. Omit it when
+# TALOS_DATABASE_URL points at an operator-managed PostgreSQL service.
+
+volumes:
+  talos_postgres_data: null
+
+services:
+  postgres:
+    image: "${TALOS_POSTGRES_IMAGE:-postgres:16-alpine@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685}"
+    pull_policy: missing
+    environment:
+      POSTGRES_USER: "${TALOS_POSTGRES_USER:-talos}"
+      POSTGRES_PASSWORD: "${TALOS_POSTGRES_PASSWORD:?TALOS_POSTGRES_PASSWORD is required for the bundled database}"
+      POSTGRES_DB: "${TALOS_POSTGRES_DATABASE:-talos}"
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - talos_postgres_data:/var/lib/postgresql/data
+    networks:
+      - talos_data
+    expose:
+      - "5432"
+    restart: unless-stopped
+    stop_grace_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  database_preflight:
+    environment:
+      TALOS_DATABASE_MODE: bundled
+      DATABASE_URL: "postgresql://${TALOS_POSTGRES_USER:-talos}:${TALOS_POSTGRES_PASSWORD:?TALOS_POSTGRES_PASSWORD is required for the bundled database}@postgres:5432/${TALOS_POSTGRES_DATABASE:-talos}?connect_timeout=5"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  database_migrate:
+    environment:
+      DATABASE_URL: "postgresql://${TALOS_POSTGRES_USER:-talos}:${TALOS_POSTGRES_PASSWORD:?TALOS_POSTGRES_PASSWORD is required for the bundled database}@postgres:5432/${TALOS_POSTGRES_DATABASE:-talos}?connect_timeout=5"
+
+  api_backend:
+    environment:
+      DATABASE_URL: "postgresql://${TALOS_POSTGRES_USER:-talos}:${TALOS_POSTGRES_PASSWORD:?TALOS_POSTGRES_PASSWORD is required for the bundled database}@postgres:5432/${TALOS_POSTGRES_DATABASE:-talos}?connect_timeout=5"

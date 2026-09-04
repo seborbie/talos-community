@@ -1,0 +1,11 @@
+{
+  "type": "upload",
+  "transfer_id": "xfer-001",
+  "destination_path": "C:\\Temp",
+  "file_name": "talos-demo.zip",
+  "is_archive": true,
+  "extract_archive": true,
+  "conflict_mode": "overwrite",
+  "expected_size_bytes": 4096,
+  "resume_offset": 0
+}

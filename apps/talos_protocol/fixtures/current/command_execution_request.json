@@ -1,0 +1,7 @@
+{
+  "type": "shell_command",
+  "data": {
+    "request_id": "cmd-001",
+    "command": "Get-Process -Id $PID"
+  }
+}

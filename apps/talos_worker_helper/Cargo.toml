@@ -1,0 +1,36 @@
+[package]
+name = "talos_worker_helper"
+version = "0.5.67"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1.0"
+talos_worker = { path = "../talos_worker" }
+talos_log_util = { path = "../talos_log_util" }
+talos_protocol = { path = "../talos_protocol" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+winapi = { version = "0.3", features = ["consoleapi", "fileapi", "handleapi", "winnt", "errhandlingapi", "winerror", "winuser", "processthreadsapi", "processenv", "wincon", "wincontypes", "securitybaseapi", "wintrust", "wincrypt"] }
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = ["Win32_Foundation", "Win32_Graphics_Direct3D", "Win32_Graphics_Direct3D_Fxc", "Win32_Graphics_Direct3D11", "Win32_Graphics_Dxgi", "Win32_Graphics_Dxgi_Common", "Win32_System_Com"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+apple-metal = "0.8.7"
+block2 = "0.6.2"
+objc2 = "0.6.3"
+objc2-core-foundation = { version = "0.3.2", features = ["CFDictionary", "CFNumber"] }
+objc2-core-media = { version = "0.3.2", features = ["CMBlockBuffer", "CMFormatDescription", "CMSampleBuffer", "CMTime"] }
+objc2-core-video = { version = "0.3.2", features = ["CVBuffer", "CVImageBuffer", "CVPixelBuffer"] }
+objc2-video-toolbox = { version = "0.3.2", features = ["VTCompressionSession", "VTCompressionProperties", "VTSession", "VTErrors"] }
+screencapturekit = { version = "6.0.1", features = ["macos_13_0"] }
+
+[build-dependencies]
+winres = "0.1.12"
+
+[lints]
+workspace = true

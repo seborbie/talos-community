@@ -1,0 +1,15 @@
+{
+  "type": "tunnel_prepare",
+  "data": {
+    "session_id": "rdp-001",
+    "psk_cert_pem": "-----BEGIN CERTIFICATE-----\\nMIIB\\n-----END CERTIFICATE-----\\n",
+    "psk_key_pem": "-----BEGIN PRIVATE KEY-----\\nMIIB\\n-----END PRIVATE KEY-----\\n",
+    "relay_url": "https://relay.example.test:17443",
+    "e2e_key": "MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=",
+    "mode": "remote_desktop",
+    "selected_display_profile": "modern_gpu",
+    "hide_cursor": false,
+    "viewer_session_token": "viewer-token-001",
+    "parent_desktop_session_id": "desktop-parent-001"
+  }
+}

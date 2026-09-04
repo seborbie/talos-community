@@ -1,0 +1,85 @@
+title = "Talos release secret scanning"
+minVersion = "v8.30.1"
+
+[extend]
+useDefault = true
+
+# Every exception below requires both an exact source path and an exact synthetic/public test value.
+# Do not add path-only, commit-wide, stop-word, or broad generated-fixture exclusions.
+
+[[allowlists]]
+description = "Synthetic Command Center secret handles used by request-contract tests"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "line"
+paths = [
+  '''(^|/)apps/api_backend/tests/commandCenterAiRunner\.test\.ts$''',
+  '''(^|/)apps/talos_ai_runner/src/main\.rs$''',
+]
+regexes = [
+  '''^\s*(?:secretHandle:|"secretHandle":) "sec_a1b2c3d4e5f6g7h8",\s*$''',
+]
+
+[[allowlists]]
+description = "Synthetic 32-byte session key in the checked protocol fixtures"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "line"
+paths = [
+  '''(^|/)apps/talos_protocol/fixtures/current/shell_session_start\.json$''',
+  '''(^|/)apps/talos_protocol/fixtures/current/remote_desktop_negotiation\.json$''',
+  '''(^|/)apps/talos_protocol/tests/golden_fixtures\.rs$''',
+]
+regexes = [
+  '''MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=''',
+  '''0123456789abcdef0123456789abcdef''',
+]
+
+[[allowlists]]
+description = "Azurite's published emulator-only development account key"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "line"
+paths = [
+  '''(^|/)apps/\.env\.example$''',
+  '''(^|/)infra/docker-compose\.dev\.yml$''',
+]
+regexes = [
+  '''Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==''',
+]
+
+[[allowlists]]
+description = "Generated build-cache SHA-256 map, not authentication material"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "line"
+paths = [
+  '''(^|/)apps/\.app-web-build-hashes\.json$''',
+]
+regexes = [
+  '''^\s*"api_backend": "[0-9a-f]{64}",?\s*$''',
+]
+
+[[allowlists]]
+description = "Exact internal development URL mistaken for an execution credential"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "line"
+paths = [
+  '''(^|/)infra/docker-compose\.dev\.yml$''',
+]
+regexes = [
+  '''^\s*RMM_TELEMETRY_DECISION_EXECUTE_URL: http://api_backend:3001/rmm/telemetry/internal/decisions/execute\s*$''',
+]
+
+[[allowlists]]
+description = "Empty legacy macOS signing-key state, never a key value"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "match"
+paths = [
+  '''(^|/)scripts/build-linux-agent\.sh$''',
+]
+regexes = [
+  '''^SIGNING_PRIVATE_KEY_PATH=""\nSIGNING_PRIVATE_KEY_IS_TEMP=0$''',
+]

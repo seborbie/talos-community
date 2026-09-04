@@ -1,0 +1,54 @@
+# Full stack: one build for all Rust servers (debug or release). Use when you want to build
+# the whole stack once and get all server images. From repo root:
+#   docker build -f infra/Dockerfile.rust-servers --target talos_server -t talos/talos-server:dev .
+#   ... or from apps/: bun run docker:rust-servers
+# Build arg PROFILE=debug (default) or release. Compose passes PROFILE from env.
+# Per-server builds: use apps/talos_server/Dockerfile etc. to build only that crate.
+
+FROM rust:1.95.0-bookworm@sha256:6258907abe69656e41cd992e0b705cdcfabcbbe3db374f92ed2d47121282d4a1 AS build
+ARG PROFILE=debug
+WORKDIR /workspace
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends clang libvpx-dev pkg-config \
+  && rm -rf /var/lib/apt/lists/*
+COPY apps ./
+# Cargo reserves the name "debug"; default dev build must be run without --profile (output is target/debug/)
+RUN if [ "$PROFILE" = "debug" ]; then \
+  cargo build --locked -p talos_server -p talos_relay -p talos_telemetry_consumer -p talos_telemetry_producer -p talos_ai_runner; \
+else \
+  cargo build --locked --profile "$PROFILE" -p talos_server -p talos_relay -p talos_telemetry_consumer -p talos_telemetry_producer -p talos_ai_runner; \
+fi
+
+FROM debian:bookworm-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639d36e7456b0b229241 AS talos_server
+ARG PROFILE=debug
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates libvpx7 && rm -rf /var/lib/apt/lists/*
+COPY --from=build /workspace/target/${PROFILE}/talos_server /usr/local/bin/talos_server
+EXPOSE 17110
+CMD ["talos_server"]
+
+FROM debian:bookworm-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639d36e7456b0b229241 AS talos_relay
+ARG PROFILE=debug
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates libvpx7 && rm -rf /var/lib/apt/lists/*
+COPY --from=build /workspace/target/${PROFILE}/talos_relay /usr/local/bin/talos_relay
+EXPOSE 443
+CMD ["talos_relay"]
+
+FROM debian:bookworm-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639d36e7456b0b229241 AS talos_telemetry_consumer
+ARG PROFILE=debug
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates libvpx7 && rm -rf /var/lib/apt/lists/*
+COPY --from=build /workspace/target/${PROFILE}/talos_telemetry_consumer /usr/local/bin/talos_telemetry_consumer
+CMD ["talos_telemetry_consumer"]
+
+FROM debian:bookworm-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639d36e7456b0b229241 AS talos_telemetry_producer
+ARG PROFILE=debug
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates libvpx7 && rm -rf /var/lib/apt/lists/*
+COPY --from=build /workspace/target/${PROFILE}/talos_telemetry_producer /usr/local/bin/talos_telemetry_producer
+EXPOSE 17120
+CMD ["talos_telemetry_producer"]
+
+FROM debian:bookworm-slim@sha256:abd67ffcfa541b485a3dff59865ab629aa048a6c613e639d36e7456b0b229241 AS talos_ai_runner
+ARG PROFILE=debug
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates libvpx7 && rm -rf /var/lib/apt/lists/*
+COPY --from=build /workspace/target/${PROFILE}/talos_ai_runner /usr/local/bin/talos_ai_runner
+EXPOSE 3010
+CMD ["talos_ai_runner"]

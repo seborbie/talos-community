@@ -1,0 +1,39 @@
+# Git and IDE
+.git
+.github
+.cursor
+*.md
+!apps/**/README.md
+
+# Env and secrets
+.env
+.env.*
+apps/.env.debug.local
+*.crt
+*.key
+*.pfx
+*.pem
+*.cer
+*.p12
+*.der
+# Local relay, signing, and development credentials must never enter a build context or cache.
+apps/certs/**
+
+# Rust build artifacts (rebuilt in image)
+apps/target/
+
+# Node / frontend (not needed for Rust server images)
+node_modules
+apps/node_modules
+apps/api_backend/node_modules
+apps/frontend/node_modules
+apps/*/node_modules
+
+# SvelteKit / generated
+apps/frontend/.svelte-kit
+apps/frontend/build
+
+# Misc
+*.log
+deleteme.md
+apps/third_party

@@ -1,0 +1,16 @@
+{
+  "type": "full_snapshot",
+  "data": {
+    "agent_id": "agent-legacy-001",
+    "collected_at": "2025-12-01T09:00:00Z",
+    "snapshot": {
+      "metadata": {
+        "agentId": "agent-legacy-001"
+      },
+      "collection": {}
+    },
+    "unknown_future_block": {
+      "ignored": true
+    }
+  }
+}

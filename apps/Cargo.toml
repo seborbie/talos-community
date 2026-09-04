@@ -1,0 +1,69 @@
+[workspace]
+members = ["talos_protocol", "talos_server", "talos_appliance", "talos_worker", "talos_worker_helper", "talos_worker_chat/src-tauri", "talos_permissions_helper/src-tauri", "talos_viewer/src-tauri", "talos_relay", "vpx-encode", "talos_collector", "talos_telemetry_consumer", "talos_telemetry_producer", "talos_update_common", "talos_supervisor", "talos_viewer_updater", "talos_log_util", "talos_ai_runner"]
+resolver = "2"
+
+[workspace.package]
+rust-version = "1.95"
+license = "AGPL-3.0-only"
+
+[profile.release]
+# Keep release runtime-performance focused.
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+debug = 0
+debug-assertions = false
+overflow-checks = false
+incremental = false
+panic = "abort"
+strip = "symbols"
+
+# Clippy style lints: the workspace prioritizes rustc-clean builds (`RUSTFLAGS=-Dwarnings`);
+# these are allow-listed so `cargo clippy --workspace --all-targets -- -D warnings` stays usable.
+[workspace.lints.clippy]
+borrowed_box = "allow"
+clone_on_copy = "allow"
+cmp_null = "allow"
+cmp_owned = "allow"
+collapsible_if = "allow"
+collapsible_match = "allow"
+derivable_impls = "allow"
+duplicated_attributes = "allow"
+enum_variant_names = "allow"
+field_reassign_with_default = "allow"
+if_same_then_else = "allow"
+large_enum_variant = "allow"
+let_unit_value = "allow"
+manual_clamp = "allow"
+manual_div_ceil = "allow"
+manual_is_multiple_of = "allow"
+manual_pattern_char_comparison = "allow"
+manual_unwrap_or_default = "allow"
+map_flatten = "allow"
+missing_transmute_annotations = "allow"
+needless_ifs = "allow"
+needless_return = "allow"
+only_used_in_recursion = "allow"
+question_mark = "allow"
+result_unit_err = "allow"
+should_implement_trait = "allow"
+single_match = "allow"
+suspicious_open_options = "allow"
+too_many_arguments = "allow"
+type_complexity = "allow"
+unnecessary_cast = "allow"
+unnecessary_map_or = "allow"
+unnecessary_sort_by = "allow"
+unnecessary_unwrap = "allow"
+unnecessary_wraps = "allow"
+unnecessary_to_owned = "allow"
+unwrap_or_default = "allow"
+useless_conversion = "allow"
+useless_transmute = "allow"
+wildcard_in_or_patterns = "allow"
+
+[patch.crates-io]
+samsa = { path = "vendor/samsa" }
+dxgi-capture-rs = { path = "vendor/dxgi-capture-rs" }
+permission-flow = { path = "vendor/permission-flow" }
+tauri-plugin-permission-flow = { path = "vendor/tauri-plugin-permission-flow" }

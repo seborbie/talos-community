@@ -1,0 +1,4 @@
+ALTER TABLE "rmm_devices"
+ALTER COLUMN "last_seen"
+TYPE TIMESTAMPTZ(3)
+USING "last_seen" AT TIME ZONE 'UTC';

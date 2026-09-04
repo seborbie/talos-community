@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup>
+    <_ExistingInstallerDefineConstants>$(DefineConstants)</_ExistingInstallerDefineConstants>
+    <DefineConstants Condition="'$(_ExistingInstallerDefineConstants)' == ''">ProductVersion=$(ProductVersion)</DefineConstants>
+    <DefineConstants Condition="'$(_ExistingInstallerDefineConstants)' != ''">$(_ExistingInstallerDefineConstants);ProductVersion=$(ProductVersion)</DefineConstants>
+  </PropertyGroup>
+
+  <Target Name="ValidateInstallerProductVersion" BeforeTargets="CoreCompile">
+    <Error
+      Condition="'$(ProductVersion)' == ''"
+      Text="ProductVersion is required. Build through scripts/build-installers.ps1 or pass -p:ProductVersion=&lt;major.minor.patch&gt;." />
+  </Target>
+</Project>

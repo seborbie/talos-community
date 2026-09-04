@@ -1,0 +1,8 @@
+[install]
+# pnpm-like dependency isolation: workspaces may import only dependencies they declare.
+linker = "isolated"
+# Disable Bun's fallback store hoist so undeclared imports fail instead of resolving by accident.
+hoist = false
+# Bun 1.3.14's compatible representation of the same policy; remove after the pinned Bun parser
+# supports `hoist = false` and a clean install proves the fallback stays empty without it.
+hoistPattern = []

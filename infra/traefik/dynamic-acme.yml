@@ -1,0 +1,105 @@
+# Traefik file-provider routing for the public ACME mode. Domain values are injected through
+# Traefik's supported Go-template environment function. The quote function prevents a domain
+# value from escaping its Host/HostSNI matcher; the launcher separately validates DNS syntax.
+
+http:
+  routers:
+    frontend-http:
+      entryPoints:
+        - web
+      rule: 'Host({{ env "TALOS_FRONTEND_DOMAIN" | quote }})'
+      service: frontend
+      middlewares:
+        - redirect-to-https
+    api-http:
+      entryPoints:
+        - web
+      rule: 'Host({{ env "TALOS_API_DOMAIN" | quote }})'
+      service: api
+      middlewares:
+        - redirect-to-https
+    control-http:
+      entryPoints:
+        - web
+      rule: 'Host({{ env "TALOS_CONTROL_DOMAIN" | quote }})'
+      service: control
+      middlewares:
+        - redirect-to-https
+
+    frontend-https:
+      entryPoints:
+        - websecure
+      rule: 'Host({{ env "TALOS_FRONTEND_DOMAIN" | quote }})'
+      service: frontend
+      middlewares:
+        - response-security
+      tls:
+        certResolver: letsencrypt
+    api-https:
+      entryPoints:
+        - websecure
+      rule: 'Host({{ env "TALOS_API_DOMAIN" | quote }})'
+      service: api
+      middlewares:
+        - response-security
+      tls:
+        certResolver: letsencrypt
+    control-https:
+      entryPoints:
+        - websecure
+      rule: 'Host({{ env "TALOS_CONTROL_DOMAIN" | quote }})'
+      service: control
+      middlewares:
+        - response-security
+      tls:
+        certResolver: letsencrypt
+
+  middlewares:
+    redirect-to-https:
+      redirectScheme:
+        scheme: https
+        port: '{{ env "TALOS_EDGE_HTTPS_PORT" }}'
+        permanent: true
+    response-security:
+      headers:
+        contentTypeNosniff: true
+        referrerPolicy: strict-origin-when-cross-origin
+        stsSeconds: 31536000
+
+  services:
+    frontend:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: http://frontend:3000
+    api:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: http://api_backend:3001
+    control:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: http://talos_server:17110
+
+tcp:
+  routers:
+    relay:
+      entryPoints:
+        - websecure
+      rule: 'HostSNI({{ env "TALOS_RELAY_DOMAIN" | quote }})'
+      service: relay
+      tls:
+        certResolver: letsencrypt
+  services:
+    relay:
+      loadBalancer:
+        servers:
+          - address: talos_relay:443
+
+tls:
+  options:
+    default:
+      minVersion: VersionTLS12
+      sniStrict: true

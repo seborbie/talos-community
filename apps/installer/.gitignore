@@ -1,0 +1,10 @@
+**/bin/
+**/obj/
+*.wixpdb
+*.msi
+*.exe
+*.7z
+*.sfx
+payload/linux/linux-x64/talos_supervisor
+payload/linux/linux-x64/talos_worker
+!payload/**/.gitkeep

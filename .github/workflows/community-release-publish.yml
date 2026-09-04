@@ -1,0 +1,304 @@
+name: Community release image and bundle publication
+
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_run_id:
+        description: Successful Community release candidate workflow run ID
+        required: true
+        type: string
+      release_tag:
+        description: Annotated community-vX.Y.Z tag built by the candidate run
+        required: true
+        type: string
+      confirm_registry_write:
+        description: Type the exact release tag to authorize immutable GHCR writes
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: community-release-publish-${{ inputs.release_tag }}
+  cancel-in-progress: false
+
+env:
+  BUN_VERSION: 1.3.14
+  GITLEAKS_IMAGE: ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
+  SYFT_IMAGE: anchore/syft:v1.30.0@sha256:bd5357d2cd087f03af748dac24df48bfbc1723080d78f75f69aca1f2d429060e
+  SKOPEO_IMAGE: quay.io/skopeo/stable:v1.20.0@sha256:47853bb9fb24202af9110531ebd6e43c5f97701254ca290596640290d17942f4
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      version: ${{ steps.identity.outputs.version }}
+      source_sha: ${{ steps.identity.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.release_tag }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - name: Validate explicit authorization and candidate identity
+        id: identity
+        working-directory: apps
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CANDIDATE_RUN_ID: ${{ inputs.candidate_run_id }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          CONFIRM_REGISTRY_WRITE: ${{ inputs.confirm_registry_write }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "${CONFIRM_REGISTRY_WRITE}" = "${RELEASE_TAG}" ||
+            { echo "registry confirmation must exactly match release_tag" >&2; exit 1; }
+          source_sha="$(git -C .. rev-parse "${RELEASE_TAG}^{commit}")"
+          object_type="$(git -C .. cat-file -t "refs/tags/${RELEASE_TAG}")"
+          bun ./scripts/community-release-version.ts \
+            --tag "${RELEASE_TAG}" --source-sha "${source_sha}" \
+            --ref-type tag --tag-object-type "${object_type}" \
+            --github-output "${GITHUB_OUTPUT}"
+          run_json="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${CANDIDATE_RUN_ID}")"
+          test "$(jq -r .name <<<"${run_json}")" = "Community release candidate"
+          test "$(jq -r .conclusion <<<"${run_json}")" = "success"
+          test "$(jq -r .head_sha <<<"${run_json}")" = "${source_sha}"
+      - name: Scan candidate workflow logs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/logs"
+          gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${{ inputs.candidate_run_id }}/logs" \
+            > "${RUNNER_TEMP}/candidate-logs.zip"
+          unzip -q "${RUNNER_TEMP}/candidate-logs.zip" -d "${RUNNER_TEMP}/logs"
+          docker run --rm --volume "${GITHUB_WORKSPACE}:/repo:ro" \
+            --volume "${RUNNER_TEMP}/logs:/scan:ro" \
+            "${GITLEAKS_IMAGE}" dir --config /repo/.gitleaks.toml \
+            --max-archive-depth 4 --redact --no-banner --no-color /scan
+
+  publish-images:
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    environment: community-release-publish
+    permissions:
+      actions: read
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { key: api_backend, image: talos-api-backend }
+          - { key: frontend, image: talos-frontend }
+          - { key: relay, image: talos-relay }
+          - { key: control_server, image: talos-server }
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: community-image-${{ matrix.key }}-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/image
+          run-id: ${{ inputs.candidate_run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify candidate image handoff
+        shell: bash
+        run: (cd "${RUNNER_TEMP}/image" && sha256sum --check SHA256SUMS)
+      - uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3.5.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - name: Copy exact reviewed OCI archive to GHCR
+        shell: bash
+        run: |
+          set -euo pipefail
+          owner="$(tr '[:upper:]' '[:lower:]' <<<"${GITHUB_REPOSITORY_OWNER}")"
+          tag="ghcr.io/${owner}/${{ matrix.image }}:${{ needs.validate.outputs.version }}"
+          source_manifest="${RUNNER_TEMP}/source-${{ matrix.key }}.manifest.json"
+          published_manifest="${RUNNER_TEMP}/published-${{ matrix.key }}.manifest.json"
+          inspect_error="${RUNNER_TEMP}/existing-${{ matrix.key }}.error"
+          docker run --rm \
+            --volume "${RUNNER_TEMP}/image:/input:ro" \
+            "${SKOPEO_IMAGE}" inspect --raw \
+            "oci-archive:/input/${{ matrix.key }}.oci.tar" > "${source_manifest}"
+          source_digest="sha256:$(sha256sum "${source_manifest}" | cut -d' ' -f1)"
+
+          set +e
+          docker run --rm \
+            --volume "${HOME}/.docker/config.json:/auth.json:ro" \
+            "${SKOPEO_IMAGE}" inspect --raw --authfile /auth.json \
+            "docker://${tag}" > "${published_manifest}" 2> "${inspect_error}"
+          inspect_status=$?
+          set -e
+          if [[ ${inspect_status} -eq 0 ]]; then
+            existing_digest="sha256:$(sha256sum "${published_manifest}" | cut -d' ' -f1)"
+            test "${existing_digest}" = "${source_digest}" || {
+              echo "refusing to overwrite existing release tag ${tag}" >&2
+              exit 1
+            }
+          else
+            grep -Eqi 'manifest unknown|name unknown|not found' "${inspect_error}" || {
+              cat "${inspect_error}" >&2
+              echo "could not establish whether ${tag} already exists" >&2
+              exit 1
+            }
+            docker run --rm \
+              --volume "${RUNNER_TEMP}/image:/input:ro" \
+              --volume "${HOME}/.docker/config.json:/auth.json:ro" \
+              "${SKOPEO_IMAGE}" copy --all --preserve-digests \
+              --dest-authfile /auth.json \
+              "oci-archive:/input/${{ matrix.key }}.oci.tar" "docker://${tag}"
+            docker run --rm \
+              --volume "${HOME}/.docker/config.json:/auth.json:ro" \
+              "${SKOPEO_IMAGE}" inspect --raw --authfile /auth.json \
+              "docker://${tag}" > "${published_manifest}"
+          fi
+          published_digest="sha256:$(sha256sum "${published_manifest}" | cut -d' ' -f1)"
+          test "${source_digest}" = "${published_digest}" ||
+            { echo "registry digest changed during promotion" >&2; exit 1; }
+          immutable_reference="ghcr.io/${owner}/${{ matrix.image }}@${published_digest}"
+          archive_sha="$(sha256sum "${RUNNER_TEMP}/image/${{ matrix.key }}.oci.tar" | cut -d' ' -f1)"
+          jq -n \
+            --arg key "${{ matrix.key }}" \
+            --arg version "${{ needs.validate.outputs.version }}" \
+            --arg sha "${{ needs.validate.outputs.source_sha }}" \
+            --arg reference "${immutable_reference}" \
+            --arg digest "${published_digest}" \
+            --arg archive_sha "${archive_sha}" \
+            --arg sbom "${{ matrix.key }}.spdx.json" \
+            '{schemaVersion:1,key:$key,releaseVersion:$version,sourceSha:$sha,
+              reference:$reference,digest:$digest,platforms:["linux/amd64","linux/arm64"],
+              ociArchiveSha256:$archive_sha,sbomFile:$sbom}' \
+            > "${RUNNER_TEMP}/image/${{ matrix.key }}.published.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: community-published-image-${{ matrix.key }}-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/image/${{ matrix.key }}.published.json
+          if-no-files-found: error
+          retention-days: 90
+
+  bundle:
+    needs: [validate, publish-images]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    environment: community-release-publish
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.validate.outputs.source_sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - name: Install locked release tooling
+        working-directory: apps
+        run: bun ci
+      - name: Download candidate artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: community-*-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/inputs
+          run-id: ${{ inputs.candidate_run_id }}
+          github-token: ${{ github.token }}
+      - name: Download published image records
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: community-published-image-*-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/records
+          merge-multiple: true
+      - name: Verify handoffs and assemble no-Bun bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r sums; do
+            (cd "$(dirname "${sums}")" && sha256sum --check "$(basename "${sums}")")
+          done < <(find "${RUNNER_TEMP}/inputs" -name SHA256SUMS -type f -print | sort)
+          jq -s '.' "${RUNNER_TEMP}"/records/*.published.json > "${RUNNER_TEMP}/published-images.json"
+          mkdir -p "${RUNNER_TEMP}/sbom"
+          find "${RUNNER_TEMP}/inputs" -name '*.spdx.json' -type f \
+            -exec cp {} "${RUNNER_TEMP}/sbom/" \;
+          native="$(find "${RUNNER_TEMP}/inputs" -type d \
+            -name 'community-native-clients-UNSIGNED-*' -print -quit)"
+          docker run --rm --volume "${native}:/scan:ro" \
+            --volume "${RUNNER_TEMP}/sbom:/out" \
+            "${SYFT_IMAGE}" scan dir:/scan \
+            --output spdx-json=/out/native-clients.spdx.json
+          linux="$(find "${RUNNER_TEMP}/inputs" -type f \
+            -name 'talos-server_*_linux_x86_64' -print -quit)"
+          windows="$(find "${RUNNER_TEMP}/inputs" -type f \
+            -name 'talos-server_*_windows_x86_64_UNSIGNED.exe' -print -quit)"
+          windows_directory="$(dirname "${windows}")"
+          windows_name="$(basename "${windows}")"
+          docker run --rm --volume "${windows_directory}:/scan:ro" \
+            --volume "${RUNNER_TEMP}/sbom:/out" \
+            "${SYFT_IMAGE}" scan "file:/scan/${windows_name}" \
+            --output spdx-json=/out/launcher-windows.spdx.json
+          cd apps
+          bun ./scripts/community-release-bundle.ts \
+            --repo-root .. \
+            --output "${RUNNER_TEMP}/talos-community-${{ needs.validate.outputs.version }}" \
+            --release-tag "${{ inputs.release_tag }}" \
+            --release-version "${{ needs.validate.outputs.version }}" \
+            --source-sha "${{ needs.validate.outputs.source_sha }}" \
+            --linux-launcher "${linux}" \
+            --windows-launcher "${windows}" \
+            --native-artifacts "${native}" \
+            --image-records "${RUNNER_TEMP}/published-images.json" \
+            --sbom-directory "${RUNNER_TEMP}/sbom"
+          cd ..
+          output="${RUNNER_TEMP}/release-output"
+          mkdir -p "${output}"
+          epoch="$(git show -s --format=%ct "${{ needs.validate.outputs.source_sha }}")"
+          tar --sort=name --mtime="@${epoch}" --owner=0 --group=0 --numeric-owner \
+            -czf "${output}/talos-community-${{ needs.validate.outputs.version }}.tar.gz" \
+            -C "${RUNNER_TEMP}" "talos-community-${{ needs.validate.outputs.version }}"
+          (
+            cd "${RUNNER_TEMP}"
+            find "talos-community-${{ needs.validate.outputs.version }}" -type f -print |
+              LC_ALL=C sort |
+              zip -X -q "${output}/talos-community-${{ needs.validate.outputs.version }}.zip" -@
+          )
+          find "${RUNNER_TEMP}/inputs/community-source-${{ needs.validate.outputs.version }}" \
+            -maxdepth 1 -type f ! -name SHA256SUMS -exec cp {} "${output}/" \;
+          fingerprint="$(jq -r '.signing.updaterManifestPublicKeySha256' \
+            "${RUNNER_TEMP}/talos-community-${{ needs.validate.outputs.version }}/release-manifest.json")"
+          [[ "${fingerprint}" =~ ^[0-9a-f]{64}$ ]]
+          sed \
+            -e 's/REPLACE_WITH_FULL_COMMIT_SHA/${{ needs.validate.outputs.source_sha }}/g' \
+            -e "s/REPLACE_WITH_REVIEWED_FINGERPRINT/${fingerprint}/g" \
+            -e 's|REPLACE_WITH_LINKS_OR_EXPLICIT_UNAVAILABLE_STATUS|GitHub artifact attestations generated by candidate and publication workflows|g' \
+            .github/RELEASE_TEMPLATE.md > "${output}/RELEASE_NOTES.md"
+          (
+            cd "${output}"
+            find . -maxdepth 1 -type f ! -name SHA256SUMS -print0 |
+              LC_ALL=C sort -z | xargs -0 sha256sum > SHA256SUMS
+          )
+          docker run --rm --volume "${GITHUB_WORKSPACE}:/repo:ro" \
+            --volume "${output}:/scan:ro" \
+            "${GITLEAKS_IMAGE}" dir --config /repo/.gitleaks.toml \
+            --max-archive-depth 8 --redact --no-banner --no-color /scan
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        with:
+          subject-path: ${{ runner.temp }}/release-output/*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: community-release-bundle-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/release-output
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0

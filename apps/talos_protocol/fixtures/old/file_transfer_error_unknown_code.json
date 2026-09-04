@@ -1,0 +1,6 @@
+{
+  "type": "error",
+  "code": "peer_version_too_new",
+  "message": "The remote peer reported a newer error code.",
+  "retryable": true
+}

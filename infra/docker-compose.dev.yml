@@ -1,0 +1,409 @@
+name: talos-dev
+
+networks:
+  dev_network:
+    driver: bridge
+
+volumes:
+  redpanda-0: null
+  azurite-data: null
+  postgres-data: null
+
+services:
+  api_backend:
+    image: talos/api-backend:dev
+    build:
+      context: ..
+      dockerfile: apps/api_backend/Dockerfile
+    # The API is the only service that receives the application env file. It owns the broad
+    # authentication, encryption, AI-provider, artifact, and storage configuration surface.
+    # Rust services below receive explicit per-service allowlists instead.
+    env_file: ../apps/.env
+    environment:
+      NODE_ENV: development
+      API_PORT: 3001
+      # Listen on the container network; the published host socket remains loopback-only below.
+      API_BIND_HOST: 0.0.0.0
+      DATABASE_URL: postgresql://${POSTGRES_USER:-talos}:${POSTGRES_PASSWORD:-talos}@postgres:5432/${POSTGRES_DB:-talos}
+      RMM_DATABASE_URL: postgresql://${POSTGRES_USER:-talos}:${POSTGRES_PASSWORD:-talos}@postgres:5432/${POSTGRES_DB:-talos}
+      # Compose-only controls keep host-native URLs in apps/.env from leaking into containers.
+      # `-` (rather than `:-`) preserves an explicit empty value for Community Edition.
+      RMM_TELEMETRY_PRODUCER_URL: "${TALOS_COMPOSE_TELEMETRY_PRODUCER_URL-http://talos_telemetry_producer:17120}"
+      TALOS_AI_RUNNER_URL: "${TALOS_COMPOSE_AI_RUNNER_URL-http://talos_ai_runner:3010}"
+      RMM_SERVER_HTTP_URL: http://talos_server:17110
+      TALOS_AI_RUNNER_CALLBACK_BASE_URL: http://api_backend:3001
+      # SFX assembly inputs used by /rmm/installers/profiles/:id/download-exe.
+      # Mounted from host apps/installer/artifacts for rapid local iteration without rebuilding the API image.
+      RMM_INSTALLER_SFX_STUB_PATH: ${RMM_INSTALLER_SFX_STUB_PATH:-/installer-artifacts/dev/7zSD.sfx}
+      RMM_INSTALLER_PAYLOAD_7Z_PATH: ${RMM_INSTALLER_PAYLOAD_7Z_PATH:-/installer-artifacts/dev/Talos.Agent.Setup.7z}
+      RMM_INSTALLER_PAYLOAD_EXE_NAME: ${RMM_INSTALLER_PAYLOAD_EXE_NAME:-Talos.Agent.Setup.exe}
+      FEATURE_UPGRADE_ISO_CONTAINER: ${FEATURE_UPGRADE_ISO_CONTAINER:-talos-feature-upgrade-isos}
+      FEATURE_UPGRADE_ISO_PUBLIC_BLOB_ENDPOINT: ${FEATURE_UPGRADE_ISO_PUBLIC_BLOB_ENDPOINT:-http://localhost:3008/devstoreaccount1}
+      FEATURE_UPGRADE_ISO_SAS_TTL_SECONDS: ${FEATURE_UPGRADE_ISO_SAS_TTL_SECONDS:-900}
+      AZURE_STORAGE_CONNECTION_STRING: ${TALOS_COMPOSE_AZURE_STORAGE_CONNECTION_STRING:-DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://azurite:10000/devstoreaccount1;}
+    volumes:
+      - ../apps/installer/artifacts:/installer-artifacts:ro
+    networks:
+      - dev_network
+    ports:
+      - "${TALOS_API_HOST_BIND:-127.0.0.1}:3001:3001"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://127.0.0.1:3001/').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    image: talos/frontend:dev
+    build:
+      context: ..
+      dockerfile: apps/frontend/Dockerfile
+      args:
+        PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:3001}
+        PUBLIC_RMM_API_URL: ${PUBLIC_RMM_API_URL:-http://localhost:3002}
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      PUBLIC_OPERATOR_NAME: "${PUBLIC_OPERATOR_NAME-}"
+      PUBLIC_SUPPORT_URL: "${PUBLIC_SUPPORT_URL-}"
+      PUBLIC_TERMS_URL: "${PUBLIC_TERMS_URL-}"
+      PUBLIC_PRIVACY_URL: "${PUBLIC_PRIVACY_URL-}"
+      PUBLIC_SOURCE_URL: "${PUBLIC_SOURCE_URL-}"
+    networks:
+      - dev_network
+    ports:
+      - "${TALOS_FRONTEND_HOST_BIND:-127.0.0.1}:3000:3000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://127.0.0.1:3000/').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    depends_on:
+      - api_backend
+
+  postgres:
+    image: postgres:16-alpine@sha256:cf78e76683b9ca8c5733cbbdce6c9262b45b6767934dd0a95e671f9a0fc20685
+    container_name: talos-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-talos}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-talos}
+      POSTGRES_DB: ${POSTGRES_DB:-talos}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - dev_network
+    ports:
+      - "${TALOS_POSTGRES_HOST_BIND:-127.0.0.1}:3004:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-talos} -d ${POSTGRES_DB:-talos}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redpanda-0:
+    image: docker.redpanda.com/redpandadata/redpanda@sha256:8cb52078690728e2b3d1507fc84eda4c07d4d59bd8fa241e9b1cc7eb7de096c9
+    container_name: redpanda-0
+    command:
+      - redpanda
+      - start
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:3005
+      - --advertise-kafka-addr internal://redpanda-0:9092,external://${TALOS_REDPANDA_ADVERTISED_HOST:-localhost}:3005
+      - --schema-registry-addr internal://0.0.0.0:8081,external://0.0.0.0:3006
+      - --rpc-addr redpanda-0:33145
+      - --advertise-rpc-addr redpanda-0:33145
+      - --mode dev-container
+      - --smp 1
+      - --default-log-level=info
+    volumes:
+      - redpanda-0:/var/lib/redpanda/data
+    networks:
+      - dev_network
+    ports:
+      - "${TALOS_REDPANDA_HOST_BIND:-127.0.0.1}:3005:3005"
+      - "${TALOS_REDPANDA_HOST_BIND:-127.0.0.1}:3006:3006"
+      - "${TALOS_REDPANDA_HOST_BIND:-127.0.0.1}:3009:9644"
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "info"]
+      interval: 10s
+      timeout: 15s
+      retries: 10
+
+  console:
+    image: docker.redpanda.com/redpandadata/console@sha256:72bd99bdc304a7c6aab58bfaccf92e302d4e826f6f4737d14953eb04ceed7c07
+    container_name: redpanda-console
+    networks:
+      - dev_network
+    entrypoint: /bin/sh
+    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml && /app/console'
+    environment:
+      CONFIG_FILEPATH: ${CONFIG_FILEPATH:-/tmp/config.yml}
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["redpanda-0:9092"]
+        redpanda:
+          adminApi:
+            enabled: true
+            urls: ["http://redpanda-0:9644"]
+    ports:
+      - "${TALOS_REDPANDA_CONSOLE_HOST_BIND:-127.0.0.1}:3007:8080"
+    depends_on:
+      redpanda-0:
+        condition: service_healthy
+  topic-init:
+    image: docker.redpanda.com/redpandadata/redpanda@sha256:8cb52078690728e2b3d1507fc84eda4c07d4d59bd8fa241e9b1cc7eb7de096c9
+    container_name: redpanda-topic-init
+    networks:
+      - dev_network
+    environment:
+      RMM_TELEMETRY_TOPIC_PARTITIONS: ${RMM_TELEMETRY_TOPIC_PARTITIONS:-3}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Creating telemetry topics..."
+        rpk topic create rmm_telemetry_snapshots --partitions "$${RMM_TELEMETRY_TOPIC_PARTITIONS}" --brokers redpanda-0:9092 || true
+        rpk topic create rmm_telemetry_snapshots_dlq --partitions "$${RMM_TELEMETRY_TOPIC_PARTITIONS}" --brokers redpanda-0:9092 || true
+        rpk topic create rmm_telemetry_events --partitions "$${RMM_TELEMETRY_TOPIC_PARTITIONS}" --brokers redpanda-0:9092 || true
+        rpk topic create rmm_telemetry_remediation_commands --partitions "$${RMM_TELEMETRY_TOPIC_PARTITIONS}" --brokers redpanda-0:9092 || true
+        rpk topic create rmm_telemetry_remediation_status --partitions "$${RMM_TELEMETRY_TOPIC_PARTITIONS}" --brokers redpanda-0:9092 || true
+        rpk topic create rmm_telemetry_patch_progress --partitions "$${RMM_TELEMETRY_TOPIC_PARTITIONS}" --brokers redpanda-0:9092 || true
+        rpk topic create rmm_telemetry_remediation_dlq --partitions "$${RMM_TELEMETRY_TOPIC_PARTITIONS}" --brokers redpanda-0:9092 || true
+        echo "Topics ready."
+    depends_on:
+      redpanda-0:
+        condition: service_healthy
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite@sha256:647c63a91102a9d8e8000aab803436e1fc85fbb285e7ce830a82ee5d6661cf37
+    networks:
+      - dev_network
+    ports:
+      - "${TALOS_AZURITE_HOST_BIND:-127.0.0.1}:3008:10000"
+    volumes:
+      - ${AZURITE_DATA_HOST_PATH:-../apps/.azurite-data}:/data
+    command: azurite --location /data --blobHost 0.0.0.0 --skipApiVersionCheck --disableProductStyleUrl
+
+  # Rust RMM servers (built from infra/Dockerfile.rust-servers). Used by bun run dev.
+  # Build only when Rust code changes; Docker layer cache keeps rebuilds fast.
+  talos_server:
+    image: talos/talos-server:dev
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.rust-servers
+      target: talos_server
+      args:
+        PROFILE: ${PROFILE:-debug}
+    environment:
+      RUST_LOG: "${RUST_LOG:-info}"
+      RMM_BIND_ADDR: 0.0.0.0:17110
+      RMM_SERVER_API_KEY: "${RMM_SERVER_API_KEY-}"
+      RMM_CORS_ORIGINS: "${RMM_CORS_ORIGINS-}"
+      RMM_PING_INTERVAL_SECS: "${RMM_PING_INTERVAL_SECS:-25}"
+      RMM_MAX_OUTPUT_BYTES: "${RMM_MAX_OUTPUT_BYTES:-51200}"
+      RMM_MAX_EXECUTION_SECS: "${RMM_MAX_EXECUTION_SECS:-60}"
+      RMM_TELEMETRY_PRODUCER_URL: "${TALOS_COMPOSE_TELEMETRY_PRODUCER_URL-http://talos_telemetry_producer:17120}"
+      API_BACKEND_URL: http://api_backend:3001
+      RMM_RELAY_URL: ${RMM_RELAY_URL:-localhost:17443}
+    networks:
+      - dev_network
+    ports:
+      - "${TALOS_RMM_SERVER_HOST_BIND:-127.0.0.1}:3002:17110"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "grep -Eq '^[[:space:]]*[0-9]+: [0-9A-F]+:42D6 [0-9A-F]+:[0-9A-F]+ 0A ' /proc/net/tcp /proc/net/tcp6",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - talos_relay
+
+  talos_relay:
+    image: talos/talos-relay:dev
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.rust-servers
+      target: talos_relay
+      args:
+        PROFILE: ${PROFILE:-debug}
+    environment:
+      RUST_LOG: "${RUST_LOG:-info}"
+      RMM_RELAY_BIND_ADDR: 0.0.0.0:443
+      RMM_RELAY_TLS_TERMINATED: "${RMM_RELAY_TLS_TERMINATED:-false}"
+      # Force container-local cert paths; host paths from apps/.env are invalid in Docker.
+      RMM_RELAY_TLS_CERT_PATH: ${RMM_RELAY_TLS_CERT_PATH:-/.certs/local-dev-relay-fullchain.pem}
+      RMM_RELAY_TLS_KEY_PATH: ${RMM_RELAY_TLS_KEY_PATH:-/.certs/local-dev-relay-key.pem}
+      RMM_RELAY_PENDING_TTL_SECS: "${RMM_RELAY_PENDING_TTL_SECS:-600}"
+      RMM_RELAY_CLEANUP_INTERVAL_SECS: "${RMM_RELAY_CLEANUP_INTERVAL_SECS:-30}"
+    volumes:
+      # Mount only the two TLS inputs. Never expose apps/certs: release signing keys may live there.
+      - type: bind
+        source: ${RMM_RELAY_TLS_CERT_HOST_PATH:-../apps/certs/local-dev-relay-fullchain.pem}
+        target: ${RMM_RELAY_TLS_CERT_PATH:-/.certs/local-dev-relay-fullchain.pem}
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${RMM_RELAY_TLS_KEY_HOST_PATH:-../apps/certs/local-dev-relay-key.pem}
+        target: ${RMM_RELAY_TLS_KEY_PATH:-/.certs/local-dev-relay-key.pem}
+        read_only: true
+        bind:
+          create_host_path: false
+    networks:
+      - dev_network
+    ports:
+      # Bind host/port are configurable so local VM-based E2E can expose the relay on bridge interfaces.
+      - "${RMM_RELAY_HOST_BIND:-127.0.0.1}:${RMM_RELAY_HOST_PORT:-17443}:443"
+    healthcheck:
+      # The relay binds only after its certificate/key have loaded successfully. Checking the
+      # listening socket avoids creating a fake pending relay session as an HTTP probe would.
+      test:
+        [
+          "CMD-SHELL",
+          "grep -Eq '^[[:space:]]*[0-9]+: [0-9A-F]+:01BB [0-9A-F]+:[0-9A-F]+ 0A ' /proc/net/tcp /proc/net/tcp6",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  talos_telemetry_consumer:
+    image: talos/talos-telemetry-consumer:dev
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.rust-servers
+      target: talos_telemetry_consumer
+      args:
+        PROFILE: ${PROFILE:-debug}
+    environment:
+      RUST_LOG: "${RUST_LOG:-info,samsa=warn,talos_telemetry_consumer=debug}"
+      RMM_SERVER_API_KEY: "${RMM_SERVER_API_KEY-}"
+      RMM_TELEMETRY_SERVICE_KEY: "${RMM_TELEMETRY_SERVICE_KEY-}"
+      SERVICE_KEY: "${SERVICE_KEY-}"
+      RMM_TELEMETRY_KAFKA_BROKERS: redpanda-0:9092
+      RMM_TELEMETRY_SNAPSHOT_TOPIC: ${RMM_TELEMETRY_SNAPSHOT_TOPIC:-rmm_telemetry_snapshots}
+      RMM_TELEMETRY_EVENTS_TOPIC: ${RMM_TELEMETRY_EVENTS_TOPIC:-rmm_telemetry_events}
+      RMM_TELEMETRY_SNAPSHOT_DLQ_TOPIC: ${RMM_TELEMETRY_SNAPSHOT_DLQ_TOPIC:-rmm_telemetry_snapshots_dlq}
+      RMM_TELEMETRY_CONSUMER_GROUP: ${RMM_TELEMETRY_CONSUMER_GROUP:-rmm-telemetry-snapshot-consumer}
+      RMM_TELEMETRY_EVENTS_BATCH_URL: http://api_backend:3001/rmm/telemetry/events/batch
+      RMM_TELEMETRY_MANIFEST_URL: http://api_backend:3001/rmm/telemetry/manifest/snapshots
+      RMM_TELEMETRY_GRAPH_APPLY_URL: http://api_backend:3001/rmm/telemetry/graph/apply-batch
+      RMM_TELEMETRY_DECISION_EXECUTE_URL: http://api_backend:3001/rmm/telemetry/internal/decisions/execute
+      RMM_TELEMETRY_REMEDIATION_COMMAND_PROJECT_URL: http://api_backend:3001/rmm/telemetry/remediation/commands/project
+      RMM_TELEMETRY_REMEDIATION_STATUS_PROJECT_URL: http://api_backend:3001/rmm/telemetry/remediation/commands/status
+      RMM_TELEMETRY_PATCH_PROGRESS_PROJECT_URL: http://api_backend:3001/rmm/telemetry/patch/progress
+      RMM_TELEMETRY_REMEDIATION_COMMANDS_TOPIC: rmm_telemetry_remediation_commands
+      RMM_TELEMETRY_REMEDIATION_STATUS_TOPIC: rmm_telemetry_remediation_status
+      RMM_TELEMETRY_PATCH_PROGRESS_TOPIC: rmm_telemetry_patch_progress
+      RMM_TELEMETRY_REMEDIATION_DLQ_TOPIC: rmm_telemetry_remediation_dlq
+      RMM_TELEMETRY_REMEDIATION_ENQUEUE_URL: http://talos_server:17110/api/rmm/internal/remediation/commands/enqueue
+      RMM_TELEMETRY_RULES_URL_BASE: http://api_backend:3001/rmm/telemetry/rules
+      RMM_TELEMETRY_PROCESSED_CHECK_URL: http://api_backend:3001/rmm/telemetry/messages/processed
+      RMM_TELEMETRY_COMPAT_SNAPSHOT_UPSERT_URL: http://api_backend:3001/rmm/telemetry/snapshots/upsert
+      RMM_TELEMETRY_KAFKA_SESSION_TIMEOUT_MS: "${RMM_TELEMETRY_KAFKA_SESSION_TIMEOUT_MS:-45000}"
+      RMM_TELEMETRY_KAFKA_REBALANCE_TIMEOUT_MS: "${RMM_TELEMETRY_KAFKA_REBALANCE_TIMEOUT_MS:-45000}"
+      RMM_TELEMETRY_KAFKA_FETCH_MAX_WAIT_MS: "${RMM_TELEMETRY_KAFKA_FETCH_MAX_WAIT_MS:-100}"
+      RMM_TELEMETRY_KAFKA_FETCH_MIN_BYTES: "${RMM_TELEMETRY_KAFKA_FETCH_MIN_BYTES:-1}"
+      RMM_TELEMETRY_KAFKA_FETCH_MAX_BYTES: "${RMM_TELEMETRY_KAFKA_FETCH_MAX_BYTES:-1048576}"
+      RMM_TELEMETRY_KAFKA_FETCH_MAX_PARTITION_BYTES: "${RMM_TELEMETRY_KAFKA_FETCH_MAX_PARTITION_BYTES:-1048576}"
+      RMM_TELEMETRY_CONSUMER_RESTART_BACKOFF_MS: "${RMM_TELEMETRY_CONSUMER_RESTART_BACKOFF_MS:-1000}"
+      RMM_TELEMETRY_MAX_RETRIES: "${RMM_TELEMETRY_MAX_RETRIES:-5}"
+      RMM_TELEMETRY_RETRY_BASE_MS: "${RMM_TELEMETRY_RETRY_BASE_MS:-500}"
+      RMM_TELEMETRY_BASELINE_STABILITY_THRESHOLD: "${RMM_TELEMETRY_BASELINE_STABILITY_THRESHOLD:-3}"
+      RMM_TELEMETRY_OFFSET_COMMIT_RETENTION_MS: "${RMM_TELEMETRY_OFFSET_COMMIT_RETENTION_MS:--1}"
+      RMM_AZURITE_BLOB_ENDPOINT: http://azurite:10000/devstoreaccount1
+      RMM_AZURITE_CONTAINER: ${RMM_AZURITE_CONTAINER:-rmm-snapshots}
+      RMM_AZURITE_ACCOUNT_NAME: ${RMM_AZURITE_ACCOUNT_NAME:-devstoreaccount1}
+      RMM_AZURITE_ACCOUNT_KEY: ${RMM_AZURITE_ACCOUNT_KEY:-Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==}
+    networks:
+      - dev_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      redpanda-0:
+        condition: service_healthy
+
+  talos_telemetry_producer:
+    image: talos/talos-telemetry-producer:dev
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.rust-servers
+      target: talos_telemetry_producer
+      args:
+        PROFILE: ${PROFILE:-debug}
+    environment:
+      RUST_LOG: "${RUST_LOG:-info,talos_telemetry_producer=debug}"
+      RMM_SERVER_API_KEY: "${RMM_SERVER_API_KEY-}"
+      RMM_TELEMETRY_KAFKA_BROKERS: redpanda-0:9092
+      RMM_TELEMETRY_PRODUCER_BIND_ADDR: 0.0.0.0:17120
+      RMM_TELEMETRY_SNAPSHOT_TOPIC: ${RMM_TELEMETRY_SNAPSHOT_TOPIC:-rmm_telemetry_snapshots}
+      RMM_TELEMETRY_EVENTS_TOPIC: ${RMM_TELEMETRY_EVENTS_TOPIC:-rmm_telemetry_events}
+      RMM_TELEMETRY_REMEDIATION_COMMANDS_TOPIC: rmm_telemetry_remediation_commands
+      RMM_TELEMETRY_REMEDIATION_STATUS_TOPIC: rmm_telemetry_remediation_status
+      RMM_TELEMETRY_PATCH_PROGRESS_TOPIC: rmm_telemetry_patch_progress
+    networks:
+      - dev_network
+    ports:
+      - "${TALOS_TELEMETRY_PRODUCER_HOST_BIND:-127.0.0.1}:3003:17120"
+    depends_on:
+      redpanda-0:
+        condition: service_healthy
+
+  talos_ai_runner:
+    image: talos/talos-ai-runner:dev
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.rust-servers
+      target: talos_ai_runner
+      args:
+        PROFILE: ${PROFILE:-debug}
+    environment:
+      RUST_LOG: "${RUST_LOG:-info,talos_ai_runner=debug}"
+      TALOS_AI_RUNNER_BIND_ADDR: 0.0.0.0:3010
+      TALOS_AI_RUNNER_ID: "${TALOS_AI_RUNNER_ID:-talos-ai-runner-local}"
+      # Normalize supported fallback names into the runner's canonical credential names.
+      TALOS_AI_RUNNER_SERVICE_KEY: "${TALOS_AI_RUNNER_SERVICE_KEY-${SERVICE_KEY-}}"
+      RMM_SERVER_API_KEY: "${RMM_SERVER_API_KEY-${TALOS_AI_RUNNER_RMM_SERVER_KEY-}}"
+      TALOS_AI_RUNNER_CALLBACK_BASE_URL: http://api_backend:3001
+      TALOS_AI_RUNNER_MAX_CONCURRENT_JOBS: "${TALOS_AI_RUNNER_MAX_CONCURRENT_JOBS:-2}"
+      TALOS_AI_RUNNER_JOB_TIMEOUT_SECS: "${TALOS_AI_RUNNER_JOB_TIMEOUT_SECS:-420}"
+      TALOS_AI_RUNNER_SCREENSHOT_READ_TIMEOUT_SECS: "${TALOS_AI_RUNNER_SCREENSHOT_READ_TIMEOUT_SECS:-60}"
+      TALOS_AI_RUNNER_APPROVAL_TIMEOUT_SECS: "${TALOS_AI_RUNNER_APPROVAL_TIMEOUT_SECS:-300}"
+      TALOS_AI_RUNNER_LEASE_HEARTBEAT_SECS: "${TALOS_AI_RUNNER_LEASE_HEARTBEAT_SECS:-15}"
+      TALOS_AI_RUNNER_COMMAND_MAX_WAIT_SECS: "${TALOS_AI_RUNNER_COMMAND_MAX_WAIT_SECS:-60}"
+      TALOS_AI_RUNNER_COMMAND_CHECKPOINT_MS: "${TALOS_AI_RUNNER_COMMAND_CHECKPOINT_MS:-10000}"
+      TALOS_AI_RUNNER_RELAY_CA_PATH: "${TALOS_AI_RUNNER_RELAY_CA_PATH-}"
+      TALOS_AI_RUNNER_RELAY_VERIFY_HOSTNAME: "${TALOS_AI_RUNNER_RELAY_VERIFY_HOSTNAME-}"
+      RMM_AI_ASSIST_UNCHANGED_FRAME_WAIT_SECS: "${RMM_AI_ASSIST_UNCHANGED_FRAME_WAIT_SECS:-10}"
+      RMM_AI_ASSIST_MAX_STEPS: "${RMM_AI_ASSIST_MAX_STEPS:-12}"
+      RMM_AI_ASSIST_MAX_ACTIONS_PER_STEP: "${RMM_AI_ASSIST_MAX_ACTIONS_PER_STEP:-6}"
+      RMM_SERVER_HTTP_URL: http://talos_server:17110
+    volumes:
+      # The runner needs only the optional CA certificate, never the relay's private key directory.
+      - ${TALOS_AI_RUNNER_RELAY_CA_HOST_PATH:-${RMM_RELAY_TLS_CERT_HOST_PATH:-../apps/certs/local-dev-relay-fullchain.pem}}:/.certs/local-dev-relay-ca.pem:ro
+    networks:
+      - dev_network
+    ports:
+      - "${TALOS_AI_RUNNER_HOST_BIND:-127.0.0.1}:3010:3010"
+    depends_on:
+      - talos_server

@@ -1,0 +1,19 @@
+[package]
+name = "talos_update_common"
+version = "0.5.1"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1.0"
+base64 = "0.22"
+reqwest = { version = "0.12", default-features = false, features = ["json", "macos-system-configuration", "rustls-tls", "rustls-tls-native-roots", "system-proxy"] }
+ring = "0.17"
+semver = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+sha2 = "0.10"
+
+[lints]
+workspace = true

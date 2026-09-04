@@ -1,0 +1,17 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-capability",
+  "description": "Capability for the main window: event listen/emit, invoke commands, webview.",
+  "windows": ["*"],
+  "permissions": [
+    "core:event:default",
+    "core:window:default",
+    "core:webview:default",
+    "core:webview:deny-internal-toggle-devtools",
+    "core:app:default",
+    "core:path:default",
+    "core:resources:default",
+    "deep-link:default",
+    "deep-link:allow-register"
+  ]
+}

@@ -1,0 +1,106 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util">
+  <Bundle
+    Name="Talos Agent"
+    Version="$(var.ProductVersion)"
+    Manufacturer="Talos"
+    UpgradeCode="{F1ABDE7D-E2A1-4B3A-A138-3B265F519C27}">
+
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication
+        Theme="hyperlinkLicense"
+        LicenseUrl="https://www.gnu.org/licenses/agpl-3.0.html" />
+    </BootstrapperApplication>
+
+    <Variable Name="EnrollmentToken" Type="string" Value="TALOS_TOKEN_SLOT_V1_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" bal:Overridable="yes" Hidden="yes" />
+    <Variable Name="RmmServerUrl" Type="string" Value="TALOS_SERVER_URL_SLOT_V1_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" bal:Overridable="yes" />
+    <util:RegistrySearch
+      Id="VcRedistX64InstalledSearch"
+      Variable="VcRedistX64Installed"
+      Root="HKLM"
+      Key="SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64"
+      Value="Installed"
+      Result="value"
+      Bitness="always64" />
+    <util:RegistrySearch
+      Id="VcRedistX86InstalledSearch"
+      Variable="VcRedistX86Installed"
+      Root="HKLM"
+      Key="SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x86"
+      Value="Installed"
+      Result="value"
+      Bitness="always32" />
+    <util:RegistrySearch
+      Id="WebView2MachineInstalledSearch"
+      Variable="WebView2MachineInstalledVersion"
+      Root="HKLM"
+      Key="SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+      Value="pv"
+      Result="value" />
+    <util:RegistrySearch
+      Id="WebView2UserInstalledSearch"
+      Variable="WebView2UserInstalledVersion"
+      Root="HKCU"
+      Key="SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+      Value="pv"
+      Result="value" />
+
+    <Chain DisableSystemRestore="yes">
+      <ExePackage
+        Id="WebView2Runtime"
+        SourceFile="$(var.WebView2RuntimePath)"
+        DownloadUrl="$(var.WebView2RuntimeUrl)"
+        Compressed="yes"
+        InstallArguments="/silent /install"
+        RepairArguments="/silent /install"
+        PerMachine="yes"
+        DetectCondition="WebView2MachineInstalledVersion OR WebView2UserInstalledVersion"
+        Permanent="yes"
+        Vital="yes" />
+
+      <ExePackage
+        Id="VcRedistX86"
+        SourceFile="$(var.VcRedistX86Path)"
+        DownloadUrl="$(var.VcRedistX86Url)"
+        Compressed="yes"
+        InstallArguments="/install /quiet /norestart"
+        RepairArguments="/repair /quiet /norestart"
+        PerMachine="yes"
+        DetectCondition="VcRedistX86Installed = 1"
+        Permanent="yes"
+        Vital="yes" />
+
+      <ExePackage
+        Id="VcRedistX64"
+        SourceFile="$(var.VcRedistX64Path)"
+        DownloadUrl="$(var.VcRedistX64Url)"
+        Compressed="yes"
+        InstallArguments="/install /quiet /norestart"
+        RepairArguments="/repair /quiet /norestart"
+        PerMachine="yes"
+        InstallCondition="VersionNT64"
+        DetectCondition="VcRedistX64Installed = 1"
+        Permanent="yes"
+        Vital="yes" />
+
+      <MsiPackage
+        Id="AgentX86Msi"
+        SourceFile="$(var.AgentMsiX86Path)"
+        InstallCondition="NOT VersionNT64"
+        Vital="yes">
+        <MsiProperty Name="ENROLLMENT_TOKEN" Value="[EnrollmentToken]" />
+        <MsiProperty Name="RMM_SERVER_URL" Value="[RmmServerUrl]" />
+      </MsiPackage>
+
+      <MsiPackage
+        Id="AgentX64Msi"
+        SourceFile="$(var.AgentMsiX64Path)"
+        InstallCondition="VersionNT64"
+        Vital="yes">
+        <MsiProperty Name="ENROLLMENT_TOKEN" Value="[EnrollmentToken]" />
+        <MsiProperty Name="RMM_SERVER_URL" Value="[RmmServerUrl]" />
+      </MsiPackage>
+    </Chain>
+  </Bundle>
+</Wix>

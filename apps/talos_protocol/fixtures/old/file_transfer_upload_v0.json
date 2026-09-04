@@ -1,0 +1,10 @@
+{
+  "type": "upload",
+  "transfer_id": "xfer-legacy-001",
+  "destination_path": "C:\\Temp",
+  "file_name": "legacy.zip",
+  "is_archive": true,
+  "extract_archive": false,
+  "conflict_mode": "rename",
+  "expected_size_bytes": 512
+}

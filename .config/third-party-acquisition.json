@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "vpxEncode": {
+    "version": "0.6.2",
+    "upstreamRevision": "5519bec430184208ee33221ddc727ccb9429b88e",
+    "archiveUrl": "https://static.crates.io/crates/vpx-encode/vpx-encode-0.6.2.crate",
+    "archiveSha256": "cd1f41af42de7667cbdba44e8c38c36e9ede970f1291c32ea57c0ded8eb6f4b6",
+    "archivePrefix": "vpx-encode-0.6.2",
+    "patchPath": "apps/third-party-patches/vpx-encode-0.6.2-talos.patch",
+    "patchSha256": "da4a296ccaef077b6eb68b15fa67cee0cbd296cf5c18dc6590c250236956aaf1",
+    "patchedFiles": [
+      {
+        "path": "Cargo.toml",
+        "sha256": "507c4ec7f90d19d7bd2963f34d96f7f538d322c5d02ae463409a39f6b54435c2"
+      },
+      {
+        "path": "README.md",
+        "sha256": "cfa5a4dc624fa21cd190228500cf7e78b99b6a2655154e92be66e278aaabaa18"
+      },
+      {
+        "path": "src/lib.rs",
+        "sha256": "c4a6be6e4459ba3bf66be7167db77bce6285e1b4ede7f1a65d0b9e40408b49c1"
+      }
+    ]
+  },
+  "sevenZip": {
+    "version": "26.00",
+    "archives": [
+      {
+        "id": "lzma-sdk",
+        "url": "https://www.7-zip.org/a/lzma2600.7z",
+        "sha256": "6b7d0c8ed1a67112d5337e4532ecdcb9fd2eab8b1f6bb54199f9b6a627b506cc"
+      },
+      {
+        "id": "extra",
+        "url": "https://www.7-zip.org/a/7z2600-extra.7z",
+        "sha256": "1cc38a9e3777ce0e4bbf84475672888a581d400633b0448fd973a7a6aa56cfdc"
+      }
+    ],
+    "members": [
+      {
+        "archiveId": "lzma-sdk",
+        "path": "bin/7zSD.sfx",
+        "sha256": "d47d81ca4233816b5bf66977c92c55773ae8241d03d108e4477abb49333c2522",
+        "output": "apps/installer/artifacts/sfx/7zSD.sfx"
+      },
+      {
+        "archiveId": "lzma-sdk",
+        "path": "DOC/lzma-sdk.txt",
+        "sha256": "a116399131d94426f57e2ad8a811e7212f0934487af38f68e6daa9fd1edcf7a0"
+      },
+      {
+        "archiveId": "extra",
+        "path": "7za.exe",
+        "sha256": "392d39caddffb4b078807ee05e69c94719027ac9c9445503806e47116acf6686",
+        "output": "apps/installer/tmp/third-party/7zip-26.00/7za.exe"
+      },
+      {
+        "archiveId": "extra",
+        "path": "License.txt",
+        "sha256": "c6139b0a3080fdef173b162d794260b67675371f4845b2213d8aaadb13a4d790"
+      }
+    ],
+    "retainedNotices": [
+      {
+        "path": "apps/installer/third-party/7zip-26.00/License.txt",
+        "sha256": "ad2b37b9396d6bbb7940e40c59ddfcb23274a6196f5dfc4ef44df2d324292612"
+      },
+      {
+        "path": "apps/installer/third-party/7zip-26.00/LZMA-SDK-NOTICE.txt",
+        "sha256": "dc7c811f413da4f4b6ad045177bd1c35445e551d230c1017c8879784209b46da"
+      }
+    ]
+  },
+  "wix": {
+    "version": "6.0.0",
+    "upstreamRevision": "8c7432e50072e009353ea5f2c956ccf453476f71",
+    "source": "https://api.nuget.org/v3-flatcontainer",
+    "licenseFile": "OSMFEULA.txt",
+    "licenseSha256": "d7383eccaa4f11f856ce5767864315265f164f85f03e50a5be8cf1e7da302996",
+    "retainedNotice": {
+      "path": "apps/installer/third-party/wix-6.0.0/OSMFEULA.txt",
+      "sha256": "a992056365937ddea181a39c8204dfdc0ae664be356a00a0746df79d7b64283e"
+    },
+    "packages": [
+      {
+        "id": "wix",
+        "sha256": "24ec4b996a50462b62c4ec0709527b2d2a0e4bf98e3db829fdf5f512cf274eb9"
+      },
+      {
+        "id": "WixToolset.Sdk",
+        "sha256": "48ef1b10e6c0c06a40544ca0cabadfe1428bf2fe75b848857233467e2d9353a2"
+      },
+      {
+        "id": "WixToolset.Bal.wixext",
+        "sha256": "9ce2b86ddb60af525cef908b57a2fa4c86880f469e7b668dec045e9948022ddf"
+      },
+      {
+        "id": "WixToolset.Firewall.wixext",
+        "sha256": "afb23e9bac0b43822797a66bcbe162448bb4721e8a4a66c4dbdb2b2d053b9030"
+      },
+      {
+        "id": "WixToolset.Util.wixext",
+        "sha256": "9058d1c699af2c865753a48e932d6d182fa9a2d48979d2ff967828f6dcac10e9"
+      },
+      {
+        "id": "WixToolset.UI.wixext",
+        "sha256": "04fa17d5ccba3b274580e965823befc1434b948106e3ca9a93886612cd3882e9"
+      }
+    ]
+  }
+}

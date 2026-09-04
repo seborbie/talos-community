@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "release_version": "0.1.0",
+  "update_channel": "stable",
+  "images": {
+    "api_backend": "ghcr.io/example/talos-api-backend@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "frontend": "ghcr.io/example/talos-frontend@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "relay": "ghcr.io/example/talos-relay@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "control_server": "ghcr.io/example/talos-server@sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+  },
+  "database": {
+    "mode": "bundled",
+    "user": "talos",
+    "database": "talos"
+  },
+  "edge": {
+    "mode": "public_acme",
+    "frontend_domain": "talos.example.net",
+    "api_domain": "api.talos.example.net",
+    "control_domain": "control.talos.example.net",
+    "relay_domain": "relay.talos.example.net",
+    "acme_email": "hostmaster@example.net",
+    "http_port": 80,
+    "https_port": 443,
+    "subnet": "172.31.240.0/24",
+    "proxy_ipv4": "172.31.240.2"
+  },
+  "paths": {}
+}

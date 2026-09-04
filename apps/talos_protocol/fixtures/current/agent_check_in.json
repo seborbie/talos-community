@@ -1,0 +1,30 @@
+{
+  "type": "agent_hello",
+  "data": {
+    "agent_id": "agent-win11-001",
+    "hostname": "talos-win11",
+    "os": "windows 11 pro",
+    "ip": "10.0.0.41",
+    "local_addrs": [
+      {
+        "ip": "10.0.0.41",
+        "prefix": 24
+      },
+      {
+        "ip": "fe80::1",
+        "prefix": 64
+      }
+    ],
+    "version": "0.6.13",
+    "is_admin": true,
+    "platform": "windows",
+    "features": {
+      "remoteDesktop": true,
+      "systemShell": true,
+      "fileTransfer": true,
+      "remoteRegistry": true,
+      "chat": true,
+      "systemInfo": true
+    }
+  }
+}

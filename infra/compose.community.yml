@@ -1,0 +1,236 @@
+name: talos-community
+
+# Production Community base topology. This file intentionally contains no source builds, host
+# port publications, database container, or edge proxy. Add compose.community-postgres.yml for
+# the default bundled database and exactly one compose.community-traefik*.yml edge overlay.
+
+networks:
+  talos_edge:
+    driver: bridge
+  talos_data:
+    driver: bridge
+    internal: true
+
+services:
+  database_preflight:
+    image: "${TALOS_API_BACKEND_IMAGE:?Set TALOS_API_BACKEND_IMAGE to an immutable release image reference}"
+    pull_policy: missing
+    command: ["bun", "./lib/productionDatabasePreflight.ts"]
+    environment:
+      DATABASE_URL: "${TALOS_DATABASE_URL-}"
+      TALOS_DATABASE_MODE: external
+    networks:
+      - talos_edge
+      - talos_data
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+    restart: "on-failure:5"
+    security_opt:
+      - no-new-privileges:true
+
+  database_migrate:
+    image: "${TALOS_API_BACKEND_IMAGE:?Set TALOS_API_BACKEND_IMAGE to an immutable release image reference}"
+    pull_policy: missing
+    command:
+      [
+        "bun",
+        "x",
+        "--bun",
+        "prisma",
+        "migrate",
+        "deploy",
+        "--schema",
+        "./prisma/schema.prisma",
+      ]
+    environment:
+      DATABASE_URL: "${TALOS_DATABASE_URL-}"
+    networks:
+      - talos_edge
+      - talos_data
+    depends_on:
+      database_preflight:
+        condition: service_completed_successfully
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+    restart: "no"
+    security_opt:
+      - no-new-privileges:true
+
+  api_backend:
+    image: "${TALOS_API_BACKEND_IMAGE:?Set TALOS_API_BACKEND_IMAGE to an immutable release image reference}"
+    pull_policy: missing
+    environment:
+      NODE_ENV: production
+      PORT: "3001"
+      API_BIND_HOST: 0.0.0.0
+      API_TRUSTED_PROXIES: "${TALOS_API_TRUSTED_PROXIES-}"
+      DATABASE_URL: "${TALOS_DATABASE_URL-}"
+      JWT_SECRET: "${TALOS_JWT_SECRET:?TALOS_JWT_SECRET is required}"
+      APP_ENCRYPTION_KEY: "${TALOS_APP_ENCRYPTION_KEY:?TALOS_APP_ENCRYPTION_KEY is required}"
+      TOKEN_TTL: "${TALOS_TOKEN_TTL:-1h}"
+      MACHINE_TOKEN_TTL: "${TALOS_MACHINE_TOKEN_TTL:-30d}"
+      CORS_ALLOWED_ORIGINS: "${TALOS_PUBLIC_FRONTEND_URL:?TALOS_PUBLIC_FRONTEND_URL is required}"
+      PUBLIC_API_URL: "${TALOS_PUBLIC_API_URL:?TALOS_PUBLIC_API_URL is required}"
+      PUBLIC_RMM_API_URL: "${TALOS_PUBLIC_RMM_API_URL:?TALOS_PUBLIC_RMM_API_URL is required}"
+      RMM_INSTALLER_PUBLIC_API_URL: "${TALOS_PUBLIC_API_URL:?TALOS_PUBLIC_API_URL is required}"
+      RMM_INSTALLER_PUBLIC_FRONTEND_URL: "${TALOS_PUBLIC_FRONTEND_URL:?TALOS_PUBLIC_FRONTEND_URL is required}"
+      RMM_INSTALLER_SERVER_URL: "${TALOS_AGENT_SERVER_URL:?TALOS_AGENT_SERVER_URL is required}"
+      RMM_INSTALLER_BOOTSTRAP_URL: "${TALOS_INSTALLER_BOOTSTRAP_URL-}"
+      RMM_UPDATE_BASE_URL: "${TALOS_UPDATE_BASE_URL-}"
+      RMM_ENABLE_UNSIGNED_SCOPED_INSTALLERS: "false"
+      RMM_SERVER_API_KEY: "${TALOS_RMM_SERVER_API_KEY:?TALOS_RMM_SERVER_API_KEY is required}"
+      RMM_SERVER_HTTP_URL: http://talos_server:17110
+      RMM_TELEMETRY_PRODUCER_URL: ""
+      TALOS_AI_RUNNER_URL: ""
+    networks:
+      - talos_edge
+      - talos_data
+    expose:
+      - "3001"
+    depends_on:
+      database_migrate:
+        condition: service_completed_successfully
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=128m
+    restart: unless-stopped
+    stop_grace_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://127.0.0.1:3001/').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  frontend:
+    image: "${TALOS_FRONTEND_IMAGE:?Set TALOS_FRONTEND_IMAGE to an immutable release image reference}"
+    pull_policy: missing
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      INTERNAL_API_URL: http://api_backend:3001
+      PUBLIC_API_URL: "${TALOS_PUBLIC_API_URL:?TALOS_PUBLIC_API_URL is required}"
+      PUBLIC_RMM_API_URL: "${TALOS_PUBLIC_RMM_API_URL:?TALOS_PUBLIC_RMM_API_URL is required}"
+      PUBLIC_OPERATOR_NAME: "${TALOS_PUBLIC_OPERATOR_NAME-}"
+      PUBLIC_SUPPORT_URL: "${TALOS_PUBLIC_SUPPORT_URL-}"
+      PUBLIC_TERMS_URL: "${TALOS_PUBLIC_TERMS_URL-}"
+      PUBLIC_PRIVACY_URL: "${TALOS_PUBLIC_PRIVACY_URL-}"
+      PUBLIC_SOURCE_URL: "${TALOS_PUBLIC_SOURCE_URL-}"
+    networks:
+      - talos_edge
+    expose:
+      - "3000"
+    depends_on:
+      api_backend:
+        condition: service_healthy
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+    restart: unless-stopped
+    stop_grace_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "bun",
+          "-e",
+          "fetch('http://127.0.0.1:3000/').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  talos_relay:
+    image: "${TALOS_RELAY_IMAGE:?Set TALOS_RELAY_IMAGE to an immutable release image reference}"
+    pull_policy: missing
+    environment:
+      RUST_LOG: "${TALOS_RUST_LOG:-info}"
+      RMM_RELAY_BIND_ADDR: 0.0.0.0:443
+      # The edge overlay owns certificates and forwards decrypted TCP. The relay never receives
+      # ACME account material or a TLS private key in this topology.
+      RMM_RELAY_TLS_TERMINATED: "true"
+      RMM_RELAY_PENDING_TTL_SECS: "${TALOS_RELAY_PENDING_TTL_SECS:-600}"
+      RMM_RELAY_CLEANUP_INTERVAL_SECS: "${TALOS_RELAY_CLEANUP_INTERVAL_SECS:-30}"
+    networks:
+      - talos_edge
+    expose:
+      - "443"
+    init: true
+    read_only: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "grep -Eq '^[[:space:]]*[0-9]+: [0-9A-F]+:01BB [0-9A-F]+:[0-9A-F]+ 0A ' /proc/net/tcp /proc/net/tcp6",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+
+  talos_server:
+    image: "${TALOS_SERVER_IMAGE:?Set TALOS_SERVER_IMAGE to an immutable release image reference}"
+    pull_policy: missing
+    environment:
+      RUST_LOG: "${TALOS_RUST_LOG:-info}"
+      RMM_BIND_ADDR: 0.0.0.0:17110
+      RMM_SERVER_API_KEY: "${TALOS_RMM_SERVER_API_KEY:?TALOS_RMM_SERVER_API_KEY is required}"
+      RMM_CORS_ORIGINS: "${TALOS_PUBLIC_FRONTEND_URL:?TALOS_PUBLIC_FRONTEND_URL is required}"
+      RMM_PING_INTERVAL_SECS: "${TALOS_RMM_PING_INTERVAL_SECS:-25}"
+      RMM_MAX_OUTPUT_BYTES: "${TALOS_RMM_MAX_OUTPUT_BYTES:-51200}"
+      RMM_MAX_EXECUTION_SECS: "${TALOS_RMM_MAX_EXECUTION_SECS:-60}"
+      RMM_TELEMETRY_PRODUCER_URL: ""
+      API_BACKEND_URL: http://api_backend:3001
+      RMM_RELAY_URL: "${TALOS_PUBLIC_RELAY_ADDRESS:?TALOS_PUBLIC_RELAY_ADDRESS is required}"
+    networks:
+      - talos_edge
+    expose:
+      - "17110"
+    depends_on:
+      api_backend:
+        condition: service_healthy
+      talos_relay:
+        condition: service_healthy
+    init: true
+    read_only: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "grep -Eq '^[[:space:]]*[0-9]+: [0-9A-F]+:42D6 [0-9A-F]+:[0-9A-F]+ 0A ' /proc/net/tcp /proc/net/tcp6",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s

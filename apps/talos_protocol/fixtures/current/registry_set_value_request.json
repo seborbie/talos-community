@@ -1,0 +1,12 @@
+{
+  "type": "set_value",
+  "requestId": "reg-001",
+  "sessionId": "sess-reg-001",
+  "hive": "HKLM",
+  "path": "SOFTWARE\\Talos",
+  "name": "Enabled",
+  "data": {
+    "type": "dword",
+    "data": 1
+  }
+}

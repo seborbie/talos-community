@@ -1,0 +1,27 @@
+{
+  "name": "talos_permissions_helper",
+  "version": "0.5.77",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --bun vite",
+    "build": "bun --bun vite build",
+    "check": "bunx svelte-check --tsconfig ./tsconfig.json",
+    "test": "bun test tests",
+    "preview": "bun --bun vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "2.11.0",
+    "@veecore/tauri-plugin-permission-flow-api": "0.1.40",
+    "svelte": "5.55.9"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "catalog:",
+    "@tauri-apps/cli": "2.11.2",
+    "svelte-check": "catalog:",
+    "typescript": "catalog:",
+    "vite": "7.3.6"
+  }
+}

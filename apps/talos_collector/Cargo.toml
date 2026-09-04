@@ -1,0 +1,61 @@
+[package]
+name = "talos_collector"
+version = "0.5.9"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+description = "Comprehensive Windows endpoint data collection for RMM"
+authors = ["Talos Team"]
+
+[dependencies]
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+async-trait = "0.1"
+tokio = { version = "1.39", features = ["process", "time", "fs", "rt", "io-util", "sync", "macros"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+sysinfo = "0.31"
+hostname = "0.4"
+local-ip-address = "0.6"
+futures = "0.3"
+walkdir = "2.5"
+uuid = { version = "1.8", features = ["v4"] }
+base64 = "0.22"
+sha1 = "0.10"
+x509-parser = "0.16"
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_Registry",
+    "Win32_System_SystemInformation",
+    "Win32_System_Threading",
+    "Win32_System_Com",
+    "Win32_System_Ole",
+    "Win32_System_TaskScheduler",
+    "Win32_System_Variant",
+    "Win32_System_UpdateAgent",
+    "Win32_System_Wmi",
+    "Win32_System_EventLog",
+    "Win32_Storage_FileSystem",
+    "Win32_NetworkManagement_IpHelper",
+    "Win32_NetworkManagement_NetBios",
+    "Win32_Networking_WinSock",
+    "Win32_Devices_DeviceAndDriverInstallation",
+    "Win32_Security_Cryptography",
+    "Win32_Security_Authentication_Identity",
+    "Win32_Globalization",
+    "Win32_System_Services",
+] }
+wmi = "0.14"
+registry = "1.2"
+schannel = "0.1"
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+[lints]
+workspace = true

@@ -1,0 +1,17 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "permissions-helper-capability",
+  "description": "Talos macOS permissions onboarding window.",
+  "windows": ["*"],
+  "permissions": [
+    "core:event:default",
+    "core:window:default",
+    "core:webview:default",
+    "core:webview:deny-internal-toggle-devtools",
+    "core:app:default",
+    "core:resources:allow-close",
+    "permission-flow:allow-create",
+    "permission-flow:allow-start-flow",
+    "permission-flow:allow-stop-current-flow"
+  ]
+}

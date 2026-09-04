@@ -1,0 +1,10 @@
+{
+  "type": "agent_hello",
+  "data": {
+    "agent_id": "agent-legacy-001",
+    "hostname": "legacy-win",
+    "os": "windows 10",
+    "ip": "10.0.0.52",
+    "future_field": "ignored"
+  }
+}

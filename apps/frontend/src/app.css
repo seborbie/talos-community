@@ -1,0 +1,1148 @@
+@import "tailwindcss";
+
+/* ════════════════════════════════════════════════
+   AERO DESIGN SYSTEM — global tokens & utilities
+   Dark (default) = deep navy  |  Light = sky blue
+════════════════════════════════════════════════ */
+
+@layer base {
+  :root {
+    /* Aero dark palette */
+    --aero-bg:            #04091a;
+    --aero-bg-2:          #060d1f;
+    --aero-blue:          rgba(55, 130, 255, 1);
+    --aero-blue-dim:      rgba(30, 80, 220, 1);
+    --aero-glass-fill:    rgba(255, 255, 255, 0.042);
+    --aero-glass-border:  rgba(255, 255, 255, 0.09);
+    --aero-text:          #ffffff;
+    --aero-text-muted:    rgba(160, 205, 255, 0.6);
+    --aero-text-subtle:   rgba(160, 205, 255, 0.4);
+
+    /* Semantic tokens (used by Tailwind utilities + UI primitives) */
+    --background:    210 100% 6%;   /* ~#04091a */
+    --foreground:    0 0% 96%;
+    --card:          220 60% 8%;
+    --card-foreground: 0 0% 96%;
+    --popover:       220 60% 8%;
+    --popover-foreground: 0 0% 96%;
+    --primary:       215 100% 62%;  /* sky blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary:     220 30% 20%;
+    --secondary-foreground: 0 0% 96%;
+    --muted:         220 30% 15%;
+    --muted-foreground: 215 50% 70%;
+    --accent:        215 80% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive:   4 84% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border:        220 30% 18%;
+    --input:         220 30% 18%;
+    --ring:          215 100% 62%;
+    --radius:        0.5rem;
+
+    /* Legacy brand tokens kept for backwards compat */
+    --brand-pine:     170 55% 31%;
+    --brand-rose:     16 29% 65%;
+    --brand-midnight: 197 85% 8%;
+    --brand-mist:     170 30% 96%;
+  }
+
+  /* ── Light mode ── applied to <html class="light"> ── */
+  html.light {
+    --aero-bg:           #d8ecff;
+    --aero-glass-fill:   rgba(255, 255, 255, 0.14);
+    --aero-glass-border: rgba(255, 255, 255, 0.55);
+    --aero-text:         #0a1628;
+    --aero-text-muted:   rgba(12, 42, 108, 0.58);
+    --aero-text-subtle:  rgba(12, 42, 108, 0.4);
+
+    --background:    206 100% 92%;  /* ~#d8ecff */
+    --foreground:    213 74% 11%;   /* #0a1628 */
+    --card:          0 0% 100%;
+    --card-foreground: 213 74% 11%;
+    --popover:       0 0% 100%;
+    --popover-foreground: 213 74% 11%;
+    --primary:       215 100% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary:     210 40% 88%;
+    --secondary-foreground: 213 74% 11%;
+    --muted:         210 30% 85%;
+    --muted-foreground: 213 40% 35%;
+    --accent:        215 80% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive:   4 84% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border:        210 30% 75%;
+    --input:         210 30% 75%;
+    --ring:          215 100% 55%;
+  }
+}
+
+@layer base {
+  * { border-color: hsl(var(--border)); }
+
+  html, body {
+    min-height: 100%;
+  }
+
+  body {
+    background-color: var(--aero-bg);
+    background-image:
+      radial-gradient(ellipse 900px 600px at 8% 0%,   rgba(24, 80, 220, 0.45) 0%, transparent 65%),
+      radial-gradient(ellipse 600px 500px at 92% 8%,  rgba(60, 140, 255, 0.22) 0%, transparent 60%),
+      radial-gradient(ellipse 800px 700px at 50% 105%, rgba(10, 40, 130, 0.5) 0%, transparent 65%),
+      radial-gradient(ellipse 500px 400px at 70% 55%, rgba(80, 30, 200, 0.18) 0%, transparent 60%);
+    background-attachment: fixed;
+    color: var(--aero-text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: background-color 0.5s ease;
+  }
+
+  /* ── Light mode body ── */
+  html.light body {
+    background-color: #d8ecff;
+    background-image:
+      radial-gradient(ellipse 900px 600px at 8% 0%,   rgba(100, 170, 255, 0.3)  0%, transparent 65%),
+      radial-gradient(ellipse 600px 500px at 92% 8%,  rgba(160, 215, 255, 0.2)  0%, transparent 60%),
+      radial-gradient(ellipse 800px 700px at 50% 105%, rgba(120, 190, 255, 0.38) 0%, transparent 65%),
+      radial-gradient(ellipse 500px 400px at 70% 55%, rgba(130, 155, 255, 0.16) 0%, transparent 60%);
+  }
+
+  /* ── Aero scrollbars ── */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(55, 130, 255, 0.4) transparent;
+  }
+  *::-webkit-scrollbar { width: 8px; height: 8px; background: transparent; }
+  *::-webkit-scrollbar-track { background: transparent; border-radius: 999px; }
+  *::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(55,130,255,0.5), rgba(30,80,220,0.5));
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgba(80,155,255,0.75), rgba(45,100,240,0.75));
+    background-clip: padding-box;
+  }
+  *::-webkit-scrollbar-corner { background: transparent; }
+}
+
+@layer utilities {
+  /* ── Legacy brand helpers (kept for backwards compat) ── */
+  .text-brand   { color: hsl(var(--brand-pine)); }
+  .bg-brand     { background-color: hsl(var(--brand-pine)); }
+  .bg-rose      { background-color: hsl(var(--brand-rose)); }
+  .bg-midnight  { background-color: hsl(var(--brand-midnight)); }
+
+  /* ── Global select styling ── */
+  select {
+    background: rgba(255, 255, 255, 0.07);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    color: rgba(220, 240, 255, 0.88);
+    border-radius: 6px;
+    padding: 0 12px;
+    min-height: 40px;
+    height: 40px;
+    font-size: 0.875rem;
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+    appearance: auto;
+    box-sizing: border-box;
+  }
+  select:focus {
+    border-color: rgba(80, 160, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 0 3px rgba(60, 140, 255, 0.15);
+    outline: none;
+  }
+  select option {
+    background: #0d1a45;
+    color: rgba(220, 240, 255, 0.9);
+  }
+  html.light select {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(100, 158, 220, 0.4);
+    color: #0a1628;
+  }
+  html.light select:focus {
+    border-color: rgba(50, 120, 255, 0.5);
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 0 0 3px rgba(50, 120, 255, 0.12);
+  }
+  html.light select option {
+    background: #f0f7ff;
+    color: #0a1628;
+  }
+
+  /* ── Form label colour (dropdown headings etc.) ── */
+  .aero-label { color: rgba(200, 225, 255, 0.9); }
+  html.light .aero-label { color: rgba(10, 42, 108, 0.82); }
+
+  /* ── Aero link (replaces text-slate-900/emerald-700) ── */
+  .aero-link {
+    color: rgba(100, 180, 255, 0.92);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .aero-link:hover {
+    color: rgba(140, 210, 255, 1);
+    text-decoration: underline;
+  }
+  html.light .aero-link {
+    color: rgba(30, 100, 220, 0.88);
+  }
+  html.light .aero-link:hover {
+    color: rgba(20, 80, 200, 1);
+    text-decoration: underline;
+  }
+
+  /* ── Table/detail links (matches devices page hostname links) ── */
+  .device-link {
+    font-weight: 600;
+    color: rgba(120, 190, 255, 0.9);
+    text-decoration: none;
+    padding: 2px 6px;
+    border-radius: 5px;
+    transition: background 0.14s, color 0.14s;
+  }
+  .device-link:hover {
+    background: rgba(60, 130, 255, 0.12);
+    color: rgba(160, 220, 255, 1);
+  }
+  html.light .device-link { color: rgba(18, 68, 200, 0.88); }
+  html.light .device-link:hover {
+    background: rgba(50, 100, 200, 0.08);
+    color: rgba(12, 48, 180, 1);
+  }
+
+  /* ── Scrollable table/list container (telemetry events, device inventory) ── */
+  .aero-table-wrap {
+    max-height: min(50vh, 22rem);
+    overflow-y: auto;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.035);
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  html.light .aero-table-wrap {
+    border-color: rgb(229 231 235);
+    background: rgba(249, 250, 251, 0.5);
+  }
+  .aero-table-wrap-lg {
+    max-height: min(70vh, 32rem);
+  }
+  .aero-table-wrap.aero-table-wrap-lg {
+    max-height: min(70vh, 32rem);
+  }
+
+  /* ── Detail panels (overview cards, raw attributes pre) ── */
+  .aero-detail-panel {
+    border-radius: 0.375rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(210, 235, 255, 0.85);
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  html.light .aero-detail-panel {
+    border-color: rgb(229 231 235);
+    background: white;
+    color: rgb(75 85 99);
+  }
+
+  /* ── Device inventory (dark mode only; light mode keeps default) ── */
+  .inventory-card {
+    border-radius: 0.375rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(210, 235, 255, 0.88);
+  }
+  .inventory-card .inventory-card-title { color: rgba(220, 240, 255, 0.95); }
+  .inventory-card .inventory-card-muted { color: rgba(160, 205, 255, 0.55); }
+  html.light .inventory-card {
+    border-color: rgb(229 231 235);
+    background: white;
+    color: rgb(75 85 99);
+  }
+  html.light .inventory-card .inventory-card-title { color: rgb(55 65 81); }
+  html.light .inventory-card .inventory-card-muted { color: rgb(107 114 128); }
+
+  .inventory-tab-bar {
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+  }
+  .inventory-tab {
+    color: rgba(160, 205, 255, 0.6);
+    border-bottom-color: transparent;
+  }
+  .inventory-tab:hover { color: rgba(200, 230, 255, 0.85); }
+  .inventory-tab-active {
+    color: rgba(120, 190, 255, 0.95);
+    border-bottom-color: rgba(80, 160, 255, 0.6);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .inventory-tab-badge {
+    background: rgba(255, 255, 255, 0.12);
+    color: rgba(210, 235, 255, 0.9);
+  }
+  html.light .inventory-tab-bar { border-bottom-color: rgb(229 231 235); }
+  html.light .inventory-tab { color: rgb(107 114 128); }
+  html.light .inventory-tab:hover { color: rgb(31 41 55); }
+  html.light .inventory-tab-active {
+    color: hsl(var(--primary));
+    border-bottom-color: hsl(var(--primary));
+    background: rgb(249 250 251);
+  }
+  html.light .inventory-tab-badge { background: rgb(229 231 235); color: rgb(55 65 81); }
+
+  .inventory-meta {
+    color: rgba(160, 205, 255, 0.6);
+  }
+  html.light .inventory-meta { color: rgb(107 114 128); }
+
+  /* ── Table cell colour classes (used in TableHead/TableCell) ── */
+  .aero-th { color: rgba(160, 205, 255, 0.6); }
+  html.light .aero-th { color: rgba(10, 40, 120, 0.55); }
+
+  .aero-td { color: rgba(210, 235, 255, 0.78); }
+  html.light .aero-td { color: rgba(10, 30, 100, 0.82); }
+
+  /* ── Muted utility text ── */
+  .aero-muted { color: rgba(160, 205, 255, 0.5); }
+  html.light .aero-muted { color: rgba(10, 42, 108, 0.55); }
+
+  /* ── Light mode: ensure glass-card children use dark text ── */
+  html.light .glass-card,
+  html.light .glass-card .text-foreground { color: #0a1628; }
+  html.light .glass-card .text-muted-foreground,
+  html.light .glass-card [class*="text-white/"] { color: rgba(10, 42, 108, 0.55); }
+  html.light .glass-card [class*="text-white"]:not([class*="text-white/"]) { color: #0a1628; }
+
+  /* ── Aero text gradient ── */
+  .aero-gradient-text {
+    background: linear-gradient(180deg, #ffffff 0%, rgba(170, 215, 255, 0.88) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  html.light .aero-gradient-text {
+    background: linear-gradient(180deg, #081428 0%, #1a4888 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Glass panel utilities ── */
+  .glass-panel {
+    background: rgba(8, 18, 52, 0.55);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid rgba(70, 140, 255, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+  html.light .glass-panel {
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(28px) saturate(180%) brightness(1.06);
+    -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.06);
+    border-color: rgba(255, 255, 255, 0.55);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.7),
+      0 8px 32px rgba(0, 38, 120, 0.1);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.042);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 4px 28px rgba(0, 0, 0, 0.32);
+    border-radius: 14px;
+  }
+  html.light .glass-card {
+    background: rgba(255, 255, 255, 0.14);
+    backdrop-filter: blur(28px) saturate(180%) brightness(1.04);
+    -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.04);
+    border-color: rgba(255, 255, 255, 0.55);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.72),
+      0 4px 24px rgba(0, 38, 120, 0.07);
+  }
+
+  .glass-sidebar {
+    background: rgba(6, 14, 40, 0.75);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.04), 4px 0 32px rgba(0, 0, 0, 0.4);
+  }
+  html.light .glass-sidebar {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-right-color: rgba(100, 158, 220, 0.25);
+    box-shadow: 4px 0 24px rgba(0, 38, 120, 0.08);
+  }
+
+  .glass-nav {
+    background: rgba(6, 14, 40, 0.55);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 32px rgba(0, 0, 0, 0.45);
+  }
+  html.light .glass-nav {
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border-bottom-color: rgba(100, 158, 220, 0.22);
+    box-shadow: 0 4px 32px rgba(0, 40, 100, 0.1);
+  }
+
+  .glass-input {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(220, 240, 255, 0.9);
+    transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+  }
+  .glass-input::placeholder { color: rgba(160, 205, 255, 0.4); }
+  .glass-input:focus {
+    border-color: rgba(80, 160, 255, 0.5);
+    background: rgba(255, 255, 255, 0.09);
+    box-shadow: 0 0 0 3px rgba(60, 140, 255, 0.15);
+    outline: none;
+  }
+  html.light .glass-input {
+    background: rgba(255, 255, 255, 0.55);
+    border-color: rgba(100, 158, 220, 0.35);
+    color: #0a1628;
+  }
+  html.light .glass-input::placeholder { color: rgba(10, 40, 100, 0.4); }
+  html.light .glass-input:focus {
+    border-color: rgba(50, 120, 255, 0.5);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 0 0 3px rgba(50, 120, 255, 0.12);
+  }
+
+  /* ── Aero checkbox (matches glass theme) ── */
+  .aero-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .aero-checkbox:checked {
+    background: rgba(55, 130, 255, 0.35);
+    border-color: rgba(80, 160, 255, 0.5);
+  }
+  .aero-checkbox:checked::after {
+    content: '';
+    width: 5px;
+    height: 8px;
+    border: solid rgba(220, 240, 255, 0.95);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translateY(-1px);
+  }
+  .aero-checkbox:hover {
+    border-color: rgba(255, 255, 255, 0.35);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .aero-checkbox:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(60, 140, 255, 0.25);
+  }
+  html.light .aero-checkbox {
+    background: rgba(255, 255, 255, 0.7);
+    border-color: rgba(100, 158, 220, 0.4);
+  }
+  html.light .aero-checkbox:checked {
+    background: rgba(55, 130, 255, 0.25);
+    border-color: rgba(55, 130, 255, 0.5);
+  }
+  html.light .aero-checkbox:checked::after {
+    border-color: #0a1628;
+  }
+  html.light .aero-checkbox:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(100, 158, 220, 0.55);
+  }
+  html.light .aero-checkbox:focus {
+    box-shadow: 0 0 0 3px rgba(50, 120, 255, 0.2);
+  }
+
+  /* ── Aero button base styles ── */
+  .aero-btn {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    border-radius: 9px;
+    backdrop-filter: blur(24px) saturate(200%) brightness(1.05);
+    -webkit-backdrop-filter: blur(24px) saturate(200%) brightness(1.05);
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.18s ease, border-color 0.18s ease;
+  }
+  .aero-btn-primary {
+    color: rgba(240, 248, 255, 0.98);
+    background: linear-gradient(180deg, rgba(90, 160, 255, 0.35) 0%, rgba(50, 110, 220, 0.2) 100%);
+    border-top:    1px solid rgba(140, 200, 255, 0.45);
+    border-left:   1px solid rgba(100, 170, 255, 0.3);
+    border-right:  1px solid rgba(60, 130, 255, 0.2);
+    border-bottom: 1px solid rgba(20, 60, 160, 0.4);
+    box-shadow:
+      0 3px 0 rgba(30, 80, 200, 0.55),
+      0 5px 0 rgba(15, 45, 140, 0.4),
+      0 8px 22px rgba(0, 0, 0, 0.45),
+      0 0 24px rgba(70, 150, 255, 0.25);
+  }
+  .aero-btn-primary:hover {
+    background: linear-gradient(180deg, rgba(110, 175, 255, 0.42) 0%, rgba(65, 130, 235, 0.26) 100%);
+    transform: translateY(-1px);
+    box-shadow:
+      0 4px 0 rgba(35, 90, 210, 0.6),
+      0 7px 0 rgba(18, 50, 155, 0.45),
+      0 10px 28px rgba(0, 0, 0, 0.5),
+      0 0 32px rgba(80, 165, 255, 0.3);
+  }
+  .aero-btn-primary:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  }
+  /* Dark mode: secondary matches primary for consistent button look */
+  .aero-btn-secondary {
+    color: rgba(240, 248, 255, 0.98);
+    background: linear-gradient(180deg, rgba(90, 160, 255, 0.35) 0%, rgba(50, 110, 220, 0.2) 100%);
+    border-top:    1px solid rgba(140, 200, 255, 0.45);
+    border-left:   1px solid rgba(100, 170, 255, 0.3);
+    border-right:  1px solid rgba(60, 130, 255, 0.2);
+    border-bottom: 1px solid rgba(20, 60, 160, 0.4);
+    box-shadow:
+      0 3px 0 rgba(30, 80, 200, 0.55),
+      0 5px 0 rgba(15, 45, 140, 0.4),
+      0 8px 22px rgba(0, 0, 0, 0.45),
+      0 0 24px rgba(70, 150, 255, 0.25);
+  }
+  .aero-btn-secondary:hover {
+    background: linear-gradient(180deg, rgba(110, 175, 255, 0.42) 0%, rgba(65, 130, 235, 0.26) 100%);
+    transform: translateY(-1px);
+    box-shadow:
+      0 4px 0 rgba(35, 90, 210, 0.6),
+      0 7px 0 rgba(18, 50, 155, 0.45),
+      0 10px 28px rgba(0, 0, 0, 0.5),
+      0 0 32px rgba(80, 165, 255, 0.3);
+  }
+  .aero-btn-secondary:active { transform: translateY(3px); box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
+
+  .aero-btn-ghost {
+    color: rgba(200, 225, 255, 0.7);
+    background: transparent;
+    border: 1px solid transparent;
+  }
+  .aero-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.11);
+    color: rgba(220, 240, 255, 0.95);
+  }
+  html.light .aero-btn-ghost { color: rgba(10, 30, 90, 0.68); }
+  html.light .aero-btn-ghost:hover {
+    background: rgba(50, 100, 200, 0.08);
+    border-color: rgba(50, 100, 200, 0.16);
+    color: #0a1628;
+  }
+
+  .aero-btn-destructive {
+    color: rgba(255, 235, 235, 0.98);
+    background: linear-gradient(180deg, rgba(255, 100, 100, 0.32) 0%, rgba(220, 50, 50, 0.22) 100%);
+    border-top:    1px solid rgba(255, 180, 180, 0.45);
+    border-left:   1px solid rgba(255, 140, 140, 0.3);
+    border-right:  1px solid rgba(255, 110, 110, 0.2);
+    border-bottom: 1px solid rgba(160, 30, 30, 0.45);
+    box-shadow:
+      0 3px 0 rgba(200, 40, 40, 0.5),
+      0 5px 0 rgba(140, 20, 20, 0.38),
+      0 8px 22px rgba(0, 0, 0, 0.45),
+      0 0 20px rgba(255, 80, 80, 0.2);
+  }
+  .aero-btn-destructive:hover {
+    background: linear-gradient(180deg, rgba(255, 120, 120, 0.38) 0%, rgba(235, 60, 60, 0.28) 100%);
+    transform: translateY(-1px);
+    box-shadow:
+      0 4px 0 rgba(210, 45, 45, 0.55),
+      0 7px 0 rgba(150, 25, 25, 0.42),
+      0 10px 28px rgba(0, 0, 0, 0.5),
+      0 0 24px rgba(255, 90, 90, 0.25);
+  }
+  .aero-btn-destructive:active { transform: translateY(3px); }
+
+  /* Light mode primary button */
+  html.light .aero-btn-primary {
+    color: #081428;
+    background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(208,230,255,0.74) 100%);
+    border-top:    1px solid rgba(255, 255, 255, 0.95);
+    border-left:   1px solid rgba(200, 224, 255, 0.75);
+    border-right:  1px solid rgba(152, 192, 246, 0.56);
+    border-bottom: 1px solid rgba(68, 122, 212, 0.4);
+    box-shadow:
+      0 3px 0 rgba(68, 122, 212, 0.42),
+      0 5px 0 rgba(38, 80, 180, 0.26),
+      0 8px 22px rgba(0, 28, 100, 0.18),
+      0 0 28px rgba(60, 140, 255, 0.1);
+  }
+  html.light .aero-btn-primary:hover {
+    background: linear-gradient(180deg, white 0%, rgba(218,238,255,0.88) 100%);
+    box-shadow:
+      0 4px 0 rgba(68, 122, 212, 0.48),
+      0 7px 0 rgba(38, 80, 180, 0.3),
+      0 10px 28px rgba(0, 28, 100, 0.22);
+  }
+  html.light .aero-btn-secondary {
+    color: rgba(10, 30, 90, 0.75);
+    background: linear-gradient(180deg, rgba(255,255,255,0.72) 0%, rgba(222,238,255,0.52) 100%);
+    border-top:    1px solid rgba(255, 255, 255, 0.88);
+    border-left:   1px solid rgba(200, 222, 255, 0.58);
+    border-right:  1px solid rgba(158, 192, 242, 0.4);
+    border-bottom: 1px solid rgba(78, 132, 212, 0.3);
+    box-shadow:
+      0 3px 0 rgba(50, 102, 192, 0.3),
+      0 5px 0 rgba(28, 66, 162, 0.18),
+      0 7px 18px rgba(0, 28, 100, 0.12);
+  }
+  html.light .aero-btn-secondary:hover {
+    color: #0a1628;
+    background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(230,244,255,0.7) 100%);
+  }
+  html.light .aero-btn-destructive {
+    color: #7f1d1d;
+    background: linear-gradient(180deg, rgba(254, 226, 226, 0.95) 0%, rgba(254, 202, 202, 0.85) 100%);
+    border-top:    1px solid rgba(255, 255, 255, 0.95);
+    border-left:   1px solid rgba(254, 200, 200, 0.9);
+    border-right:  1px solid rgba(248, 113, 113, 0.5);
+    border-bottom: 1px solid rgba(185, 28, 28, 0.5);
+    box-shadow:
+      0 3px 0 rgba(185, 28, 28, 0.35),
+      0 5px 0 rgba(153, 27, 27, 0.22),
+      0 7px 18px rgba(127, 29, 29, 0.12);
+  }
+  html.light .aero-btn-destructive:hover {
+    color: #450a0a;
+    background: linear-gradient(180deg, rgba(254, 242, 242, 1) 0%, rgba(254, 226, 226, 0.95) 100%);
+    box-shadow:
+      0 4px 0 rgba(185, 28, 28, 0.4),
+      0 6px 0 rgba(153, 27, 27, 0.25),
+      0 8px 20px rgba(127, 29, 29, 0.15);
+  }
+
+  /* ── Ambient orbs ── */
+  .aero-orbs-layer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+    contain: layout paint style;
+  }
+  html[data-cursor-effects="off"] .aero-orbs-layer {
+    display: none;
+  }
+  .aero-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(48px);
+    animation: aero-orb-pulse 22s ease-in-out infinite alternate;
+  }
+  .aero-orb-1 {
+    width: 560px; height: 560px;
+    background: radial-gradient(circle, rgba(30, 110, 255, 0.5), transparent 70%);
+    top: -200px; left: -120px;
+    opacity: 0.45; animation-delay: 0s;
+  }
+  .aero-orb-2 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(80, 180, 255, 0.35), transparent 70%);
+    top: 80px; right: -80px;
+    opacity: 0.35; animation-delay: -5s;
+  }
+  .aero-orb-3 {
+    width: 640px; height: 320px;
+    background: radial-gradient(circle, rgba(70, 50, 220, 0.28), transparent 70%);
+    bottom: 30%; left: 25%;
+    opacity: 0.3; animation-delay: -9s;
+  }
+  .aero-orb-4 {
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(0, 210, 255, 0.22), transparent 70%);
+    bottom: 60px; right: 12%;
+    opacity: 0.3; animation-delay: -3s;
+  }
+  html.light .aero-orb-1 {
+    background: radial-gradient(circle, rgba(100, 175, 255, 0.28), transparent 70%); opacity: 0.35;
+  }
+  html.light .aero-orb-2 {
+    background: radial-gradient(circle, rgba(160, 215, 255, 0.22), transparent 70%); opacity: 0.28;
+  }
+  html.light .aero-orb-3 {
+    background: radial-gradient(circle, rgba(120, 145, 255, 0.18), transparent 70%); opacity: 0.2;
+  }
+  html.light .aero-orb-4 {
+    background: radial-gradient(circle, rgba(0, 185, 255, 0.16), transparent 70%); opacity: 0.22;
+  }
+  @keyframes aero-orb-pulse {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(28px, 18px) scale(1.08); }
+  }
+
+  /* ── Cursor glow ── */
+  .aero-cursor-glow {
+    position: fixed;
+    left: 0; top: 0;
+    width: 220px; height: 220px;
+    pointer-events: none;
+    z-index: 200;
+    transform: translate3d(-9999px, -9999px, 0);
+    will-change: transform;
+    contain: layout paint style;
+    background: radial-gradient(
+      110px circle at center,
+      rgba(55, 130, 255, 0.055) 0%,
+      rgba(50, 118, 252, 0.04)  24%,
+      rgba(38,  94, 240, 0.022) 48%,
+      rgba(26,  74, 220, 0.009) 68%,
+      rgba(18,  55, 200, 0.001) 86%,
+      transparent                100%
+    );
+  }
+  html.light .aero-cursor-glow {
+    background: radial-gradient(
+      110px circle at center,
+      rgba(28,  98, 255, 0.034) 0%,
+      rgba(24,  86, 248, 0.024) 24%,
+      rgba(18,  66, 230, 0.012) 48%,
+      rgba(13,  49, 210, 0.004) 68%,
+      transparent                88%,
+      transparent                100%
+    );
+  }
+  html[data-cursor-effects="off"] .aero-cursor-glow {
+    display: none;
+  }
+  /* Legacy custom cursor classes are hidden so the native cursor stays hardware-fast. */
+  .aero-cursor {
+    display: none;
+  }
+  /* ── Theme toggle ── */
+  .aero-toggle-stack {
+    position: fixed;
+    bottom: 28px;
+    left: 28px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .aero-theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px 7px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.09);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.14),
+      0 4px 24px rgba(0, 0, 0, 0.3);
+    color: rgba(190, 220, 255, 0.7);
+    font-size: 0.78rem;
+    font-weight: 500;
+    transition: background 0.35s ease, border-color 0.35s ease, color 0.35s ease;
+  }
+  .aero-toggle-label {
+    min-width: 70px;
+    text-align: left;
+  }
+  .aero-theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.28);
+    color: rgba(220, 240, 255, 0.92);
+  }
+  .aero-toggle-track {
+    width: 42px; height: 24px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    position: relative; flex-shrink: 0;
+    transition: background 0.35s ease, border-color 0.35s ease;
+  }
+  .aero-toggle-thumb {
+    position: absolute;
+    width: 18px; height: 18px;
+    top: 2px; left: 2px;
+    border-radius: 50%;
+    background: rgba(170, 210, 255, 0.92);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), background 0.28s ease, box-shadow 0.28s ease;
+  }
+  .aero-toggle-thumb.is-light {
+    transform: translateX(18px);
+    background: rgba(255, 210, 60, 0.95);
+    box-shadow: 0 1px 6px rgba(200,130,0,0.45), 0 0 12px rgba(255,195,40,0.4);
+  }
+  .aero-toggle-thumb.is-active {
+    transform: translateX(18px);
+    background: rgba(120, 205, 255, 0.95);
+    box-shadow: 0 1px 6px rgba(50, 130, 220, 0.35), 0 0 12px rgba(80, 170, 255, 0.28);
+  }
+  html.light .aero-theme-toggle {
+    background: rgba(255, 255, 255, 0.65);
+    border-color: rgba(100, 158, 220, 0.32);
+    color: rgba(10, 38, 100, 0.68);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), 0 4px 22px rgba(0,38,120,0.14);
+  }
+  html.light .aero-theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.82);
+    border-color: rgba(78, 148, 220, 0.48);
+    color: #0a1628;
+  }
+  html.light .aero-toggle-track {
+    background: rgba(48, 118, 255, 0.1);
+    border-color: rgba(48, 118, 255, 0.24);
+  }
+  html.light .aero-toggle-thumb.is-active {
+    background: rgba(48, 118, 255, 0.92);
+    box-shadow: 0 1px 5px rgba(48, 118, 255, 0.28), 0 0 10px rgba(48, 118, 255, 0.2);
+  }
+
+  /* ── Click ripple (spawned by JS on every mousedown) ── */
+  .aero-click-ripple {
+    position: fixed;
+    width: 20px; height: 20px;
+    margin-left: -10px; margin-top: -10px;
+    border-radius: 50%;
+    border: 1px solid rgba(80, 160, 255, 0.65);
+    box-shadow: 0 0 8px rgba(60, 140, 255, 0.28);
+    pointer-events: none;
+    z-index: 9998;
+    contain: layout paint style;
+    animation: aero-click-ripple 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  html[data-cursor-effects="off"] .aero-click-ripple {
+    display: none;
+  }
+  @keyframes aero-click-ripple {
+    0%   { transform: scale(1);   opacity: 1; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .aero-orb {
+      animation: none;
+    }
+    .aero-click-ripple {
+      animation-duration: 0.01ms;
+    }
+  }
+
+  /* ── Section title gradient helper ── */
+  .aero-section-title {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    background: linear-gradient(180deg, #ffffff 0%, rgba(170, 215, 255, 0.82) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  html.light .aero-section-title {
+    background: linear-gradient(180deg, #081428 0%, #1a4888 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Status badges ── */
+  .aero-badge-online {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600;
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: rgba(134, 239, 172, 0.9);
+  }
+  .aero-badge-offline {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: rgba(252, 165, 165, 0.9);
+  }
+  .aero-badge-neutral {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: rgba(200, 225, 255, 0.7);
+  }
+  html.light .aero-badge-online {
+    background: rgba(22, 163, 74, 0.1); border-color: rgba(22, 163, 74, 0.3); color: rgba(15, 120, 55, 0.9);
+  }
+  html.light .aero-badge-offline {
+    background: rgba(220, 38, 38, 0.08); border-color: rgba(220, 38, 38, 0.2); color: rgba(185, 28, 28, 0.9);
+  }
+  html.light .aero-badge-neutral {
+    background: rgba(50, 120, 255, 0.08); border-color: rgba(50, 120, 255, 0.2); color: rgba(20, 70, 180, 0.8);
+  }
+
+  /* ── Severity pill badges (dark-first, light mode overrides) ── */
+  .aero-severity-critical {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: rgba(252, 165, 165, 0.95);
+  }
+  .aero-severity-high {
+    background: rgba(249, 115, 22, 0.15);
+    border: 1px solid rgba(249, 115, 22, 0.25);
+    color: rgba(253, 186, 116, 0.95);
+  }
+  .aero-severity-medium {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: rgba(252, 211, 77, 0.95);
+  }
+  .aero-severity-low {
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: rgba(147, 197, 253, 0.95);
+  }
+  .aero-severity-info {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(200, 225, 255, 0.8);
+  }
+  html.light .aero-severity-critical {
+    background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #991b1b;
+  }
+  html.light .aero-severity-high {
+    background: rgba(249, 115, 22, 0.1); border-color: rgba(249, 115, 22, 0.2); color: #9a3412;
+  }
+  html.light .aero-severity-medium {
+    background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #92400e;
+  }
+  html.light .aero-severity-low {
+    background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2); color: #1e40af;
+  }
+  html.light .aero-severity-info {
+    background: rgba(100, 116, 139, 0.08); border-color: rgba(100, 116, 139, 0.15); color: #475569;
+  }
+
+  /* ── Inline alert banners ── */
+  .aero-alert-error {
+    border-radius: 0.375rem;
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    background: rgba(239, 68, 68, 0.08);
+    color: rgba(252, 165, 165, 0.95);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  html.light .aero-alert-error {
+    border-color: rgba(239, 68, 68, 0.2);
+    background: rgba(254, 242, 242, 0.8);
+    color: #991b1b;
+  }
+  .aero-alert-warning {
+    border-radius: 0.375rem;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    background: rgba(245, 158, 11, 0.08);
+    color: rgba(252, 211, 77, 0.95);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  html.light .aero-alert-warning {
+    border-color: rgba(245, 158, 11, 0.2);
+    background: rgba(255, 251, 235, 0.8);
+    color: #92400e;
+  }
+
+  /* ── Terminal/command output ── */
+  .aero-terminal {
+    border-radius: 0.375rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(0, 0, 0, 0.25);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.75rem;
+    color: rgba(200, 225, 255, 0.85);
+    padding: 0.5rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+  html.light .aero-terminal {
+    border-color: rgba(100, 158, 220, 0.2);
+    background: rgba(15, 23, 42, 0.04);
+    color: #334155;
+  }
+  .aero-terminal-entry {
+    border-radius: 0.375rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.025);
+    padding: 0.75rem;
+  }
+  html.light .aero-terminal-entry {
+    border-color: rgba(100, 158, 220, 0.2);
+    background: rgba(248, 250, 252, 0.6);
+  }
+  .aero-terminal-prompt {
+    color: rgba(120, 190, 255, 0.9);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+    font-size: 0.75rem;
+  }
+  html.light .aero-terminal-prompt {
+    color: rgba(30, 64, 175, 0.8);
+  }
+
+  /* ── Detail definition list (dl/dt/dd) ── */
+  .aero-detail-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(160, 205, 255, 0.55);
+  }
+  html.light .aero-detail-label {
+    color: rgba(10, 42, 108, 0.55);
+  }
+  .aero-detail-value {
+    color: rgba(220, 240, 255, 0.92);
+  }
+  html.light .aero-detail-value {
+    color: #0a1628;
+  }
+  .aero-detail-value-lg {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: rgba(220, 240, 255, 0.95);
+  }
+  html.light .aero-detail-value-lg {
+    color: #0a1628;
+  }
+
+  /* ── Policy/scope badge variants ── */
+  .aero-badge-purple {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600;
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    color: rgba(216, 180, 254, 0.95);
+  }
+  html.light .aero-badge-purple {
+    background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.2); color: #6b21a8;
+  }
+  .aero-badge-blue {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: rgba(147, 197, 253, 0.95);
+  }
+  html.light .aero-badge-blue {
+    background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.2); color: #1e40af;
+  }
+  .aero-badge-green {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600;
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: rgba(134, 239, 172, 0.95);
+  }
+  html.light .aero-badge-green {
+    background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.2); color: #166534;
+  }
+  .aero-badge-amber {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600;
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: rgba(252, 211, 77, 0.95);
+  }
+  html.light .aero-badge-amber {
+    background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #92400e;
+  }
+  .aero-badge-red {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.72rem; font-weight: 600;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: rgba(252, 165, 165, 0.95);
+  }
+  html.light .aero-badge-red {
+    background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #991b1b;
+  }
+
+  /* ── Empty state ── */
+  .aero-empty-state {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: rgba(160, 205, 255, 0.5);
+    font-size: 0.875rem;
+  }
+  html.light .aero-empty-state {
+    color: rgba(10, 42, 108, 0.45);
+  }
+
+  /* ── Dialog subtitle ── */
+  .aero-dialog-subtitle {
+    font-size: 0.875rem;
+    color: rgba(160, 205, 255, 0.55);
+  }
+  html.light .aero-dialog-subtitle {
+    color: rgba(10, 42, 108, 0.55);
+  }
+
+  /* Legacy utilities kept for backwards compat */
+  .bg-panel-dark {
+    background-color: hsl(var(--brand-midnight));
+    background-image:
+      radial-gradient(700px 500px at 20% 10%, hsla(var(--brand-pine) / 0.35), transparent 60%),
+      radial-gradient(600px 420px at 100% -20%, hsla(var(--brand-rose) / 0.25), transparent 60%),
+      linear-gradient(200deg, hsl(197 70% 7%) 0%, hsl(var(--brand-midnight)) 100%);
+  }
+  .bg-hero-arch {
+    background: linear-gradient(180deg, hsl(197 30% 14%) 0%, hsl(var(--brand-midnight)) 100%);
+  }
+  .grainy-strong { position: relative; }
+  .grainy-strong::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.18;
+    background-image:
+      repeating-radial-gradient(circle at 0 0, rgba(255,255,255,0.04) 0, rgba(255,255,255,0.04) 1px, transparent 1px, transparent 2px),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.18) 0, rgba(0,0,0,0.18) 1px, transparent 1px, transparent 2px);
+    mix-blend-mode: overlay;
+  }
+}

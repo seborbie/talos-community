@@ -1,0 +1,91 @@
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+deleteme.md
+.DS_Store
+**/.DS_Store
+.cursor/
+.git.codex-backup.*.tar.gz
+apps/.env.codex-stub-backup.*
+apps/.env.debug.local
+*.crt
+*.key
+*.pfx
+*.pem
+*.cer
+*.p12
+*.der
+*.log
+
+# dependencies (any package in the monorepo)
+node_modules/
+# Bun uses one lockfile at the JavaScript workspace root.
+apps/*/bun.lock
+apps/installer/tmp/
+# Reconstructed from the digest-pinned upstream archive plus reviewed Talos patch.
+apps/vpx-encode/
+apps/target/
+apps/certs/*
+!apps/certs/README.md
+apps/.rust-servers-build-hash
+apps/.app-web-build-hashes.json
+apps/.azurite-data/
+apps/third_party/
+apps/rmm_agent/target/
+apps/rmm_agent/third_party/
+apps/talos_server/target/
+apps/talos_server/third_party/
+apps/talos_viewer/target/
+apps/talos_viewer/third_party/
+apps/talos_permissions_helper/target/
+apps/talos_permissions_helper/third_party/
+apps/talos_worker_chat/target/
+apps/talos_worker_chat/third_party/
+apps/talos_viewer/src-tauri/gen/
+apps/talos_permissions_helper/src-tauri/gen/
+apps/talos_worker_chat/src-tauri/gen/
+apps/talos_viewer/src-tauri/gen/schemas/
+apps/talos_permissions_helper/src-tauri/gen/schemas/
+apps/talos_worker_chat/src-tauri/gen/schemas/
+apps/talos_viewer/src-tauri/gen/schemas/desktop-schema.json
+apps/talos_viewer/src-tauri/gen/schemas/windows-schema.json
+apps/talos_worker_chat/src-tauri/gen/schemas/desktop-schema.json
+apps/talos_worker_chat/src-tauri/gen/schemas/windows-schema.json
+
+# WiX / local installer: per-target update bundles (zip + manifest + sig)
+**/Talos.*.Update.*
+
+# Local installer artifacts served by api_backend in dev/test.
+apps/installer/artifacts/*/talos-rmm-agent-linux-*
+apps/installer/artifacts/*/Talos.Agent.macos-*.pkg
+apps/installer/artifacts/**/*.pkg
+apps/installer/artifacts/**/*.zip
+apps/installer/artifacts/*/7zSD.sfx
+apps/installer/artifacts/*/manifest.json
+apps/installer/artifacts/*.cer
+apps/installer/artifacts/*/macos-pkg-root/
+apps/installer/artifacts/*/macos-pkg-scripts/
+apps/installer/artifacts/**/*.app/
+apps/installer/artifacts/**/* [0-9].*
+apps/installer/artifacts/**/* [0-9]
+apps/installer/**/* [0-9].wxs
+apps/installer/**/* [0-9].wixproj
+apps/installer/payload/**/* [0-9]
+apps/installer/payload/winpty/
+apps/installer/prereqs/
+apps/installer/tmp/
+apps/installer/tmp/macos-signing/
+apps/installer/tmp/legacy-win7-workspace/
+
+# Debug build generated files
+apps/*/src-tauri/gen/schemas/desktop-schema*.json
+apps/*/src-tauri/gen/schemas/macOS-schema*.json
+apps/*/src-tauri/gen/schemas/windows-schema*.json
+apps/talos_permissions_helper/dist/
+apps/talos_worker_chat/dist/
+apps/api_backend/dist/
+apps/talos_worker_chat/dist/assets/index-*.js
+apps/talos_worker_chat/dist/assets/index-*.css
+apps/talos_viewer/.dist-build-hash

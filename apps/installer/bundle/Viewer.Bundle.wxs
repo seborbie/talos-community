@@ -1,0 +1,23 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:bal="http://wixtoolset.org/schemas/v4/wxs/bal">
+  <Bundle
+    Name="Talos Viewer Installer"
+    Version="$(var.ProductVersion)"
+    Manufacturer="Talos"
+    UpgradeCode="{D0A7D0A4-2D4D-41D0-89BA-CAD577F5B123}">
+
+    <BootstrapperApplication>
+      <bal:WixStandardBootstrapperApplication
+        Theme="hyperlinkLicense"
+        LicenseUrl="https://www.gnu.org/licenses/agpl-3.0.html" />
+    </BootstrapperApplication>
+
+    <Chain DisableSystemRestore="yes">
+      <MsiPackage
+        Id="ViewerX64Msi"
+        SourceFile="$(var.ViewerMsiX64Path)"
+        InstallCondition="VersionNT64"
+        Vital="yes" />
+    </Chain>
+  </Bundle>
+</Wix>

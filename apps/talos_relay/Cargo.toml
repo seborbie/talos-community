@@ -1,0 +1,19 @@
+[package]
+name = "talos_relay"
+version = "0.5.3"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1.0"
+dotenvy = "0.15"
+rustls = { version = "0.23.36", features = ["ring"] }
+rustls-pemfile = "2.2.0"
+tokio = { version = "1.49.0", features = ["macros", "rt-multi-thread", "net", "io-util", "sync", "time"] }
+tokio-rustls = "0.26"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[lints]
+workspace = true

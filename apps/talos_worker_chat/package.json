@@ -1,0 +1,26 @@
+{
+  "name": "talos_worker_chat",
+  "version": "0.6.96",
+  "private": true,
+  "license": "AGPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "bun --bun ./node_modules/vite/bin/vite.js build",
+    "check": "bunx svelte-check --tsconfig ./tsconfig.json",
+    "test": "bun test tests",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "2.11.0",
+    "svelte": "5.55.9"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "catalog:",
+    "@tauri-apps/cli": "2.11.0",
+    "svelte-check": "catalog:",
+    "typescript": "catalog:",
+    "vite": "7.3.6"
+  }
+}

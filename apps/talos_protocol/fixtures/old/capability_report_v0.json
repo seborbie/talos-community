@@ -1,0 +1,16 @@
+{
+  "type": "session_capabilities_response",
+  "data": {
+    "request_id": "cap-legacy-001",
+    "capabilities": {
+      "codecs": [
+        "vp8"
+      ],
+      "encoding": "software",
+      "transports": [
+        "quic"
+      ],
+      "futureTransportHint": "ignored"
+    }
+  }
+}

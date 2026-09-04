@@ -1,0 +1,26 @@
+<Project Sdk="WixToolset.Sdk/6.0.0">
+  <PropertyGroup>
+    <OutputType>Bundle</OutputType>
+    <OutputName>Talos.Agent.Setup</OutputName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <DefineConstants>
+      AgentMsiX86Path=..\msi\bin\Release\Talos.Agent.x86.msi;
+      AgentMsiX64Path=..\msi\bin\Release\Talos.Agent.x64.msi;
+      VcRedistX86Path=..\prereqs\vc_redist.x86.exe;
+      VcRedistX64Path=..\prereqs\vc_redist.x64.exe;
+      WebView2RuntimePath=..\prereqs\MicrosoftEdgeWebView2RuntimeInstallerX64.exe;
+      VcRedistX86Url=https://download.visualstudio.microsoft.com/download/pr/9d270333-8b7b-4f96-9458-6fcdb2ec0b25/0C09F2611660441084CE0DF425C51C11E147E6447963C3690F97E0B25C55ED64/VC_redist.x86.exe;
+      VcRedistX64Url=https://download.visualstudio.microsoft.com/download/pr/9d270333-8b7b-4f96-9458-6fcdb2ec0b25/CC0FF0EB1DC3F5188AE6300FAEF32BF5BEEBA4BDD6E8E445A9184072096B713B/VC_redist.x64.exe;
+      WebView2RuntimeUrl=https://go.microsoft.com/fwlink/p/?LinkId=2124703
+    </DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Bal.wixext" Version="6.0.0" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Bundle.wxs" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,399 @@
+name: Community release candidate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: community-release-candidate-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  BUN_VERSION: 1.3.14
+  RUST_VERSION: 1.95.0
+  CARGO_AUDIT_VERSION: 0.22.2
+  GITLEAKS_IMAGE: ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f
+  SYFT_IMAGE: anchore/syft:v1.30.0@sha256:bd5357d2cd087f03af748dac24df48bfbc1723080d78f75f69aca1f2d429060e
+  TRIVY_IMAGE: aquasec/trivy:0.66.0@sha256:086971aaf400beebd94e8300fd8ea623774419597169156cec56eec5b00dfb1e
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    outputs:
+      version: ${{ steps.identity.outputs.version }}
+      source_sha: ${{ steps.identity.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - name: Derive identity only from an annotated Community tag
+        id: identity
+        working-directory: apps
+        shell: bash
+        run: |
+          set -euo pipefail
+          object_type="$(git -C .. cat-file -t "refs/tags/${GITHUB_REF_NAME}")"
+          bun ./scripts/community-release-version.ts \
+            --tag "${GITHUB_REF_NAME}" --source-sha "${GITHUB_SHA}" \
+            --ref-type "${GITHUB_REF_TYPE}" --tag-object-type "${object_type}" \
+            --github-output "${GITHUB_OUTPUT}"
+      - name: Prepare Linux quality toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          rustup toolchain install "${RUST_VERSION}" --profile minimal --component clippy,rustfmt
+          cargo install cargo-audit --version "${CARGO_AUDIT_VERSION}" --locked
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            clang libayatana-appindicator3-dev libclang-dev librsvg2-dev libssl-dev \
+            libvpx-dev libwebkit2gtk-4.1-dev libxdo-dev pkg-config
+      - name: Run locked release gates
+        working-directory: apps
+        run: |
+          bun ci
+          bun run third-party:vpx:prepare
+          bun run quality
+      - name: Export, scan, and archive the policy-reviewed public source
+        working-directory: apps
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="${RUNNER_TEMP}/source"
+          exported="${RUNNER_TEMP}/talos-community-${{ steps.identity.outputs.version }}"
+          mkdir -p "${out}"
+
+          # This fails closed while any owner or provenance gate in the reviewed export policy
+          # remains unresolved. Never add --allow-incomplete to a release workflow.
+          bun ./scripts/public-source-export.ts --repo-root .. --output "${exported}"
+
+          docker run --rm --volume "${GITHUB_WORKSPACE}:/repo:ro" \
+            --volume "${exported}:/scan:ro" \
+            "${GITLEAKS_IMAGE}" dir --config /repo/.gitleaks.toml \
+            --redact --no-banner --no-color /scan
+          docker run --rm --volume "${exported}:/source:ro" --volume "${out}:/out" \
+            "${SYFT_IMAGE}" scan dir:/source --source-name talos-community \
+            --source-version "${{ steps.identity.outputs.version }}" \
+            --output spdx-json=/out/source.spdx.json
+
+          epoch="$(git -C .. show -s --format=%ct "${GITHUB_SHA}")"
+          git -C "${exported}" init -q -b community-source
+          git -C "${exported}" config user.name "Talos release automation"
+          git -C "${exported}" config user.email "release-automation@example.invalid"
+          git -C "${exported}" add --all
+          GIT_AUTHOR_DATE="@${epoch} +0000" GIT_COMMITTER_DATE="@${epoch} +0000" \
+            git -C "${exported}" commit -q -m \
+              "Talos Community ${{ steps.identity.outputs.version }} public source snapshot"
+
+          docker run --rm --volume "${GITHUB_WORKSPACE}:/repo:ro" \
+            --volume "${exported}:/export:ro" \
+            "${GITLEAKS_IMAGE}" git --config /repo/.gitleaks.toml \
+            --log-opts=--all --redact --no-banner --no-color /export
+
+          tar --sort=name --mtime="@${epoch}" --owner=0 --group=0 --numeric-owner \
+            --exclude='.git' -czf \
+            "${out}/talos-community-${{ steps.identity.outputs.version }}-source.tar.gz" \
+            -C "${RUNNER_TEMP}" "talos-community-${{ steps.identity.outputs.version }}"
+          docker run --rm --volume "${GITHUB_WORKSPACE}:/repo:ro" \
+            --volume "${out}:/scan:ro" \
+            "${GITLEAKS_IMAGE}" dir --config /repo/.gitleaks.toml \
+            --max-archive-depth 6 --redact --no-banner --no-color /scan
+          (cd "${out}" && sha256sum ./* > SHA256SUMS)
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        with:
+          subject-path: ${{ runner.temp }}/source/*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: community-source-${{ steps.identity.outputs.version }}
+          path: ${{ runner.temp }}/source
+          if-no-files-found: error
+          retention-days: 30
+
+  launcher-linux:
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.validate.outputs.source_sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - working-directory: apps
+        run: bun run third-party:vpx:prepare
+      - run: rustup toolchain install "${RUST_VERSION}" --profile minimal
+      - working-directory: apps
+        run: cargo build --locked --release -p talos_appliance
+      - name: Stage, scan, and inventory
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="${RUNNER_TEMP}/launcher-linux"
+          mkdir -p "${out}"
+          install -m 0755 apps/target/release/talos-server \
+            "${out}/talos-server_${{ needs.validate.outputs.version }}_linux_x86_64"
+          docker run --rm --volume "${out}:/scan:ro" \
+            "${GITLEAKS_IMAGE}" dir --redact --no-banner --no-color /scan
+          docker run --rm --volume "${out}:/scan:ro" --volume "${out}:/out" \
+            "${SYFT_IMAGE}" scan \
+            "file:/scan/talos-server_${{ needs.validate.outputs.version }}_linux_x86_64" \
+            --output spdx-json=/out/launcher-linux.spdx.json
+          (cd "${out}" && sha256sum ./* > SHA256SUMS)
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        with:
+          subject-path: ${{ runner.temp }}/launcher-linux/*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: community-launcher-linux-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/launcher-linux
+          if-no-files-found: error
+          retention-days: 30
+
+  launcher-windows:
+    needs: validate
+    runs-on: windows-2025
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.validate.outputs.source_sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - working-directory: apps
+        run: bun run third-party:vpx:prepare
+      - shell: pwsh
+        run: rustup toolchain install $env:RUST_VERSION --profile minimal
+      - working-directory: apps
+        run: cargo build --locked --release -p talos_appliance
+      - name: Stage explicitly unsigned launcher
+        shell: pwsh
+        run: |
+          $out = Join-Path $env:RUNNER_TEMP "launcher-windows"
+          New-Item -ItemType Directory -Force -Path $out | Out-Null
+          $name = "talos-server_${{ needs.validate.outputs.version }}_windows_x86_64_UNSIGNED.exe"
+          Copy-Item "apps\target\release\talos-server.exe" (Join-Path $out $name)
+          "IMPORTANT: UNSIGNED COMMUNITY BINARY. Verify SHA256SUMS; do not disable security controls." |
+            Set-Content (Join-Path $out "UNSIGNED-BINARIES.txt") -Encoding utf8NoBOM
+          Get-ChildItem $out -File | Sort-Object Name | ForEach-Object {
+            "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant())  $($_.Name)"
+          } | Set-Content (Join-Path $out "SHA256SUMS") -Encoding utf8NoBOM
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        with:
+          subject-path: ${{ runner.temp }}/launcher-windows/*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: community-launcher-windows-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/launcher-windows
+          if-no-files-found: error
+          retention-days: 30
+
+  native-clients:
+    needs: validate
+    runs-on: [self-hosted, windows, x64, talos-release]
+    timeout-minutes: 240
+    environment: community-manifest-signing
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.validate.outputs.source_sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - working-directory: apps
+        run: bun ci
+      - name: Build clients with protected updater-manifest signer
+        shell: pwsh
+        env:
+          MANIFEST_PFX_BASE64: ${{ secrets.TALOS_MANIFEST_SIGNING_PFX_BASE64 }}
+          MANIFEST_PFX_PASSWORD: ${{ secrets.TALOS_MANIFEST_SIGNING_PFX_PASSWORD }}
+          TALOS_EXPECTED_MANIFEST_KEY_SHA256: ${{ vars.TALOS_EXPECTED_MANIFEST_KEY_SHA256 }}
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:MANIFEST_PFX_BASE64) -or
+              [string]::IsNullOrWhiteSpace($env:MANIFEST_PFX_PASSWORD)) {
+            throw "Protected updater-manifest signing inputs are not configured."
+          }
+          $expectedManifestKeySha256 = [string]$env:TALOS_EXPECTED_MANIFEST_KEY_SHA256
+          if ($expectedManifestKeySha256 -cnotmatch '^[0-9a-f]{64}$') {
+            throw "Protected expected updater-manifest fingerprint is not configured as 64 lowercase hexadecimal characters."
+          }
+          $pfx = Join-Path $env:RUNNER_TEMP "community-manifest.pfx"
+          try {
+            [IO.File]::WriteAllBytes($pfx, [Convert]::FromBase64String($env:MANIFEST_PFX_BASE64))
+            $password = ConvertTo-SecureString $env:MANIFEST_PFX_PASSWORD -AsPlainText -Force
+            Remove-Item Env:MANIFEST_PFX_BASE64
+            Remove-Item Env:MANIFEST_PFX_PASSWORD
+            Remove-Item Env:TALOS_EXPECTED_MANIFEST_KEY_SHA256
+            $arguments = @{
+              BuildProfile = "release"
+              SkipAuthenticodeSigning = $true
+              ManifestCertificatePath = $pfx
+              ManifestCertificatePassword = $password
+            }
+            & .\scripts\build-installers.ps1 @arguments
+            if ($LASTEXITCODE -ne 0) { throw "release client build failed" }
+            $artifactRoot = Resolve-Path "apps\installer\artifacts\release"
+            $provenance = Get-Content (Join-Path $artifactRoot "build-provenance.json") -Raw | ConvertFrom-Json
+            $artifactManifest = Get-Content (Join-Path $artifactRoot "manifest.json") -Raw | ConvertFrom-Json
+            $observedManifestKeySha256 = [string]$provenance.trust.updaterManifestPublicKeySha256
+            if ($observedManifestKeySha256 -cnotmatch '^[0-9a-f]{64}$' -or
+                $observedManifestKeySha256 -cne $expectedManifestKeySha256 -or
+                [string]$artifactManifest.signing.updaterManifests.publicKeySha256 -cne $expectedManifestKeySha256) {
+              throw "Built updater-manifest public key does not match the protected expected release-line fingerprint."
+            }
+          } finally {
+            Remove-Item $pfx -Force -ErrorAction SilentlyContinue
+            Remove-Item Env:MANIFEST_PFX_BASE64 -ErrorAction SilentlyContinue
+            Remove-Item Env:MANIFEST_PFX_PASSWORD -ErrorAction SilentlyContinue
+            Remove-Item Env:TALOS_EXPECTED_MANIFEST_KEY_SHA256 -ErrorAction SilentlyContinue
+          }
+      - name: Verify trust metadata
+        shell: pwsh
+        run: |
+          $root = Resolve-Path "apps\installer\artifacts\release"
+          foreach ($name in @("UNSIGNED-BINARIES.txt", "SHA256SUMS", "build-provenance.json", "manifest.json")) {
+            if (-not (Test-Path (Join-Path $root $name) -PathType Leaf)) { throw "Missing $name" }
+          }
+          $p = Get-Content (Join-Path $root "build-provenance.json") -Raw | ConvertFrom-Json
+          if ($p.source.revision -ne "${{ needs.validate.outputs.source_sha }}" -or
+              $p.source.trackedSourceDirty -ne $false -or $p.builder.profile -ne "release") {
+            throw "Native provenance does not identify this clean release source and profile"
+          }
+          if ($p.trust.windowsAuthenticodeStatus -ne "unsigned") { throw "Windows output is not marked unsigned" }
+          if ($p.trust.updaterManifestPublicKeySha256 -notmatch '^[0-9a-f]{64}$') { throw "Missing manifest key fingerprint" }
+          $m = Get-Content (Join-Path $root "manifest.json") -Raw | ConvertFrom-Json
+          if ($m.profile -ne "release" -or
+              $m.signing.updaterManifests.publicKeySha256 -ne $p.trust.updaterManifestPublicKeySha256 -or
+              $m.signing.windowsAuthenticode.status -ne "unsigned") {
+            throw "Native artifact manifest trust metadata conflicts with provenance"
+          }
+          $updateManifests = @(Get-ChildItem $root -Filter "*.Update.manifest.json")
+          if ($updateManifests.Count -eq 0) { throw "No updater manifests were produced" }
+          $updateManifests | ForEach-Object {
+            $signature = $_.FullName -replace '\.json$', '.sig'
+            if (-not (Test-Path $signature -PathType Leaf)) { throw "Missing signature for $($_.Name)" }
+          }
+      - name: Scan protected native artifact handoff for secrets
+        shell: pwsh
+        run: |
+          $artifacts = (Resolve-Path "apps\installer\artifacts\release").Path
+          $repository = (Resolve-Path ".").Path
+          docker run --rm --volume "${repository}:/repo:ro" --volume "${artifacts}:/scan:ro" `
+            $env:GITLEAKS_IMAGE dir --config /repo/.gitleaks.toml `
+            --max-archive-depth 8 --redact --no-banner --no-color /scan
+          if ($LASTEXITCODE -ne 0) { throw "native artifact secret scan failed" }
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        with:
+          subject-path: apps/installer/artifacts/release/*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: community-native-clients-UNSIGNED-${{ needs.validate.outputs.version }}
+          path: apps/installer/artifacts/release
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30
+
+  images:
+    needs: validate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { key: api_backend, file: apps/api_backend/Dockerfile, target: "" }
+          - { key: frontend, file: apps/frontend/Dockerfile, target: "" }
+          - {
+              key: relay,
+              file: infra/Dockerfile.rust-servers,
+              target: talos_relay,
+            }
+          - {
+              key: control_server,
+              file: infra/Dockerfile.rust-servers,
+              target: talos_server,
+            }
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.validate.outputs.source_sha }}
+          persist-credentials: false
+      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+      - working-directory: apps
+        run: bun run third-party:vpx:prepare
+      - uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+      - uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+      - uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
+        with:
+          context: .
+          file: ${{ matrix.file }}
+          target: ${{ matrix.target }}
+          platforms: linux/amd64,linux/arm64
+          build-args: PROFILE=release
+          outputs: type=oci,dest=${{ runner.temp }}/${{ matrix.key }}.oci.tar
+          provenance: mode=max
+          sbom: true
+          push: false
+      - name: Scan OCI archive and generate evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          out="${RUNNER_TEMP}/image-${{ matrix.key }}"
+          mkdir -p "${out}"
+          mv "${RUNNER_TEMP}/${{ matrix.key }}.oci.tar" "${out}/${{ matrix.key }}.oci.tar"
+          docker run --rm --volume "${out}:/scan" "${SYFT_IMAGE}" scan \
+            "oci-archive:/scan/${{ matrix.key }}.oci.tar" \
+            --output "spdx-json=/scan/${{ matrix.key }}.spdx.json"
+          for platform in linux/amd64 linux/arm64; do
+            suffix="${platform#linux/}"
+            docker run --rm --volume "${out}:/scan" "${TRIVY_IMAGE}" image \
+              --input "/scan/${{ matrix.key }}.oci.tar" --platform "${platform}" \
+              --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 \
+              --format json --output "/scan/${{ matrix.key }}.${suffix}.trivy.json"
+          done
+          docker run --rm --volume "${GITHUB_WORKSPACE}:/repo:ro" --volume "${out}:/scan:ro" \
+            "${GITLEAKS_IMAGE}" dir --config /repo/.gitleaks.toml \
+            --max-archive-depth 8 --redact --no-banner --no-color /scan
+          (cd "${out}" && sha256sum ./* > SHA256SUMS)
+      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        with:
+          subject-path: ${{ runner.temp }}/image-${{ matrix.key }}/*
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: community-image-${{ matrix.key }}-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/image-${{ matrix.key }}
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 30

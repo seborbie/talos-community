@@ -1,0 +1,79 @@
+[package]
+name = "talos_viewer"
+version = "0.6.124"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+build = "build.rs"
+
+[dependencies]
+anyhow = "1.0"
+talos_protocol = { path = "../../talos_protocol", features = ["relay-transport"] }
+talos_log_util = { path = "../../talos_log_util" }
+base64 = "0.22"
+chacha20poly1305 = "0.10"
+dotenvy = "0.15"
+get_if_addrs = "0.5"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+png = "0.17.16"
+stunclient = "0.4.2"
+urlencoding = "2.1.3"
+quinn = "0.11.11"
+rustls = { version = "0.23.36", features = ["ring"] }
+rustls-pemfile = "2.2.0"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+uuid = { version = "1", features = ["v4"] }
+tauri = { version = "2.9.5", features = ["tray-icon"] }
+tauri-plugin-deep-link = "2.4.6"
+tokio = { version = "1.49.0", features = ["macros", "rt-multi-thread", "io-util", "time"] }
+tokio-util = "0.7"
+tokio-rustls = "0.26"
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.22", features = ["env-filter"] }
+webpki-roots = "0.26"
+softbuffer = "0.4.8"
+raw-window-handle = "0.6.2"
+windows-sys = { version = "0.61.2", features = ["Win32_Foundation", "Win32_Graphics_Gdi", "Win32_UI_Accessibility", "Win32_UI_WindowsAndMessaging", "Win32_UI_Input_KeyboardAndMouse", "Win32_System_LibraryLoader", "Win32_System_Memory", "Win32_System_DataExchange", "Win32_System_Console", "Win32_System_Diagnostics_Debug", "Win32_System_Registry", "Win32_Storage_FileSystem"] }
+env-libvpx-sys = { version = "5.1.3", features = ["generate"] }
+yuv-sys = "0.3"
+zip = { version = "8.0.0", default-features = false, features = ["deflate"] }
+walkdir = "2.5.0"
+tauri-plugin-single-instance = "2.4.0"
+talos_update_common = { path = "../../talos_update_common" }
+zstd = "0.13"
+
+[target.'cfg(windows)'.dependencies]
+webview2-com = "0.38.2"
+windows-core = "0.61.2"
+windows = { version = "0.61.3", features = ["Win32_Foundation", "Win32_Graphics_Direct3D", "Win32_Graphics_Direct3D_Fxc", "Win32_Graphics_Direct3D11", "Win32_Graphics_Dxgi", "Win32_Graphics_Dxgi_Common", "Win32_Media_MediaFoundation", "Win32_System_Com", "Win32_System_Ole", "Win32_System_Variant"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+apple-metal = "0.8.7"
+objc2 = "0.6.3"
+objc2-app-kit = { version = "0.3.2", features = ["NSApplication", "NSEvent", "NSResponder", "NSRunningApplication", "NSTrackingArea", "NSView", "NSWindow", "objc2-quartz-core"] }
+objc2-core-foundation = "0.3.2"
+objc2-core-media = { version = "0.3.2", features = ["CMBlockBuffer", "CMFormatDescription", "CMSampleBuffer", "CMTime"] }
+objc2-core-graphics = { version = "0.3.2", default-features = false, features = ["CGPath"] }
+objc2-core-video = { version = "0.3.2", features = ["CVBuffer", "CVImageBuffer", "CVPixelBuffer"] }
+objc2-foundation = "0.3.2"
+objc2-quartz-core = { version = "0.3.2", features = ["CALayer", "CAMetalLayer", "CAShapeLayer", "CATransaction", "objc2-core-foundation", "objc2-core-graphics"] }
+objc2-video-toolbox = { version = "0.3.2", features = ["VTDecompressionSession", "VTDecompressionProperties", "VTErrors"] }
+
+[build-dependencies]
+cc = "1.0"
+tauri-build = "2.5.3"
+winres = "0.1.12"
+
+[dev-dependencies]
+tauri = { version = "2.9.5", features = ["test"] }
+
+[package.metadata]
+
+[package.metadata.tauri]
+
+[package.metadata.tauri.bundle]
+icon = ["icons/icon.icns", "icons/icon.ico", "icons/icon.png"]
+
+[lints]
+workspace = true

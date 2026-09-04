@@ -1,0 +1,1851 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["public", "rmm_telemetry", "command_center"]
+}
+
+// The rest of the schema is moved from apps/prisma/schema.prisma
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+
+  memberships OrganizationMember[]
+  rmmDeviceSavedViews RmmDeviceSavedView[]
+
+  @@schema("public")
+}
+
+enum OrgRole {
+  SUPER_ADMIN
+  AGENT_ADMIN
+  VIEWER
+
+  @@schema("public")
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+
+  // Encrypted Halo PSA configuration for the organization
+  haloBaseUrlEnc      String?
+  haloClientIdEnc     String?
+  haloClientSecretEnc String?
+
+  members         OrganizationMember[]
+  customers       Customer[]
+  commandPolicies CommandPolicy[]
+  installerProfiles RmmInstallerProfile[]
+  installerTokens   RmmInstallerEnrollmentToken[]
+  installerTokenUses RmmInstallerTokenUse[]
+  installerDownloads RmmInstallerDownloadAudit[]
+  rmmDeviceSavedViews RmmDeviceSavedView[]
+  installerShortLinks RmmInstallerShortLink[]
+
+  @@schema("public")
+}
+
+model OrganizationMember {
+  id             String       @id @default(cuid())
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String
+  role           OrgRole
+  createdAt      DateTime     @default(now())
+
+  @@unique([userId, organizationId])
+  @@index([userId])
+  @@schema("public")
+}
+
+model RmmDevice {
+  agentId        String   @id @map("agent_id")
+  organizationId String   @map("organization_id")
+  hostname       String
+  os             String
+  ip             String
+  version        String?
+  lastSeen       DateTime @map("last_seen") @db.Timestamptz(3)
+  websocketStatus         String   @default("unknown") @map("websocket_status")
+  websocketConnectedAt    DateTime? @map("websocket_connected_at") @db.Timestamptz(3)
+  websocketDisconnectedAt DateTime? @map("websocket_disconnected_at") @db.Timestamptz(3)
+  customerId     String?  @map("customer_id")
+  siteId         String?  @map("site_id")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  linuxShellUsername          String?   @map("linux_shell_username")
+  linuxShellPasswordEnc       String?   @map("linux_shell_password_enc")
+  linuxShellCredentialId      String?   @map("linux_shell_credential_id")
+  linuxShellCredentialVersion Int?      @map("linux_shell_credential_version")
+  linuxShellPasswordUpdatedAt DateTime? @map("linux_shell_password_updated_at") @db.Timestamptz(3)
+  deviceType                  String    @default("unknown") @map("device_type")
+  deviceTypeSource            String    @default("auto") @map("device_type_source")
+  patchRing                   String    @default("broad") @map("patch_ring")
+  criticalityTier             String?   @map("criticality_tier")
+  patchManaged                Boolean   @default(true) @map("patch_managed")
+  nativeWindowsUpdateControl  Boolean   @default(true) @map("native_windows_update_control")
+  aiRunnerAutoApprove         Boolean   @default(false) @map("ai_runner_auto_approve")
+  patchMaintenanceModeUntil   DateTime? @map("patch_maintenance_mode_until") @db.Timestamptz(3)
+  patchTags                   Json      @default("[]") @map("patch_tags")
+  nativeWindowsUpdateBackup   Json?     @map("native_windows_update_backup_jsonb")
+  macosUpdateAccountStatus    String?   @map("macos_update_account_status")
+  macosUpdateAccountRequired  Boolean?  @map("macos_update_account_required")
+  macosUpdateAccountUsername  String?   @map("macos_update_account_username")
+  macosUpdateAccountCredentialVersion Int? @map("macos_update_account_credential_version")
+  macosUpdateAccountGeneratedUid String? @map("macos_update_account_generated_uid")
+  macosUpdateAccountFailureCode String?  @map("macos_update_account_failure_code")
+  macosUpdateAccountFailureMessage String? @map("macos_update_account_failure_message")
+  macosUpdateAccountLastVerifiedAt DateTime? @map("macos_update_account_last_verified_at") @db.Timestamptz(3)
+  macosUpdateAccountStatusJson Json?     @map("macos_update_account_status_jsonb")
+
+  telemetryState             RmmTelemetryDeviceState?
+  telemetrySnapshots         RmmTelemetrySnapshotIngest[]
+  telemetrySnapshotRequests  RmmTelemetrySnapshotRequest[]
+  telemetryInstalledApps     RmmTelemetryDeviceInstalledApp[]
+  telemetryServices          RmmTelemetryDeviceService[]
+  telemetryStartupItems      RmmTelemetryDeviceStartupItem[]
+  telemetryWindowsFeatures   RmmTelemetryDeviceWindowsFeature[]
+  telemetryPendingUpdates    RmmTelemetryDevicePendingUpdate[]
+  telemetryInstalledUpdates  RmmTelemetryDeviceInstalledUpdate[]
+  telemetryEvents            RmmTelemetryDeviceEvent[]
+  telemetryFactState         RmmTelemetryFactStateCurrent[]
+  telemetryFactChanges       RmmTelemetryFactChangeLog[]
+  telemetryFactBaselines     RmmTelemetryFactBaseline[]
+  telemetryScopedBaselines   RmmTelemetryFactBaselineScope[]
+  telemetryDecisions         RmmTelemetryRoutingDecision[]
+  telemetryRemediationJobs   RmmTelemetryRemediationJob[]
+  telemetryProcessedMessages RmmTelemetryProcessedMessageLog[]
+  patchUpdateStates          RmmPatchDeviceUpdateState[]
+  healthAlerts               RmmAgentHealthAlert[]
+  customer                   Customer?                           @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  site                       RmmSite?                            @relation(fields: [siteId], references: [id], onDelete: SetNull)
+
+  @@unique([organizationId, agentId])
+  @@index([organizationId])
+  @@index([lastSeen])
+  @@index([customerId])
+  @@index([siteId])
+  @@index([websocketStatus])
+  @@index([deviceType])
+  @@index([patchRing])
+  @@index([patchManaged])
+  @@map("rmm_devices")
+  @@schema("public")
+}
+
+model RmmAgentHealthAlert {
+  id              BigInt    @id @default(autoincrement())
+  organizationId  String    @map("organization_id")
+  agentId         String    @map("agent_id")
+  alertKey        String    @map("alert_key")
+  severity        String
+  status          String    @default("active")
+  reason          String
+  detail          String?
+  firstSeenAt     DateTime  @default(now()) @map("first_seen_at") @db.Timestamptz(3)
+  lastSeenAt      DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz(3)
+  resolvedAt      DateTime? @map("resolved_at") @db.Timestamptz(3)
+  occurrenceCount Int       @default(1) @map("occurrence_count")
+  context          Json      @default("{}") @map("context_jsonb")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([organizationId, agentId, alertKey])
+  @@index([organizationId, status, lastSeenAt])
+  @@index([agentId, status, lastSeenAt])
+  @@map("rmm_agent_health_alert")
+  @@schema("public")
+}
+
+model RmmDeviceSavedView {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  userId         String   @map("user_id")
+  name           String
+  filters        Json     @default("{}")
+  sortBy         String   @default("lastSeen") @map("sort_by")
+  sortDirection  String   @default("desc") @map("sort_direction")
+  pageSize       Int      @default(50) @map("page_size")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, userId, name])
+  @@index([organizationId, userId, updatedAt], map: "rmm_device_saved_views_organization_id_user_id_updated_at_idx")
+  @@map("rmm_device_saved_views")
+  @@schema("public")
+}
+
+model CommandCenterConversation {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  userId         String   @map("user_id")
+  title          String
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  messages CommandCenterMessage[]
+
+  @@index([organizationId, userId, updatedAt], map: "command_center_conversations_org_user_updated_idx")
+  @@map("conversations")
+  @@schema("command_center")
+}
+
+model CommandCenterMessage {
+  id             String   @id @default(cuid())
+  conversationId String   @map("conversation_id")
+  role           String
+  content        String
+  model          String?
+  responseId     String?  @map("response_id")
+  metadata       Json?    @map("metadata_jsonb")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  conversation CommandCenterConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade, map: "command_center_messages_conversation_id_fkey")
+
+  @@index([conversationId, createdAt], map: "command_center_messages_conversation_created_idx")
+  @@map("messages")
+  @@schema("command_center")
+}
+
+model CommandCenterAiRunnerJob {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  userId         String   @map("user_id")
+  conversationId String?  @map("conversation_id")
+  agentId        String   @map("agent_id")
+  goal           String?
+  jobType        String   @default("desktop_goal") @map("job_type")
+  status         String
+  runnerId       String?  @map("runner_id")
+  dispatchRequest Json?   @map("dispatch_request_jsonb")
+  leaseId        String?  @map("lease_id")
+  leaseOwnerRunnerId String? @map("lease_owner_runner_id")
+  leaseExpiresAt DateTime? @map("lease_expires_at") @db.Timestamptz(3)
+  lastHeartbeatAt DateTime? @map("last_heartbeat_at") @db.Timestamptz(3)
+  cancelRequestedAt DateTime? @map("cancel_requested_at") @db.Timestamptz(3)
+  resumeAttempt  Int      @default(0) @map("resume_attempt")
+  retryable      Boolean  @default(false)
+  retryReason    String?  @map("retry_reason")
+  approvalId     String?  @map("approval_id")
+  approvalChatSessionId String? @map("approval_chat_session_id")
+  approvalRequestedAt DateTime? @map("approval_requested_at") @db.Timestamptz(3)
+  approvalRespondedAt DateTime? @map("approval_responded_at") @db.Timestamptz(3)
+  approvalExpiresAt DateTime? @map("approval_expires_at") @db.Timestamptz(3)
+  approvalWindowExpiresAt DateTime? @map("approval_window_expires_at") @db.Timestamptz(3)
+  resultMessageId String? @map("result_message_id")
+  liveFrameMessageId String? @map("live_frame_message_id")
+  result         Json?    @map("result_jsonb")
+  error          String?
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  startedAt      DateTime? @map("started_at") @db.Timestamptz(3)
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(3)
+
+  artifacts CommandCenterAiRunnerArtifact[]
+  commandApprovals CommandCenterAiRunnerCommandApproval[]
+  events CommandCenterAiRunnerEvent[]
+
+  @@index([organizationId, userId, updatedAt], map: "command_center_ai_runner_jobs_org_user_updated_idx")
+  @@index([organizationId, agentId, updatedAt], map: "command_center_ai_runner_jobs_org_agent_updated_idx")
+  @@index([conversationId], map: "command_center_ai_runner_jobs_conversation_idx")
+  @@index([organizationId, userId, conversationId, status, updatedAt], map: "command_center_ai_runner_jobs_active_idx")
+  @@index([approvalId], map: "command_center_ai_runner_jobs_approval_idx")
+  @@index([leaseExpiresAt], map: "command_center_ai_runner_jobs_lease_expiry_idx")
+  @@map("ai_runner_jobs")
+  @@schema("command_center")
+}
+
+model CommandCenterAiRunnerArtifact {
+  id             String   @id @default(cuid())
+  jobId          String   @map("job_id")
+  organizationId String   @map("organization_id")
+  userId         String   @map("user_id")
+  artifactType   String   @map("artifact_type")
+  name           String
+  mimeType       String   @map("mime_type")
+  contentBase64  String   @map("content_base64")
+  metadata       Json?    @map("metadata_jsonb")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  job CommandCenterAiRunnerJob @relation(fields: [jobId], references: [id], onDelete: Cascade, map: "command_center_ai_runner_artifacts_job_id_fkey")
+
+  @@index([organizationId, userId, createdAt], map: "command_center_ai_runner_artifacts_org_user_created_idx")
+  @@index([jobId, createdAt], map: "command_center_ai_runner_artifacts_job_created_idx")
+  @@map("ai_runner_artifacts")
+  @@schema("command_center")
+}
+
+model CommandCenterAiRunnerCommandApproval {
+  id              String   @id @default(cuid())
+  jobId           String   @map("job_id")
+  organizationId  String   @map("organization_id")
+  userId          String   @map("user_id")
+  conversationId  String?  @map("conversation_id")
+  agentId         String   @map("agent_id")
+  turnIndex       Int      @map("turn_index")
+  status          String
+  command         String
+  explanation     String
+  risk            String
+  notes           Json?    @map("notes_jsonb")
+  message         String?
+  modelResponseId String?  @map("model_response_id")
+  policyAllowed   Boolean? @map("policy_allowed")
+  policyReason    String?  @map("policy_reason")
+  matchedPolicyId BigInt?  @map("matched_policy_id")
+  decidedByUserId String?  @map("decided_by_user_id")
+  decidedAt       DateTime? @map("decided_at") @db.Timestamptz(3)
+  output          String?
+  outputLength    Int?     @map("output_length")
+  exitCode        Int?     @map("exit_code")
+  error           String?
+  messageId       String?  @map("message_id")
+  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  expiresAt       DateTime? @map("expires_at") @db.Timestamptz(3)
+  executedAt      DateTime? @map("executed_at") @db.Timestamptz(3)
+
+  job CommandCenterAiRunnerJob @relation(fields: [jobId], references: [id], onDelete: Cascade, map: "command_center_ai_runner_command_approvals_job_id_fkey")
+  events CommandCenterAiRunnerEvent[]
+
+  @@unique([jobId, turnIndex], map: "command_center_ai_runner_command_approvals_job_turn_key")
+  @@index([organizationId, userId, status, updatedAt], map: "command_center_ai_runner_command_approvals_org_user_status_idx")
+  @@index([jobId, status, updatedAt], map: "command_center_ai_runner_command_approvals_job_status_idx")
+  @@index([messageId], map: "command_center_ai_runner_command_approvals_message_idx")
+  @@map("ai_runner_command_approvals")
+  @@schema("command_center")
+}
+
+model CommandCenterAiRunnerEvent {
+  id                String   @id @default(cuid())
+  jobId             String   @map("job_id")
+  organizationId    String   @map("organization_id")
+  userId            String   @map("user_id")
+  conversationId    String?  @map("conversation_id")
+  agentId           String   @map("agent_id")
+  eventKey          String   @map("event_key")
+  eventType         String   @map("event_type")
+  runnerId          String?  @map("runner_id")
+  leaseId           String?  @map("lease_id")
+  turnIndex         Int?     @map("turn_index")
+  artifactFrameId   String?  @map("artifact_frame_id")
+  commandApprovalId String?  @map("command_approval_id")
+  artifactId        String?  @map("artifact_id")
+  payload           Json?    @map("payload_jsonb")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  job CommandCenterAiRunnerJob @relation(fields: [jobId], references: [id], onDelete: Cascade, map: "command_center_ai_runner_events_job_id_fkey")
+  commandApproval CommandCenterAiRunnerCommandApproval? @relation(fields: [commandApprovalId], references: [id], onDelete: SetNull, map: "command_center_ai_runner_events_command_approval_id_fkey")
+
+  @@unique([jobId, eventKey], map: "command_center_ai_runner_events_job_event_key")
+  @@index([jobId, createdAt], map: "command_center_ai_runner_events_job_created_idx")
+  @@index([organizationId, userId, createdAt], map: "command_center_ai_runner_events_org_user_created_idx")
+  @@index([artifactId], map: "command_center_ai_runner_events_artifact_idx")
+  @@index([commandApprovalId], map: "command_center_ai_runner_events_command_approval_idx")
+  @@map("ai_runner_events")
+  @@schema("command_center")
+}
+
+model CommandCenterAiRunnerApprovalGrant {
+  id             String   @id @default(cuid())
+  organizationId String   @map("organization_id")
+  userId         String   @map("user_id")
+  agentId        String   @map("agent_id")
+  jobType        String   @map("job_type")
+  approvalId     String   @map("approval_id")
+  jobId          String?  @map("job_id")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  expiresAt      DateTime @map("expires_at") @db.Timestamptz(3)
+
+  @@index([organizationId, userId, agentId, jobType, expiresAt], map: "command_center_ai_runner_approval_grants_lookup_idx")
+  @@index([approvalId], map: "command_center_ai_runner_approval_grants_approval_idx")
+  @@map("ai_runner_approval_grants")
+  @@schema("command_center")
+}
+
+model CommandCenterSecureNote {
+  id              String    @id @default(cuid())
+  code            String    @unique
+  secretHandle    String    @unique @map("secret_handle")
+  organizationId  String    @map("organization_id")
+  createdByUserId String    @map("created_by_user_id")
+  recipientUserId String    @map("recipient_user_id")
+  recipientEmail  String?   @map("recipient_email")
+  kind            String
+  surface         String
+  purpose         String?
+  contentEnc      String?   @map("content_enc")
+  contentLength   Int       @default(0) @map("content_length")
+  shellReference  String?   @map("shell_reference")
+  desktopReference String?  @map("desktop_reference")
+  jobId           String?   @map("job_id")
+  agentId         String?   @map("agent_id")
+  expiresAt       DateTime  @map("expires_at") @db.Timestamptz(3)
+  viewedAt        DateTime? @map("viewed_at") @db.Timestamptz(3)
+  destroyedAt     DateTime? @map("destroyed_at") @db.Timestamptz(3)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([organizationId, expiresAt], map: "command_center_secure_notes_org_expiry_idx")
+  @@index([recipientUserId, expiresAt], map: "command_center_secure_notes_recipient_expiry_idx")
+  @@index([jobId], map: "command_center_secure_notes_job_idx")
+  @@index([expiresAt], map: "command_center_secure_notes_expiry_idx")
+  @@map("secure_notes")
+  @@schema("command_center")
+}
+
+model RmmEmergencyUpdateState {
+  singletonKey String   @id @map("singleton_key")
+  active       Boolean  @default(false)
+  reason       String   @default("emergency")
+  requestedBy  String?  @map("requested_by")
+  triggeredAt  DateTime @default(now()) @map("triggered_at") @db.Timestamptz(3)
+  expiresAt    DateTime? @map("expires_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("rmm_emergency_update_state")
+  @@schema("public")
+}
+
+model FeatureUpgradeIsoMedia {
+  id            String   @id @default(cuid())
+  displayName   String   @map("display_name")
+  osFamily      String   @default("windows") @map("os_family")
+  product       String
+  version       String
+  edition       String?
+  architecture  String
+  language      String?
+  sha256        String?
+  sizeBytes     BigInt?  @map("size_bytes")
+  containerName String   @map("container_name")
+  blobName      String   @map("blob_name")
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  setupCommandMatrices FeatureUpgradeSetupCommandMatrix[]
+  upgradeDevices        FeatureUpgradeDevice[]
+
+  @@unique([containerName, blobName])
+  @@index([active, osFamily])
+  @@index([product, version])
+  @@map("feature_upgrade_iso_media")
+  @@schema("public")
+}
+
+model FeatureUpgradeSetupCommandMatrix {
+  id                 String   @id @default(cuid())
+  isoMediaId         String   @map("iso_media_id")
+  osFamily           String   @default("windows") @map("os_family")
+  product            String
+  version            String
+  edition            String?
+  architecture       String
+  language           String?
+  setupExecutable    String   @default("{mount_drive}\\setup.exe") @map("setup_executable")
+  arguments          Json     @default("[]") @map("arguments_jsonb")
+  dynamicUpdateMode  String   @default("disable") @map("dynamic_update_mode")
+  requiresEulaAccept Boolean  @default(false) @map("requires_eula_accept")
+  imageIndexStrategy String   @default("auto_match_current_edition") @map("image_index_strategy")
+  supported          Boolean  @default(true)
+  notes              String?
+  active             Boolean  @default(true)
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  isoMedia FeatureUpgradeIsoMedia @relation(fields: [isoMediaId], references: [id], onDelete: Cascade)
+  devices  FeatureUpgradeDevice[]
+
+  @@unique([isoMediaId])
+  @@index([active, supported])
+  @@index([product, version])
+  @@map("feature_upgrade_setup_command_matrix")
+  @@schema("public")
+}
+
+model FeatureUpgradePreflightRun {
+  id             String    @id
+  organizationId String    @map("organization_id")
+  requestedBy    String    @map("requested_by")
+  status         String    @default("queued")
+  totalDevices   Int       @default(0) @map("total_devices")
+  queuedDevices  Int       @default(0) @map("queued_devices")
+  runningDevices Int       @default(0) @map("running_devices")
+  passedDevices  Int       @default(0) @map("passed_devices")
+  warningDevices Int       @default(0) @map("warning_devices")
+  failedDevices  Int       @default(0) @map("failed_devices")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(3)
+
+  devices FeatureUpgradePreflightDevice[]
+
+  @@index([organizationId, createdAt])
+  @@map("feature_upgrade_preflight_run")
+  @@schema("public")
+}
+
+model FeatureUpgradePreflightDevice {
+  operationId     String    @id @map("operation_id")
+  runId           String    @map("run_id")
+  organizationId  String    @map("organization_id")
+  agentId         String    @map("agent_id")
+  sourceOs        String    @map("source_os")
+  targetProduct   String    @map("target_product")
+  targetVersion   String    @map("target_version")
+  targetBuildLabel String   @map("target_build_label")
+  status          String    @default("queued")
+  phase           String    @default("queued")
+  checkResults    Json      @default("[]") @map("check_results_jsonb")
+  failureSummary  Json      @default("[]") @map("failure_summary_jsonb")
+  warningSummary  Json      @default("[]") @map("warning_summary_jsonb")
+  requestedBy     String    @map("requested_by")
+  claimedAt       DateTime? @map("claimed_at") @db.Timestamptz(3)
+  startedAt       DateTime? @map("started_at") @db.Timestamptz(3)
+  finishedAt      DateTime? @map("finished_at") @db.Timestamptz(3)
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  run FeatureUpgradePreflightRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, agentId, updatedAt])
+  @@index([agentId, status, createdAt])
+  @@index([runId])
+  @@map("feature_upgrade_preflight_device")
+  @@schema("public")
+}
+
+model FeatureUpgradeIsoStageRun {
+  id             String    @id
+  organizationId String    @map("organization_id")
+  requestedBy    String    @map("requested_by")
+  status         String    @default("queued")
+  totalDevices   Int       @default(0) @map("total_devices")
+  queuedDevices  Int       @default(0) @map("queued_devices")
+  runningDevices Int       @default(0) @map("running_devices")
+  stagedDevices  Int       @default(0) @map("staged_devices")
+  failedDevices  Int       @default(0) @map("failed_devices")
+  deletedDevices Int       @default(0) @map("deleted_devices")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(3)
+
+  devices FeatureUpgradeIsoStageDevice[]
+
+  @@index([organizationId, createdAt])
+  @@map("feature_upgrade_iso_stage_run")
+  @@schema("public")
+}
+
+model FeatureUpgradeIsoStageDevice {
+  operationId      String    @id @map("operation_id")
+  runId            String    @map("run_id")
+  organizationId   String    @map("organization_id")
+  agentId          String    @map("agent_id")
+  isoMediaId       String    @map("iso_media_id")
+  sourceOs         String    @map("source_os")
+  targetProduct    String    @map("target_product")
+  targetVersion    String    @map("target_version")
+  targetBuildLabel String    @map("target_build_label")
+  status           String    @default("queued")
+  phase            String    @default("queued")
+  progress         Json      @default("{}") @map("progress_jsonb")
+  evidence         Json      @default("{}") @map("evidence_jsonb")
+  errorMessage     String?   @map("error_message")
+  sizeBytes        BigInt?   @map("size_bytes")
+  sha256           String?
+  requestedBy      String    @map("requested_by")
+  claimedAt        DateTime? @map("claimed_at") @db.Timestamptz(3)
+  startedAt        DateTime? @map("started_at") @db.Timestamptz(3)
+  stagedAt         DateTime? @map("staged_at") @db.Timestamptz(3)
+  expiresAt        DateTime? @map("expires_at") @db.Timestamptz(3)
+  cleanedAt        DateTime? @map("cleaned_at") @db.Timestamptz(3)
+  finishedAt       DateTime? @map("finished_at") @db.Timestamptz(3)
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  run FeatureUpgradeIsoStageRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId, agentId, updatedAt])
+  @@index([agentId, status, createdAt])
+  @@index([runId])
+  @@index([isoMediaId])
+  @@map("feature_upgrade_iso_stage_device")
+  @@schema("public")
+}
+
+model FeatureUpgradeRun {
+  id               String    @id
+  organizationId   String    @map("organization_id")
+  requestedBy      String    @map("requested_by")
+  status           String    @default("queued")
+  scheduledFor     DateTime? @map("scheduled_for") @db.Timestamptz(3)
+  totalDevices     Int       @default(0) @map("total_devices")
+  scheduledDevices Int       @default(0) @map("scheduled_devices")
+  queuedDevices    Int       @default(0) @map("queued_devices")
+  runningDevices   Int       @default(0) @map("running_devices")
+  awaitingDevices  Int       @default(0) @map("awaiting_devices")
+  verifyingDevices Int       @default(0) @map("verifying_devices")
+  succeededDevices Int       @default(0) @map("succeeded_devices")
+  failedDevices    Int       @default(0) @map("failed_devices")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  finishedAt       DateTime? @map("finished_at") @db.Timestamptz(3)
+
+  devices FeatureUpgradeDevice[]
+
+  @@index([organizationId, createdAt])
+  @@index([status, scheduledFor])
+  @@map("feature_upgrade_run")
+  @@schema("public")
+}
+
+model FeatureUpgradeDevice {
+  operationId          String    @id @map("operation_id")
+  runId                String    @map("run_id")
+  organizationId       String    @map("organization_id")
+  agentId              String    @map("agent_id")
+  preflightOperationId String    @map("preflight_operation_id")
+  isoMediaId           String    @map("iso_media_id")
+  setupCommandMatrixId String    @map("setup_command_matrix_id")
+  sourceOs             String    @map("source_os")
+  targetProduct        String    @map("target_product")
+  targetVersion        String    @map("target_version")
+  targetBuildLabel     String    @map("target_build_label")
+  status               String    @default("queued")
+  phase                String    @default("queued")
+  progress             Json      @default("{}") @map("progress_jsonb")
+  evidence             Json      @default("{}") @map("evidence_jsonb")
+  failureSummary       Json      @default("[]") @map("failure_summary_jsonb")
+  errorMessage         String?   @map("error_message")
+  sizeBytes            BigInt?   @map("size_bytes")
+  sha256               String?
+  scheduledFor         DateTime? @map("scheduled_for") @db.Timestamptz(3)
+  requestedBy          String    @map("requested_by")
+  claimedAt            DateTime? @map("claimed_at") @db.Timestamptz(3)
+  startedAt            DateTime? @map("started_at") @db.Timestamptz(3)
+  finalSnapshotAt      DateTime? @map("final_snapshot_at") @db.Timestamptz(3)
+  setupStartedAt       DateTime? @map("setup_started_at") @db.Timestamptz(3)
+  rebootDetectedAt     DateTime? @map("reboot_detected_at") @db.Timestamptz(3)
+  verifiedAt           DateTime? @map("verified_at") @db.Timestamptz(3)
+  finishedAt           DateTime? @map("finished_at") @db.Timestamptz(3)
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  run          FeatureUpgradeRun                @relation(fields: [runId], references: [id], onDelete: Cascade)
+  isoMedia     FeatureUpgradeIsoMedia           @relation(fields: [isoMediaId], references: [id], onDelete: Restrict)
+  setupCommand FeatureUpgradeSetupCommandMatrix @relation(fields: [setupCommandMatrixId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, agentId, updatedAt])
+  @@index([agentId, status, scheduledFor, createdAt])
+  @@index([runId])
+  @@index([isoMediaId])
+  @@index([setupCommandMatrixId])
+  @@map("feature_upgrade_device")
+  @@schema("public")
+}
+
+model RmmPatchPolicy {
+  id                        String   @id
+  organizationId            String   @map("organization_id")
+  scopeType                 String   @map("scope_type")
+  scopeKey                  String   @map("scope_key")
+  customerId                String?  @map("customer_id")
+  siteId                    String?  @map("site_id")
+  agentId                   String?  @map("agent_id")
+  name                      String
+  targetOsFamily            String   @default("all") @map("target_os_family")
+  approvalMode              String   @default("manual") @map("approval_mode")
+  maintenanceWindowStart    String?  @map("maintenance_window_start")
+  maintenanceWindowEnd      String?  @map("maintenance_window_end")
+  maintenanceWindowTimezone String?  @map("maintenance_window_timezone")
+  rebootBehavior            String   @default("allow") @map("reboot_behavior")
+  deferralDays              Int      @default(0) @map("deferral_days")
+  managedMode               Boolean  @default(true) @map("managed_mode")
+  nativeWindowsUpdateControl Boolean @default(true) @map("native_windows_update_control")
+  policyConfig              Json     @default("{}") @map("policy_config_jsonb")
+  priority                  Int      @default(100)
+  enabled                   Boolean  @default(true)
+  isDefault                 Boolean  @default(false) @map("is_default")
+  createdBy                 String   @map("created_by")
+  createdAt                 DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt                 DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([organizationId, enabled])
+  @@index([organizationId, targetOsFamily])
+  @@index([organizationId, priority])
+  @@index([organizationId, scopeType, scopeKey])
+  @@index([customerId])
+  @@index([siteId])
+  @@index([agentId])
+  @@map("rmm_patch_policy")
+  @@schema("public")
+}
+
+model RmmPatchApproval {
+  id             String    @id
+  organizationId String    @map("organization_id")
+  agentId        String    @map("agent_id")
+  updateKey      String    @map("update_key")
+  titleNorm      String    @map("title_norm")
+  kbArticle      String?   @map("kb_article")
+  decision       String
+  reason         String?
+  deferUntil     DateTime? @map("defer_until") @db.Timestamptz(3)
+  decidedBy      String    @map("decided_by")
+  decidedAt      DateTime  @default(now()) @map("decided_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([organizationId, agentId, updateKey])
+  @@index([organizationId, decision])
+  @@index([agentId])
+  @@index([updateKey])
+  @@map("rmm_patch_approval")
+  @@schema("public")
+}
+
+model RmmPatchAction {
+  id                   String    @id
+  organizationId       String    @map("organization_id")
+  agentId              String    @map("agent_id")
+  operationId          String    @map("operation_id")
+  actionType           String    @map("action_type")
+  status               String
+  phase                String?
+  updateKeys           Json      @default("[]") @map("update_keys_jsonb")
+  progress             Json      @default("{}") @map("progress_jsonb")
+  evidence             Json      @default("{}") @map("evidence_jsonb")
+  errorMessage         String?   @map("error_message")
+  remediationJobId     BigInt?   @map("remediation_job_id")
+  remediationCommandId String? @map("remediation_command_id")
+  requestedBy          String    @map("requested_by")
+  reportedAt           DateTime? @map("reported_at") @db.Timestamptz(3)
+  startedAt            DateTime? @map("started_at") @db.Timestamptz(3)
+  finishedAt           DateTime? @map("finished_at") @db.Timestamptz(3)
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([organizationId, agentId, operationId])
+  @@index([organizationId, createdAt])
+  @@index([agentId, createdAt])
+  @@index([remediationCommandId])
+  @@index([status])
+  @@index([organizationId, agentId, status, updatedAt])
+  @@map("rmm_patch_action")
+  @@schema("public")
+}
+
+model RmmPatchUpdateCatalog {
+  id                    String    @id
+  organizationId        String    @map("organization_id")
+  updateKey             String    @map("update_key")
+  title                 String
+  titleNorm             String    @map("title_norm")
+  kbArticle             String?   @map("kb_article")
+  category              String    @default("other")
+  updateType            String?   @map("update_type")
+  wuaIdentity           String?   @map("wua_identity")
+  revisionNumber        Int?      @map("revision_number")
+  releaseDate           DateTime? @map("release_date") @db.Timestamptz(3)
+  releaseDateSource     String?   @map("release_date_source")
+  supersededBy          Json      @default("[]") @map("superseded_by_jsonb")
+  supersedes            Json      @default("[]") @map("supersedes_jsonb")
+  source                String    @default("wua")
+  firstSeenAt           DateTime  @default(now()) @map("first_seen_at") @db.Timestamptz(3)
+  lastSeenAt            DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz(3)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  deviceStates RmmPatchDeviceUpdateState[]
+
+  @@unique([organizationId, updateKey])
+  @@index([organizationId, category])
+  @@index([organizationId, kbArticle])
+  @@index([organizationId, releaseDate])
+  @@map("rmm_patch_update_catalog")
+  @@schema("public")
+}
+
+model RmmPatchDeviceUpdateState {
+  id                  String    @id
+  organizationId      String    @map("organization_id")
+  agentId             String    @map("agent_id")
+  updateKey           String    @map("update_key")
+  catalogId           String?   @map("catalog_id")
+  title               String
+  titleNorm           String    @map("title_norm")
+  kbArticle           String?   @map("kb_article")
+  category            String    @default("other")
+  applicabilityState  String    @default("applicable") @map("applicability_state")
+  approvalState       String    @default("detected") @map("approval_state")
+  lifecycleState      String    @default("detected") @map("lifecycle_state")
+  firstDetectedAt     DateTime  @default(now()) @map("first_detected_at") @db.Timestamptz(3)
+  lastDetectedAt      DateTime  @default(now()) @map("last_detected_at") @db.Timestamptz(3)
+  releaseDate         DateTime? @map("release_date") @db.Timestamptz(3)
+  eligibleAt          DateTime? @map("eligible_at") @db.Timestamptz(3)
+  installDeadlineAt   DateTime? @map("install_deadline_at") @db.Timestamptz(3)
+  rebootDeadlineAt    DateTime? @map("reboot_deadline_at") @db.Timestamptz(3)
+  downloadedAt        DateTime? @map("downloaded_at") @db.Timestamptz(3)
+  installedAt         DateTime? @map("installed_at") @db.Timestamptz(3)
+  failedAt            DateTime? @map("failed_at") @db.Timestamptz(3)
+  failureCode         String?   @map("failure_code")
+  failureHresult      Int?      @map("failure_hresult")
+  failureMessage      String?   @map("failure_message")
+  requiresReboot      Boolean?  @map("requires_reboot")
+  wuaIdentity         String?   @map("wua_identity")
+  revisionNumber      Int?      @map("revision_number")
+  metadata            Json      @default("{}") @map("metadata_jsonb")
+  updatedAt           DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  device  RmmDevice              @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+  catalog RmmPatchUpdateCatalog? @relation(fields: [catalogId], references: [id], onDelete: SetNull)
+
+  @@unique([organizationId, agentId, updateKey])
+  @@index([organizationId, lifecycleState])
+  @@index([organizationId, approvalState])
+  @@index([agentId])
+  @@index([updateKey])
+  @@index([installDeadlineAt])
+  @@map("rmm_patch_device_update_state")
+  @@schema("public")
+}
+
+model RmmPatchOverride {
+  id             String    @id
+  organizationId String    @map("organization_id")
+  scopeType      String    @map("scope_type")
+  scopeKey       String    @map("scope_key")
+  action         String
+  operationId    String?   @map("operation_id")
+  updateKey      String?   @map("update_key")
+  kbArticle      String?   @map("kb_article")
+  category       String?
+  reason         String?
+  deferUntil     DateTime? @map("defer_until") @db.Timestamptz(3)
+  expiresAt      DateTime? @map("expires_at") @db.Timestamptz(3)
+  enabled        Boolean   @default(true)
+  createdBy      String    @map("created_by")
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([organizationId, scopeType, scopeKey])
+  @@index([organizationId, action])
+  @@index([organizationId, updateKey])
+  @@index([operationId])
+  @@index([expiresAt])
+  @@map("rmm_patch_override")
+  @@schema("public")
+}
+
+model RmmPatchDeviceGroup {
+  id             String   @id
+  organizationId String   @map("organization_id")
+  name           String
+  description    String?
+  createdBy      String   @map("created_by")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  members RmmPatchDeviceGroupMember[]
+
+  @@unique([organizationId, name])
+  @@index([organizationId])
+  @@map("rmm_patch_device_group")
+  @@schema("public")
+}
+
+model RmmPatchDeviceGroupMember {
+  id             String   @id
+  organizationId String   @map("organization_id")
+  groupId        String   @map("group_id")
+  agentId        String   @map("agent_id")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  group RmmPatchDeviceGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, agentId])
+  @@index([organizationId, agentId])
+  @@map("rmm_patch_device_group_member")
+  @@schema("public")
+}
+
+model RmmPatchDecisionLog {
+  id             String   @id
+  organizationId String   @map("organization_id")
+  agentId        String   @map("agent_id")
+  policyId       String?  @map("policy_id")
+  operationId    String   @map("operation_id")
+  action         String
+  updateKeys     Json     @default("[]") @map("update_keys_jsonb")
+  decision       String
+  reason         String
+  actorType      String   @default("system") @map("actor_type")
+  actorUserId    String?  @map("actor_user_id")
+  actorEmail     String?  @map("actor_email")
+  details        Json     @default("{}") @map("details_jsonb")
+  decidedAt      DateTime @default(now()) @map("decided_at") @db.Timestamptz(3)
+
+  @@index([organizationId, decidedAt])
+  @@index([organizationId, actorType])
+  @@index([agentId, decidedAt])
+  @@index([operationId])
+  @@map("rmm_patch_decision_log")
+  @@schema("public")
+}
+
+model Customer {
+  id             String       @id @default(cuid())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId String       @map("organization_id")
+  name           String
+  description    String?
+  isUnassigned   Boolean      @default(false) @map("is_unassigned")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  devices         RmmDevice[]
+  sites           RmmSite[]
+  commandPolicies CommandPolicy[]
+  installerProfiles RmmInstallerProfile[]
+  installerTokens   RmmInstallerEnrollmentToken[]
+  installerDownloads RmmInstallerDownloadAudit[]
+  installerShortLinks RmmInstallerShortLink[]
+
+  @@index([organizationId])
+  @@map("customers")
+  @@schema("public")
+}
+
+model RmmSite {
+  id         String   @id @default(cuid())
+  customerId String   @map("customer_id")
+  name       String
+  timezone   String?
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  customer Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  devices  RmmDevice[]
+  installerProfiles RmmInstallerProfile[]
+  installerTokens   RmmInstallerEnrollmentToken[]
+  installerDownloads RmmInstallerDownloadAudit[]
+  installerShortLinks RmmInstallerShortLink[]
+
+  @@unique([customerId, name])
+  @@index([customerId])
+  @@map("rmm_sites")
+  @@schema("public")
+}
+
+enum RmmInstallerScopeType {
+  ORGANIZATION
+  CUSTOMER
+  SITE
+
+  @@schema("public")
+}
+
+model RmmInstallerProfile {
+  id             String                @id @default(cuid())
+  organizationId String                @map("organization_id")
+  customerId     String?               @map("customer_id")
+  siteId         String?               @map("site_id")
+  scopeType      RmmInstallerScopeType @map("scope_type")
+  name           String
+  expiresAt      DateTime?             @map("expires_at") @db.Timestamptz(3)
+  maxUses        Int?                  @map("max_uses")
+  createdBy      String                @map("created_by")
+  revokedAt      DateTime?             @map("revoked_at") @db.Timestamptz(3)
+  createdAt      DateTime              @default(now()) @map("created_at")
+  updatedAt      DateTime              @updatedAt @map("updated_at")
+
+  organization Organization                  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer?                     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  site         RmmSite?                      @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  tokens       RmmInstallerEnrollmentToken[]
+  tokenUses    RmmInstallerTokenUse[]
+  downloads    RmmInstallerDownloadAudit[]
+  shortLinks   RmmInstallerShortLink[]
+
+  @@index([organizationId, createdAt])
+  @@index([customerId])
+  @@index([siteId])
+  @@index([revokedAt])
+  @@map("rmm_installer_profile")
+  @@schema("public")
+}
+
+model RmmInstallerEnrollmentToken {
+  id             String    @id @default(cuid())
+  profileId      String    @map("profile_id")
+  organizationId String    @map("organization_id")
+  customerId     String?   @map("customer_id")
+  siteId         String?   @map("site_id")
+  tokenHash      String    @unique @map("token_hash")
+  tokenPrefix    String    @map("token_prefix")
+  expiresAt      DateTime? @map("expires_at") @db.Timestamptz(3)
+  maxUses        Int?      @map("max_uses")
+  usedCount      Int       @default(0) @map("used_count")
+  issuedBy       String    @map("issued_by")
+  revokedAt      DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt      DateTime  @default(now()) @map("created_at")
+  lastUsedAt     DateTime? @map("last_used_at") @db.Timestamptz(3)
+
+  profile      RmmInstallerProfile       @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  organization Organization              @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer?                 @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  site         RmmSite?                  @relation(fields: [siteId], references: [id], onDelete: SetNull)
+  uses         RmmInstallerTokenUse[]
+  downloads    RmmInstallerDownloadAudit[]
+  shortLinks   RmmInstallerShortLink[]
+
+  @@index([profileId, createdAt])
+  @@index([organizationId, createdAt])
+  @@index([revokedAt, expiresAt])
+  @@map("rmm_installer_enrollment_token")
+  @@schema("public")
+}
+
+model RmmInstallerTokenUse {
+  id             BigInt   @id @default(autoincrement())
+  tokenId        String   @map("token_id")
+  profileId      String   @map("profile_id")
+  organizationId String   @map("organization_id")
+  agentId        String   @map("agent_id")
+  firstSeenAt    DateTime @default(now()) @map("first_seen_at") @db.Timestamptz(3)
+  lastSeenAt     DateTime @updatedAt @map("last_seen_at") @db.Timestamptz(3)
+
+  token        RmmInstallerEnrollmentToken @relation(fields: [tokenId], references: [id], onDelete: Cascade)
+  profile      RmmInstallerProfile         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  organization Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@unique([tokenId, agentId])
+  @@index([organizationId, agentId])
+  @@index([profileId, firstSeenAt])
+  @@map("rmm_installer_token_use")
+  @@schema("public")
+}
+
+model RmmInstallerDownloadAudit {
+  id             BigInt   @id @default(autoincrement())
+  profileId      String   @map("profile_id")
+  tokenId        String   @map("token_id")
+  organizationId String   @map("organization_id")
+  customerId     String?  @map("customer_id")
+  siteId         String?  @map("site_id")
+  userId         String   @map("user_id")
+  userEmail      String?  @map("user_email")
+  clientIp       String?  @map("client_ip")
+  userAgent      String?  @map("user_agent")
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  profile      RmmInstallerProfile         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  token        RmmInstallerEnrollmentToken @relation(fields: [tokenId], references: [id], onDelete: Cascade)
+  organization Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer?                   @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  site         RmmSite?                    @relation(fields: [siteId], references: [id], onDelete: SetNull)
+
+  @@index([organizationId, createdAt])
+  @@index([profileId, createdAt])
+  @@index([tokenId, createdAt])
+  @@map("rmm_installer_download_audit")
+  @@schema("public")
+}
+
+model RmmInstallerShortLink {
+  code              String   @id @db.VarChar(8)
+  tokenId           String   @map("token_id")
+  profileId         String   @map("profile_id")
+  organizationId    String   @map("organization_id")
+  customerId        String?  @map("customer_id")
+  siteId            String?  @map("site_id")
+  registrationToken String   @map("registration_token")
+  serverUrl         String   @map("server_url")
+  issuedBy          String   @map("issued_by")
+  expiresAt         DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  token        RmmInstallerEnrollmentToken @relation(fields: [tokenId], references: [id], onDelete: Cascade)
+  profile      RmmInstallerProfile         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  organization Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  customer     Customer?                   @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  site         RmmSite?                    @relation(fields: [siteId], references: [id], onDelete: SetNull)
+
+  @@index([expiresAt])
+  @@index([tokenId])
+  @@index([organizationId, createdAt])
+  @@map("rmm_installer_short_link")
+  @@schema("public")
+}
+
+model CommandPolicy {
+  id BigInt @id @default(autoincrement())
+
+  commandName String @map("command_name")
+  scopeType   String @map("scope_type")
+
+  organizationId String?       @map("organization_id")
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  customerId String?   @map("customer_id")
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  roleScope String? @map("role_scope")
+
+  policyType String @map("policy_type")
+
+  allowedParameters   Json? @default("[]") @map("allowed_parameters")
+  forbiddenParameters Json? @default("[]") @map("forbidden_parameters")
+
+  description String?
+  reason      String?
+
+  createdBy String   @map("created_by")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([commandName, scopeType, organizationId, customerId, roleScope])
+  @@index([organizationId])
+  @@index([customerId])
+  @@index([commandName])
+  @@map("command_policies")
+  @@schema("public")
+}
+
+model CommandExecutionLog {
+  id BigInt @id @default(autoincrement())
+
+  organizationId String  @map("organization_id")
+  customerId     String? @map("customer_id")
+  userId         String  @map("user_id")
+  agentId        String  @map("agent_id")
+
+  command         String
+  wasAllowed      Boolean @map("was_allowed")
+  denialReason    String? @map("denial_reason")
+  matchedPolicyId BigInt? @map("matched_policy_id")
+
+  executionTimeMs Int? @map("execution_time_ms")
+  exitCode        Int? @map("exit_code")
+  outputLength    Int? @map("output_length")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([organizationId, createdAt])
+  @@index([agentId, createdAt])
+  @@map("command_execution_log")
+  @@schema("public")
+}
+
+model RmmReportRun {
+  id             String    @id @default(cuid())
+  organizationId String    @map("organization_id")
+  reportId       String    @map("report_id")
+  format         String
+  filters        Json      @default("{}") @map("filters_jsonb")
+  status         String    @default("succeeded")
+  rowCount       Int       @default(0) @map("row_count")
+  generatedBy    String?   @map("generated_by")
+  deliveryStatus String    @default("ready") @map("delivery_status")
+  errorMessage   String?   @map("error_message")
+  startedAt      DateTime  @default(now()) @map("started_at") @db.Timestamptz(3)
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(3)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([organizationId, createdAt])
+  @@index([organizationId, reportId, createdAt])
+  @@map("rmm_report_run")
+  @@schema("public")
+}
+
+model RmmReportSchedule {
+  id                  String    @id @default(cuid())
+  organizationId      String    @map("organization_id")
+  reportId            String    @map("report_id")
+  name                String
+  format              String
+  frequency           String
+  filters             Json      @default("{}") @map("filters_jsonb")
+  emailTo             Json      @default("[]") @map("email_to_jsonb")
+  emailDeliveryStatus String    @default("stubbed") @map("email_delivery_status")
+  isEnabled           Boolean   @default(true) @map("is_enabled")
+  lastRunAt           DateTime? @map("last_run_at") @db.Timestamptz(3)
+  nextRunAt           DateTime? @map("next_run_at") @db.Timestamptz(3)
+  createdBy           String?   @map("created_by")
+  createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([organizationId, isEnabled, nextRunAt])
+  @@index([organizationId, reportId])
+  @@map("rmm_report_schedule")
+  @@schema("public")
+}
+
+model AuditEvent {
+  id BigInt @id @default(autoincrement())
+
+  organizationId String? @map("organization_id")
+  customerId     String? @map("customer_id")
+  siteId         String? @map("site_id")
+  agentId        String? @map("agent_id")
+
+  actorType String  @default("user") @map("actor_type")
+  userId    String? @map("user_id")
+  userEmail String? @map("user_email")
+
+  actionType String  @map("action_type")
+  targetType String  @map("target_type")
+  targetId   String? @map("target_id")
+  targetName String? @map("target_name")
+
+  result       String @default("success")
+  statusCode   Int?   @map("status_code")
+  errorMessage String? @map("error_message")
+
+  requestMethod String? @map("request_method")
+  requestPath   String? @map("request_path")
+  clientIp      String? @map("client_ip")
+  userAgent     String? @map("user_agent")
+
+  correlationId String? @map("correlation_id")
+  sessionId     String? @map("session_id")
+  metadata      Json    @default("{}") @map("metadata_jsonb")
+
+  occurredAt DateTime @default(now()) @map("occurred_at") @db.Timestamptz(3)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([organizationId, occurredAt])
+  @@index([organizationId, actionType, occurredAt])
+  @@index([organizationId, result, occurredAt])
+  @@index([userId, occurredAt])
+  @@index([agentId, occurredAt])
+  @@index([customerId, occurredAt])
+  @@index([siteId, occurredAt])
+  @@index([sessionId])
+  @@index([correlationId])
+  @@map("audit_events")
+  @@schema("public")
+}
+
+model RmmTelemetrySnapshotIngest {
+  id                  BigInt   @id @default(autoincrement())
+  organizationId      String   @map("organization_id")
+  agentId             String   @map("agent_id")
+  collectedAt         DateTime @map("collected_at") @db.Timestamptz(3)
+  receivedAt          DateTime @map("received_at") @db.Timestamptz(3)
+  blobContainer       String   @map("blob_container")
+  blobName            String   @map("blob_name")
+  blobContentEncoding String?  @map("blob_content_encoding")
+  blobSizeBytes       BigInt?  @map("blob_size_bytes")
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([agentId, collectedAt])
+  @@index([organizationId, collectedAt])
+  @@index([agentId, collectedAt])
+  @@map("snapshot_ingest")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetrySnapshotRequest {
+  id             BigInt   @id @default(autoincrement())
+  organizationId String   @map("organization_id")
+  agentId        String   @map("agent_id")
+  requestId      String   @map("request_id")
+  status         String
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([agentId, requestId])
+  @@index([organizationId, createdAt])
+  @@index([agentId])
+  @@index([requestId])
+  @@map("snapshot_request")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryDeviceState {
+  agentId             String   @id @map("agent_id")
+  organizationId      String   @map("organization_id")
+  collectedAt         DateTime @map("collected_at") @db.Timestamptz(3)
+  inventoryData       Json?    @map("inventory_data")
+  hostname            String?
+  osName              String?  @map("os_name")
+  osVersion           String?  @map("os_version")
+  agentVersion        String?  @map("agent_version")
+  bootSessionId       String?  @map("boot_session_id")
+  cpuModel            String?  @map("cpu_model")
+  cpuPhysicalCores    Int?     @map("cpu_physical_cores")
+  cpuLogicalCores     Int?     @map("cpu_logical_cores")
+  cpuBaseMhz          Float?   @map("cpu_base_mhz")
+  memoryTotalBytes    BigInt?  @map("memory_total_bytes")
+  installedAppsCount  Int?     @map("installed_apps_count")
+  pendingUpdatesCount Int?     @map("pending_updates_count")
+  rebootRequired      Boolean? @map("reboot_required")
+  blobContainer       String   @map("blob_container")
+  blobName            String   @map("blob_name")
+  blobContentEncoding String?  @map("blob_content_encoding")
+  blobSizeBytes       BigInt?  @map("blob_size_bytes")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@index([organizationId, collectedAt])
+  @@index([collectedAt])
+  @@index([hostname])
+  @@index([osName])
+  @@index([agentVersion])
+  @@index([rebootRequired])
+  @@index([pendingUpdatesCount])
+  @@map("device_state")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryDeviceInstalledApp {
+  id              BigInt   @id @default(autoincrement())
+  organizationId  String   @map("organization_id")
+  agentId         String   @map("agent_id")
+  collectedAt     DateTime @map("collected_at") @db.Timestamptz(3)
+  appName         String   @map("app_name")
+  appNameNorm     String   @map("app_name_norm")
+  publisher       String?
+  publisherNorm   String?  @map("publisher_norm")
+  version         String?
+  installDate     String?  @map("install_date")
+  sizeBytes       BigInt?  @map("size_bytes")
+  source          String?
+  location        String?
+  uninstallString String?  @map("uninstall_string")
+  is64Bit         Boolean? @map("is_64_bit")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([agentId, appNameNorm, version])
+  @@index([organizationId, collectedAt])
+  @@index([agentId])
+  @@index([appNameNorm])
+  @@index([publisherNorm])
+  @@index([appNameNorm, version])
+  @@map("device_installed_app")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryDeviceService {
+  id              BigInt   @id @default(autoincrement())
+  organizationId  String   @map("organization_id")
+  agentId         String   @map("agent_id")
+  collectedAt     DateTime @map("collected_at") @db.Timestamptz(3)
+  serviceName     String   @map("service_name")
+  serviceNameNorm String   @map("service_name_norm")
+  displayName     String   @map("display_name")
+  displayNameNorm String   @map("display_name_norm")
+  status          String
+  startType       String?  @map("start_type")
+  account         String?
+  processId       Int?     @map("process_id")
+  canStop         Boolean? @map("can_stop")
+  canPause        Boolean? @map("can_pause")
+  isCritical      Boolean? @map("is_critical")
+  description     String?
+  path            String?
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([agentId, serviceNameNorm])
+  @@index([organizationId, collectedAt])
+  @@index([agentId])
+  @@index([serviceNameNorm])
+  @@index([status])
+  @@index([isCritical])
+  @@map("device_service")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryDeviceStartupItem {
+  id             BigInt   @id @default(autoincrement())
+  organizationId String   @map("organization_id")
+  agentId        String   @map("agent_id")
+  collectedAt    DateTime @map("collected_at") @db.Timestamptz(3)
+  itemName       String   @map("item_name")
+  itemNameNorm   String   @map("item_name_norm")
+  command        String
+  location       String
+  userName       String?  @map("user_name")
+  isEnabled      Boolean? @map("is_enabled")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([agentId, itemNameNorm, command, location])
+  @@index([organizationId, collectedAt])
+  @@index([agentId])
+  @@index([itemNameNorm])
+  @@index([isEnabled])
+  @@map("device_startup_item")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryDeviceWindowsFeature {
+  id              BigInt   @id @default(autoincrement())
+  organizationId  String   @map("organization_id")
+  agentId         String   @map("agent_id")
+  collectedAt     DateTime @map("collected_at") @db.Timestamptz(3)
+  featureName     String   @map("feature_name")
+  featureNameNorm String   @map("feature_name_norm")
+  displayName     String   @map("display_name")
+  displayNameNorm String   @map("display_name_norm")
+  installState    String?  @map("install_state")
+  enabled         Boolean? @map("enabled")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([agentId, featureNameNorm])
+  @@index([organizationId, collectedAt])
+  @@index([agentId])
+  @@index([featureNameNorm])
+  @@index([enabled])
+  @@map("device_windows_feature")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryDevicePendingUpdate {
+  id             BigInt   @id @default(autoincrement())
+  organizationId String   @map("organization_id")
+  agentId        String   @map("agent_id")
+  collectedAt    DateTime @map("collected_at") @db.Timestamptz(3)
+  title          String
+  titleNorm      String   @map("title_norm")
+  description    String?
+  kbArticle      String?  @map("kb_article")
+  isMandatory    Boolean? @map("is_mandatory")
+  sizeBytes      BigInt?  @map("size_bytes")
+  requiresReboot Boolean? @map("requires_reboot")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([agentId, titleNorm, kbArticle])
+  @@index([organizationId, collectedAt])
+  @@index([agentId])
+  @@index([titleNorm])
+  @@index([kbArticle])
+  @@index([requiresReboot])
+  @@map("device_pending_update")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryDeviceInstalledUpdate {
+  id             BigInt    @id @default(autoincrement())
+  organizationId String    @map("organization_id")
+  agentId        String    @map("agent_id")
+  collectedAt    DateTime  @map("collected_at") @db.Timestamptz(3)
+  installedAt    DateTime? @map("installed_at") @db.Timestamptz(3)
+  title          String
+  titleNorm      String    @map("title_norm")
+  kbArticle      String?   @map("kb_article")
+  operation      String?
+  result         String?
+  hresult        Int?
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([agentId, titleNorm, installedAt, kbArticle])
+  @@index([organizationId, collectedAt])
+  @@index([agentId])
+  @@index([installedAt])
+  @@index([titleNorm])
+  @@index([kbArticle])
+  @@index([result])
+  @@map("device_installed_update")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryProcessedMessageLog {
+  id              BigInt   @id @default(autoincrement())
+  organizationId  String   @map("organization_id")
+  sourceTopic     String   @map("source_topic")
+  sourcePartition Int      @map("source_partition")
+  sourceOffset    BigInt   @map("source_offset")
+  sourceTs        DateTime @map("source_ts") @db.Timestamptz(3)
+  sourceKey       String?  @map("source_key")
+  agentId         String   @map("agent_id")
+  messageType     String   @map("message_type")
+  payloadSha256   String   @map("payload_sha256")
+  processedAt     DateTime @default(now()) @map("processed_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([sourceTopic, sourcePartition, sourceOffset])
+  @@unique([agentId, payloadSha256])
+  @@index([organizationId, sourceTs])
+  @@index([agentId, sourceTs])
+  @@map("processed_message_log")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryDeviceEvent {
+  id              BigInt   @id @default(autoincrement())
+  eventId         String   @unique @map("event_id")
+  organizationId  String   @map("organization_id")
+  agentId         String   @map("agent_id")
+  occurredAt      DateTime @map("occurred_at") @db.Timestamptz(3)
+  receivedAt      DateTime @map("received_at") @db.Timestamptz(3)
+  eventType       String   @map("event_type")
+  severity        String
+  source          String
+  serviceName     String?  @map("service_name")
+  processName     String?  @map("process_name")
+  code            String?
+  message         String?
+  attributesJsonb Json     @default("{}") @map("attributes_jsonb")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@index([organizationId, occurredAt])
+  @@index([agentId, occurredAt])
+  @@index([eventType, occurredAt])
+  @@map("device_event")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryFactStateCurrent {
+  organizationId String   @map("organization_id")
+  agentId        String   @map("agent_id")
+  factKey        String   @map("fact_key")
+  factValue      Json     @map("fact_value")
+  factValueText  String   @map("fact_value_text")
+  stabilityClass String   @map("stability_class")
+  source         String
+  sourceTs       DateTime @map("source_ts") @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@id([agentId, factKey])
+  @@index([organizationId, updatedAt])
+  @@index([agentId, updatedAt])
+  @@map("fact_state_current")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryFactChangeLog {
+  id             BigInt   @id @default(autoincrement())
+  organizationId String   @map("organization_id")
+  agentId        String   @map("agent_id")
+  factKey        String   @map("fact_key")
+  prevValue      Json?    @map("prev_value")
+  nextValue      Json     @map("next_value")
+  changeKind     String   @map("change_kind")
+  source         String
+  sourceTs       DateTime @map("source_ts") @db.Timestamptz(3)
+  ts             DateTime @default(now()) @db.Timestamptz(3)
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@index([organizationId, ts])
+  @@index([agentId, ts])
+  @@index([factKey, ts])
+  @@map("fact_change_log")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryFactBaseline {
+  id             BigInt    @id @default(autoincrement())
+  organizationId String    @map("organization_id")
+  agentId        String    @map("agent_id")
+  factKey        String    @map("fact_key")
+  promotedValue  Json?     @map("promoted_value")
+  candidateValue Json?     @map("candidate_value")
+  candidateCount Int       @default(0) @map("candidate_count")
+  windowCount    Int       @default(0) @map("window_count")
+  lastChangedAt  DateTime? @map("last_changed_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  device RmmDevice @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([agentId, factKey])
+  @@index([organizationId, updatedAt])
+  @@index([agentId, updatedAt])
+  @@map("fact_baseline")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryFactBaselineScope {
+  id              BigInt    @id @default(autoincrement())
+  scopeType       String    @map("scope_type")
+  scopeKey        String    @map("scope_key")
+  organizationId  String    @map("organization_id")
+  customerId      String?   @map("customer_id")
+  siteId          String?   @map("site_id")
+  agentId         String?   @map("agent_id")
+  factKey         String    @map("fact_key")
+  promotedValue   Json?     @map("promoted_value")
+  candidateValue  Json?     @map("candidate_value")
+  candidateCount  Int       @default(0) @map("candidate_count")
+  windowCount     Int       @default(0) @map("window_count")
+  supportCount    Int       @default(0) @map("support_count")
+  totalCount      Int       @default(0) @map("total_count")
+  supportRatio    Float     @default(0) @map("support_ratio")
+  sampleSize      Int       @default(0) @map("sample_size")
+  confidenceScore Float     @default(0) @map("confidence_score")
+  isStable        Boolean   @default(false) @map("is_stable")
+  lastChangedAt   DateTime? @map("last_changed_at") @db.Timestamptz(3)
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  device RmmDevice? @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+
+  @@unique([scopeType, scopeKey, factKey])
+  @@index([organizationId, scopeType, updatedAt])
+  @@index([customerId, scopeType, updatedAt])
+  @@index([siteId, scopeType, updatedAt])
+  @@index([scopeType, scopeKey, updatedAt])
+  @@index([factKey, updatedAt])
+  @@map("fact_baseline_scope")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryRoutingRule {
+  id              BigInt   @id @default(autoincrement())
+  organizationId  String   @map("organization_id")
+  customerId      String?  @map("customer_id")
+  siteId          String?  @map("site_id")
+  agentId         String?  @map("agent_id")
+  triggerDomain   String   @map("trigger_domain")
+  triggerKey      String   @map("trigger_key")
+  matchOperator   String   @default("equals") @map("match_operator")
+  matchValue      String?  @map("match_value")
+  previousMatchOperator String? @map("previous_match_operator")
+  previousMatchValue String? @map("previous_match_value")
+  minSupportRatio Float?   @map("min_support_ratio")
+  minConfidenceScore Float? @map("min_confidence_score")
+  scopeTypeFilter String?  @map("scope_type_filter")
+  action          String
+  intentId        String?  @map("intent_id")
+  cooldownSeconds Int      @default(0) @map("cooldown_seconds")
+  enabled         Boolean  @default(true)
+  priority        Int      @default(100)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  decisions RmmTelemetryRoutingDecision[] @relation("RoutingRuleDecisions")
+
+  @@index([organizationId, customerId, siteId, agentId], map: "routing_rule_organization_id_customer_id_site_id_agent_id_idx")
+  @@index([enabled, triggerDomain, triggerKey])
+  @@map("routing_rule")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryAlertRule {
+  id                   BigInt   @id @default(autoincrement())
+  organizationId       String   @map("organization_id")
+  customerId           String?  @map("customer_id")
+  siteId               String?  @map("site_id")
+  agentId              String?  @map("agent_id")
+  name                 String
+  triggerDomain        String   @map("trigger_domain")
+  triggerKey           String   @map("trigger_key")
+  matchOperator        String   @default("equals") @map("match_operator")
+  matchValue           String?  @map("match_value")
+  severity             String   @default("medium")
+  minSeverity          String?  @map("min_severity")
+  dedupeWindowSeconds  Int      @default(300) @map("dedupe_window_seconds")
+  enabled              Boolean  @default(true)
+  priority             Int      @default(100)
+  notificationChannels Json     @default("[]") @map("notification_channels_jsonb")
+  createdBy            String   @map("created_by")
+  createdAt            DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt            DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([organizationId, enabled, triggerDomain, triggerKey])
+  @@index([organizationId, customerId, siteId, agentId], map: "alert_rule_organization_id_customer_id_site_id_agent_id_idx")
+  @@map("alert_rule")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryAlert {
+  id                 BigInt    @id @default(autoincrement())
+  organizationId     String    @map("organization_id")
+  customerId         String?   @map("customer_id")
+  siteId             String?   @map("site_id")
+  agentId            String    @map("agent_id")
+  ruleId             BigInt?   @map("rule_id")
+  status             String    @default("open")
+  severity           String
+  sourceDomain       String    @map("source_domain")
+  sourceKey          String    @map("source_key")
+  sourceEventId      String?   @map("source_event_id")
+  sourceFactKey      String?   @map("source_fact_key")
+  sourceDecisionId   BigInt?   @map("source_decision_id")
+  title              String
+  summary            String?
+  fingerprint        String
+  firstSeenAt        DateTime  @default(now()) @map("first_seen_at") @db.Timestamptz(3)
+  lastSeenAt         DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz(3)
+  occurrenceCount    Int       @default(1) @map("occurrence_count")
+  ownerUserId        String?   @map("owner_user_id")
+  acknowledgedBy     String?   @map("acknowledged_by")
+  acknowledgedAt     DateTime? @map("acknowledged_at") @db.Timestamptz(3)
+  snoozedUntil       DateTime? @map("snoozed_until") @db.Timestamptz(3)
+  resolvedBy         String?   @map("resolved_by")
+  resolvedAt         DateTime? @map("resolved_at") @db.Timestamptz(3)
+  suppressedUntil    DateTime? @map("suppressed_until") @db.Timestamptz(3)
+  metadata           Json      @default("{}") @map("metadata_jsonb")
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@unique([organizationId, fingerprint])
+  @@index([organizationId, status, severity, lastSeenAt])
+  @@index([organizationId, agentId, lastSeenAt])
+  @@index([organizationId, customerId, siteId])
+  @@index([ruleId])
+  @@map("alert")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryAlertNotificationDelivery {
+  id          BigInt   @id @default(autoincrement())
+  alertId     BigInt   @map("alert_id")
+  channel     String
+  adapter     String
+  status      String
+  detail      String?
+  externalRef String?  @map("external_ref")
+  attemptedAt DateTime @default(now()) @map("attempted_at") @db.Timestamptz(3)
+
+  @@index([alertId, attemptedAt])
+  @@map("alert_notification_delivery")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryRoutingDecision {
+  id             BigInt   @id @default(autoincrement())
+  organizationId String   @map("organization_id")
+  agentId        String   @map("agent_id")
+  domain         String
+  triggerKey     String   @map("trigger_key")
+  triggerValue   Json?    @map("trigger_value")
+  action         String
+  matchedRuleId  BigInt?  @map("matched_rule_id")
+  intentId       String?  @map("intent_id")
+  reason         String?
+  dedupeKey      String?  @map("dedupe_key")
+  source         String
+  sourceTs       DateTime @map("source_ts") @db.Timestamptz(3)
+  decidedAt      DateTime @default(now()) @map("decided_at")
+  executionStatus String  @default("pending") @map("execution_status")
+  externalRef    String?  @map("external_ref")
+  outcomeMessage String?  @map("outcome_message")
+
+  device          RmmDevice                    @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+  matchedRule     RmmTelemetryRoutingRule?     @relation("RoutingRuleDecisions", fields: [matchedRuleId], references: [id], onDelete: SetNull)
+  remediationJobs RmmTelemetryRemediationJob[]
+
+  @@index([organizationId, sourceTs])
+  @@index([agentId, sourceTs])
+  @@map("routing_decision")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryRemediationJob {
+  id             BigInt    @id @default(autoincrement())
+  commandId      String?   @unique @map("command_id")
+  organizationId String    @map("organization_id")
+  agentId        String    @map("agent_id")
+  decisionId     BigInt?   @map("decision_id")
+  intentId       String    @map("intent_id")
+  status         String    @default("queued")
+  dedupeKey      String?   @unique @map("dedupe_key")
+  requestedAt    DateTime  @default(now()) @map("requested_at")
+  startedAt      DateTime? @map("started_at") @db.Timestamptz(3)
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(3)
+  requestedBy    String    @default("consumer") @map("requested_by")
+  metadata       Json      @default("{}") @map("metadata_jsonb")
+
+  device   RmmDevice                     @relation(fields: [agentId], references: [agentId], onDelete: Cascade)
+  decision RmmTelemetryRoutingDecision?  @relation(fields: [decisionId], references: [id], onDelete: SetNull)
+  steps    RmmTelemetryRemediationStep[]
+
+  @@index([organizationId, requestedAt])
+  @@index([agentId, requestedAt])
+  @@map("remediation_job")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryRemediationStep {
+  id             BigInt    @id @default(autoincrement())
+  organizationId String    @map("organization_id")
+  jobId          BigInt    @map("job_id")
+  stepIndex      Int       @map("step_index")
+  command        String
+  status         String    @default("pending")
+  evidence       Json?     @map("evidence_jsonb")
+  startedAt      DateTime? @map("started_at") @db.Timestamptz(3)
+  finishedAt     DateTime? @map("finished_at") @db.Timestamptz(3)
+
+  job RmmTelemetryRemediationJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@unique([jobId, stepIndex])
+  @@index([organizationId, startedAt])
+  @@map("remediation_step")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryFactStabilityOverride {
+  id              BigInt   @id @default(autoincrement())
+  organizationId  String   @map("organization_id")
+  factKeyPattern  String   @map("fact_key_pattern")
+  stabilityClass  String   @map("stability_class")
+  reason          String?
+  createdBy       String   @map("created_by")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@unique([organizationId, factKeyPattern])
+  @@index([organizationId])
+  @@map("fact_stability_override")
+  @@schema("rmm_telemetry")
+}
+
+model RmmTelemetryIntent {
+  id              String   @id @default(cuid())
+  organizationId  String   @map("organization_id")
+  name            String
+  description     String?
+  type            String   @default("hardcoded")
+  allowList       Json?    @map("allow_list")
+  steps           Json?
+  aiPrompt        String?  @map("ai_prompt")
+  triggerDomain   String?  @map("trigger_domain")
+  triggerKey      String?  @map("trigger_key")
+  requiresApproval Boolean @default(true) @map("requires_approval")
+  maxRetries      Int      @default(1) @map("max_retries")
+  timeoutSeconds  Int      @default(300) @map("timeout_seconds")
+  enabled         Boolean  @default(true)
+  createdBy       String   @map("created_by")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@index([organizationId, enabled])
+  @@index([organizationId, triggerDomain, triggerKey])
+  @@map("intent")
+  @@schema("rmm_telemetry")
+}

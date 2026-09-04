@@ -1,0 +1,43 @@
+{
+  "type": "session_capabilities_response",
+  "data": {
+    "request_id": "cap-001",
+    "capabilities": {
+      "codecs": [
+        "h264",
+        "vp8"
+      ],
+      "encoding": "software",
+      "transports": [
+        "quic",
+        "relay"
+      ],
+      "platform": "windows",
+      "features": {
+        "remoteDesktop": true,
+        "systemShell": true,
+        "fileTransfer": true,
+        "remoteRegistry": true,
+        "chat": true,
+        "systemInfo": true
+      },
+      "displayProfiles": [
+        {
+          "id": "modern_gpu",
+          "protocol": "modern_display_delta",
+          "codec": "h264",
+          "compression": "annex_b",
+          "priority": 0
+        },
+        {
+          "id": "legacy",
+          "protocol": "legacy_ivf",
+          "codec": "vp8",
+          "compression": "ivf",
+          "priority": 2
+        }
+      ],
+      "selectedDisplayProfile": "modern_gpu"
+    }
+  }
+}

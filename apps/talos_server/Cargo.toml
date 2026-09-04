@@ -1,0 +1,28 @@
+[package]
+name = "talos_server"
+version = "0.6.30"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+anyhow = "1.0"
+talos_protocol = { path = "../talos_protocol" }
+axum = { version = "0.7", features = ["ws"] }
+base64 = "0.22"
+chrono = { version = "0.4", features = ["serde"] }
+dotenvy = "0.15"
+rand = "0.8"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.39", features = ["macros", "rt-multi-thread", "signal", "sync", "time"] }
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+uuid = { version = "1.8", features = ["v4", "v5"] }
+futures-util = "0.3"
+rcgen = "0.14.7"
+reqwest = { version = "0.12", features = ["json", "rustls-tls"] }
+
+[lints]
+workspace = true

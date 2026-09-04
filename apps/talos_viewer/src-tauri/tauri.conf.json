@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Talos Viewer",
+  "version": "0.6.124",
+  "identifier": "com.talos.viewer",
+  "build": {
+    "beforeDevCommand": "bun run dev",
+    "beforeBuildCommand": "bun run build",
+    "frontendDist": "../dist"
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["rmm"]
+      }
+    }
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Talos Viewer",
+        "width": 1280,
+        "height": 720,
+        "resizable": true,
+        "visible": false,
+        "contentProtected": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  }
+}

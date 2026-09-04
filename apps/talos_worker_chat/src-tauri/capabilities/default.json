@@ -1,0 +1,13 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "agent-chat-capability",
+  "description": "RMM agent chat sidecar window.",
+  "windows": ["*"],
+  "permissions": [
+    "core:event:default",
+    "core:window:default",
+    "core:webview:default",
+    "core:webview:deny-internal-toggle-devtools",
+    "core:app:default"
+  ]
+}

@@ -1,0 +1,44 @@
+[package]
+name = "talos_protocol"
+version = "0.6.23"
+edition = "2021"
+rust-version.workspace = true
+license.workspace = true
+
+[features]
+default = []
+typescript = ["dep:ts-rs"]
+# Shared relay/TLS + E2E frame helpers used by agent/viewer.
+relay-transport = [
+  "dep:anyhow",
+  "dep:base64",
+  "dep:chacha20poly1305",
+  "dep:rustls",
+  "dep:rustls-native-certs",
+  "dep:rustls-pemfile",
+  "dep:tokio",
+  "dep:url",
+  "dep:webpki-roots",
+]
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = { version = "1.0", optional = true }
+base64 = { version = "0.22", optional = true }
+chacha20poly1305 = { version = "0.10", optional = true }
+rustls = { version = "0.23.36", default-features = false, features = ["ring", "std", "tls12"], optional = true }
+rustls-native-certs = { version = "0.8.3", optional = true }
+rustls-pemfile = { version = "2.2.0", optional = true }
+tokio = { version = "1", features = ["io-util"], optional = true }
+url = { version = "2.5.2", optional = true }
+webpki-roots = { version = "0.26", optional = true }
+ts-rs = { version = "=12.0.1", optional = true }
+
+[[bin]]
+name = "export-typescript"
+path = "src/bin/export_typescript.rs"
+required-features = ["typescript"]
+
+[lints]
+workspace = true

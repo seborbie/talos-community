@@ -1,0 +1,6 @@
+{
+  "type": "request_full_snapshot",
+  "data": {
+    "snapshot_request_id": "snap-legacy-001"
+  }
+}
