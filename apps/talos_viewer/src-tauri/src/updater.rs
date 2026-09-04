@@ -2,13 +2,15 @@ use std::{
     env,
     fs::{self},
     path::{Path, PathBuf},
-    process::Command,
     sync::{
         atomic::{AtomicBool, Ordering},
         Arc, Mutex, Once,
     },
     time::Duration,
 };
+
+#[cfg(any(windows, target_os = "macos"))]
+use std::process::Command;
 
 use anyhow::{anyhow, Context, Result};
 use reqwest::Client;
@@ -154,6 +156,7 @@ impl UpdateManager {
         app: &AppHandle,
         apply_mode: UpdateApplyMode,
     ) -> Result<ManualUpdateCheckResult> {
+        ensure_native_update_platform(env::consts::OS)?;
         promote_pending_updater()?;
         if let Some(pending) = self
             .inner
@@ -392,6 +395,14 @@ pub fn complete_update_exit_cleanup() {
     update_exit_notify().notify_waiters();
 }
 
+fn ensure_native_update_platform(os: &str) -> Result<()> {
+    if matches!(os, "windows" | "macos") {
+        Ok(())
+    } else {
+        Err(anyhow!("native viewer updates are unsupported on {os}"))
+    }
+}
+
 fn launch_pending_update(
     package_path: &Path,
     target_version: Option<&str>,
@@ -419,7 +430,7 @@ fn launch_pending_update(
         return Ok(());
     }
 
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(windows)]
     {
         let install_dir = current_install_dir()?;
         let updater_path = install_dir.join(UPDATER_FILE_NAME);
@@ -476,6 +487,11 @@ fn launch_pending_update(
             "viewer updater launched"
         );
         Ok(())
+    }
+    #[cfg(not(any(windows, target_os = "macos")))]
+    {
+        let _ = (package_path, target_version, show_completion_notice);
+        ensure_native_update_platform(env::consts::OS)
     }
 }
 
@@ -855,6 +871,21 @@ fn viewer_update_arch() -> &'static str {
 mod tests {
     use super::*;
     use std::sync::atomic::{AtomicU64, Ordering};
+
+    #[test]
+    fn native_update_platform_rejects_unsupported_targets() {
+        assert!(ensure_native_update_platform("windows").is_ok());
+        assert!(ensure_native_update_platform("macos").is_ok());
+        assert!(ensure_native_update_platform("linux").is_err());
+    }
+
+    #[test]
+    #[cfg(not(any(windows, target_os = "macos")))]
+    fn unsupported_update_launch_does_not_touch_the_package() {
+        let error = launch_pending_update(Path::new("/nonexistent/viewer-update"), None, false)
+            .unwrap_err();
+        assert!(error.to_string().contains("unsupported"));
+    }
 
     static NEXT_TEST_DIRECTORY: AtomicU64 = AtomicU64::new(0);
 

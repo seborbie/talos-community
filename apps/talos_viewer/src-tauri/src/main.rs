@@ -21,7 +21,6 @@ use std::{
     io::{Read, Seek, SeekFrom, Write},
     net::{Ipv4Addr, SocketAddr, ToSocketAddrs, UdpSocket},
     path::{Path, PathBuf},
-    process::Command,
     sync::{
         atomic::{AtomicBool, AtomicU64, Ordering},
         Arc, Mutex, OnceLock,
@@ -29,6 +28,9 @@ use std::{
     thread,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
+
+#[cfg(target_os = "macos")]
+use std::process::Command;
 
 use anyhow::{anyhow, Context};
 use base64::engine::general_purpose::{
@@ -269,9 +271,6 @@ fn set_macos_activation_policy_regular() {
     let _ = app.setActivationPolicy(objc2_app_kit::NSApplicationActivationPolicy::Regular);
 }
 
-#[cfg(not(target_os = "macos"))]
-fn set_macos_activation_policy_regular() {}
-
 #[cfg(target_os = "macos")]
 fn set_macos_activation_policy_accessory() {
     let Some(mtm) = objc2::MainThreadMarker::new() else {
@@ -408,7 +407,7 @@ fn show_macos_dialog(
         .unwrap_or(false)
 }
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(not(any(windows, target_os = "macos")))]
 fn show_macos_dialog(
     _title: &str,
     _message: &str,
@@ -752,6 +751,15 @@ struct WindowState {
     viewport: ViewportState,
     #[cfg(target_os = "macos")]
     viewport: MacViewportState,
+}
+
+impl WindowState {
+    fn viewport_handle(&self) -> ViewportArc {
+        #[cfg(any(windows, target_os = "macos"))]
+        {
+            self.viewport.inner.clone()
+        }
+    }
 }
 
 #[derive(Clone, Default)]
@@ -1252,9 +1260,9 @@ use talos_protocol::{
     build_control_frame, build_file_transfer_frame, parse_file_transfer_frame,
     FileTransferConflictMode, FileTransferEntry, FileTransferRequest, FileTransferResponse,
     LocalAddr, OperationErrorCode, ReflexAddress, RegistryHive, RegistryRequest, RegistryResponse,
-    RegistryResponseEnvelope, RegistryValueData, RegistryValueEntry, CONTROL_MOD_ALT,
-    CONTROL_MOD_CTRL, CONTROL_MOD_SHIFT, CONTROL_MOD_WIN, CONTROL_PAYLOAD_CAPTURE_OUTPUT_INDEX_LEN,
-    CONTROL_PAYLOAD_KEY_LEN, CONTROL_PAYLOAD_MOUSE_BUTTON_LEN, CONTROL_PAYLOAD_MOUSE_MOVE_LEN,
+    RegistryResponseEnvelope, RegistryValueData, RegistryValueEntry,
+    CONTROL_PAYLOAD_CAPTURE_OUTPUT_INDEX_LEN, CONTROL_PAYLOAD_KEY_LEN,
+    CONTROL_PAYLOAD_MOUSE_BUTTON_LEN, CONTROL_PAYLOAD_MOUSE_MOVE_LEN,
     CONTROL_PAYLOAD_MOUSE_WHEEL_LEN, CONTROL_PAYLOAD_SESSION_ID_LEN,
     CONTROL_TYPE_CAPTURE_OUTPUT_SWITCH, CONTROL_TYPE_CLIPBOARD, CONTROL_TYPE_KEY_DOWN,
     CONTROL_TYPE_KEY_UP, CONTROL_TYPE_MOUSE_BUTTON, CONTROL_TYPE_MOUSE_MOVE,
@@ -1267,6 +1275,9 @@ use talos_protocol::{
     REMOTE_DESKTOP_PROTOCOL_EXPERIMENTAL_DISPLAY_DELTA, REMOTE_DESKTOP_PROTOCOL_LEGACY_IVF,
     REMOTE_DESKTOP_PROTOCOL_MODERN_DISPLAY_DELTA,
 };
+
+#[cfg(any(windows, target_os = "macos"))]
+use talos_protocol::{CONTROL_MOD_ALT, CONTROL_MOD_CTRL, CONTROL_MOD_SHIFT, CONTROL_MOD_WIN};
 
 #[cfg(windows)]
 #[derive(Clone, Default)]
@@ -2274,6 +2285,7 @@ fn encode_argb_png_base64(width: u32, height: u32, argb: &[u32]) -> Result<Strin
     Ok(BASE64_STANDARD.encode(png_bytes))
 }
 
+#[cfg(any(not(windows), test))]
 fn encode_argb_bmp_base64(width: u32, height: u32, argb: &[u32]) -> Result<String, String> {
     let expected_pixels = width as usize * height as usize;
     if width == 0 || height == 0 || argb.len() != expected_pixels {
@@ -2991,16 +3003,7 @@ async fn connect_quic(
     let control_state = state.control.clone();
     let telemetry_state = state.remote_connection_telemetry.clone();
     let registry_pending = state.registry_pending.clone();
-    let viewport: ViewportArc = {
-        #[cfg(any(windows, target_os = "macos"))]
-        {
-            state.viewport.inner.clone()
-        }
-        #[cfg(all(not(windows), not(target_os = "macos")))]
-        {
-            ()
-        }
-    };
+    let viewport = state.viewport_handle();
 
     set_session_close_context(
         &state.session_close,
@@ -4075,16 +4078,7 @@ async fn connect_relay(
     let control_state = state.control.clone();
     let telemetry_state = state.remote_connection_telemetry.clone();
     let registry_pending = state.registry_pending.clone();
-    let viewport: ViewportArc = {
-        #[cfg(any(windows, target_os = "macos"))]
-        {
-            state.viewport.inner.clone()
-        }
-        #[cfg(all(not(windows), not(target_os = "macos")))]
-        {
-            ()
-        }
-    };
+    let viewport = state.viewport_handle();
 
     set_session_close_context(&state.session_close, session_id.clone(), token, api_base);
 

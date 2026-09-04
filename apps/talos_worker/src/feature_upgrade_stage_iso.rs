@@ -279,15 +279,15 @@ async fn run_stage_iso_job_windows_inner(
     let file_name = iso_file_name(&job.iso_media);
     let manifest_path = stage_dir.join("manifest.json");
 
-    tokio::fs::create_dir_all(&stage_dir)
+    tokio::fs::create_dir_all(stage_dir)
         .await
         .with_context(|| format!("create ISO staging directory {}", stage_dir.display()))?;
     protect_staged_path(stage_root);
-    protect_staged_path(&stage_dir);
+    protect_staged_path(stage_dir);
 
     send_stage_iso_progress(
         outbound_tx,
-        &job,
+        job,
         "running",
         "downloading",
         0,
@@ -318,7 +318,7 @@ async fn run_stage_iso_job_windows_inner(
 
     send_stage_iso_progress(
         outbound_tx,
-        &job,
+        job,
         "running",
         "verifying",
         downloaded_bytes,
@@ -344,7 +344,7 @@ async fn run_stage_iso_job_windows_inner(
             let message = "Downloaded ISO SHA-256 did not match expected media metadata";
             send_stage_iso_progress(
                 outbound_tx,
-                &job,
+                job,
                 "failed",
                 "failed",
                 downloaded_bytes,
@@ -352,7 +352,7 @@ async fn run_stage_iso_job_windows_inner(
                 None,
                 Some(message),
             )?;
-            let _ = tokio::fs::remove_file(&iso_path).await;
+            let _ = tokio::fs::remove_file(iso_path).await;
             anyhow::bail!("{message}");
         }
     }

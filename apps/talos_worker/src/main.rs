@@ -111,7 +111,7 @@ use talos_protocol::{
     CONTROL_TYPE_SESSION_LOGOFF, CONTROL_TYPE_SESSION_SWITCH, CONTROL_TYPE_STOP_CAPTURE,
     DISPLAY_RECORD_FRAME_BEGIN, DISPLAY_RECORD_FRAME_END, REGISTRY_META_MESSAGE_TYPE,
 };
-#[cfg(any(target_os = "windows", target_os = "macos"))]
+#[cfg(target_os = "macos")]
 use talos_protocol::{
     RemoteDesktopDisplayProfile, REMOTE_DESKTOP_CODEC_BGRA_ATLAS_COMMANDS,
     REMOTE_DESKTOP_CODEC_H264, REMOTE_DESKTOP_CODEC_SCREENSHOT_BGRA, REMOTE_DESKTOP_CODEC_VP8,
@@ -1064,7 +1064,7 @@ struct ControlPipeWriter {
     tx: mpsc::Sender<Vec<u8>>,
 }
 
-#[cfg(any(target_os = "windows", target_os = "macos"))]
+#[cfg(target_os = "macos")]
 #[derive(Clone, Debug)]
 struct CaptureFailure {
     reason: String,
@@ -1131,6 +1131,7 @@ struct CapturePipeline {
     last_chunk_at_ms: Arc<AtomicU64>,
     first_frame_at_ms: Arc<AtomicU64>,
     last_frame_at_ms: Arc<AtomicU64>,
+    #[cfg(target_os = "macos")]
     failure: Arc<Mutex<Option<CaptureFailure>>>,
 }
 
@@ -1151,6 +1152,7 @@ impl CapturePipeline {
             last_chunk_at_ms: Arc::new(AtomicU64::new(created_at_ms)),
             first_frame_at_ms: Arc::new(AtomicU64::new(0)),
             last_frame_at_ms: Arc::new(AtomicU64::new(0)),
+            #[cfg(target_os = "macos")]
             failure: Arc::new(Mutex::new(None)),
         }
     }
@@ -1188,6 +1190,7 @@ impl CapturePipeline {
             .store(now_unix_ms_u64(), Ordering::SeqCst);
     }
 
+    #[cfg(target_os = "macos")]
     fn set_failure(&self, reason: impl Into<String>, message: impl Into<String>) {
         if let Ok(mut guard) = self.failure.lock() {
             *guard = Some(CaptureFailure {
@@ -1200,6 +1203,7 @@ impl CapturePipeline {
         let _ = self.notify.send(self.next_seq.load(Ordering::SeqCst));
     }
 
+    #[cfg(target_os = "macos")]
     fn failure(&self) -> Option<CaptureFailure> {
         self.failure.lock().ok().and_then(|guard| guard.clone())
     }
@@ -3883,7 +3887,7 @@ pub(crate) struct LiveEventInput {
 #[cfg(any(target_os = "windows", target_os = "macos"))]
 const LIVE_EVENT_BACKLOG_CAPACITY: usize = 2048;
 
-#[cfg(any(target_os = "windows", target_os = "macos"))]
+#[cfg(target_os = "macos")]
 impl LiveEventInput {
     pub(crate) fn new(
         event_type: impl Into<String>,

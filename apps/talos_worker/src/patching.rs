@@ -53,8 +53,11 @@ const PATCH_INSTALL_INTENT_ID: &str = "talos.patch.install";
 const WU_UPGRADES_CATEGORY_ID: &str = "3689BDC8-B205-4AF4-8D4A-A63924C5E9D5";
 const PATCH_SCAN_PROGRESS_HEARTBEAT_INTERVAL: Duration = Duration::from_secs(30);
 const PATCH_JOB_PROGRESS_HEARTBEAT_INTERVAL: Duration = Duration::from_secs(30);
+#[cfg(any(target_os = "linux", target_os = "macos", test))]
 const DEFAULT_PATCH_COMMAND_TIMEOUT_SECS: u64 = 7200;
+#[cfg(any(target_os = "linux", target_os = "macos", test))]
 const MIN_PATCH_COMMAND_TIMEOUT_SECS: u64 = 60;
+#[cfg(any(target_os = "linux", target_os = "macos", test))]
 const MAX_PATCH_COMMAND_TIMEOUT_SECS: u64 = 86_400;
 const PATCH_REBOOT_MESSAGE: &str =
     "Talos patch management installed updates and requires a restart.";
@@ -67,6 +70,7 @@ const UPDATE_REBOOT_NOTICE_MAX_DEFERRALS: u32 = 4;
 #[cfg(any(target_os = "windows", target_os = "macos"))]
 const UPDATE_REBOOT_NOTICE_CONNECT_TIMEOUT: Duration = Duration::from_secs(45);
 
+#[cfg(any(target_os = "linux", target_os = "macos", test))]
 fn patch_command_timeout_from_env_value(value: Option<&str>) -> Duration {
     let seconds = value
         .and_then(|raw| raw.trim().parse::<u64>().ok())

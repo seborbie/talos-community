@@ -1150,7 +1150,7 @@ fn main() {
         eprintln!("{e:#}");
     }
     pause_console_before_exit();
-    if let Err(_) = outcome {
+    if outcome.is_err() {
         std::process::exit(1);
     }
 }
