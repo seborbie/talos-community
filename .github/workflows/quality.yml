@@ -263,6 +263,14 @@ jobs:
             libxdo-dev \
             pkg-config
 
+      - name: Select pinned macOS SDK for Metal bindings
+        if: runner.os == 'macOS'
+        shell: bash
+        run: |
+          sudo xcode-select --switch /Applications/Xcode_26.3.app/Contents/Developer
+          xcodebuild -version
+          xcrun --sdk macosx --show-sdk-version
+
       - name: Install macOS native dependencies
         if: runner.os == 'macOS'
         shell: bash
