@@ -19,8 +19,10 @@ use std::ffi::c_void;
 use std::mem::{MaybeUninit, size_of};
 #[cfg(target_os = "macos")]
 use std::os::raw::{c_char, c_int};
+#[cfg(unix)]
+use std::os::unix::ffi::OsStrExt;
 #[cfg(target_os = "macos")]
-use std::os::unix::ffi::{OsStrExt, OsStringExt};
+use std::os::unix::ffi::OsStringExt;
 #[cfg(target_os = "macos")]
 use std::path::PathBuf;
 #[cfg(target_os = "macos")]
@@ -552,6 +554,17 @@ mod tests {
         StartPermissionFlowError, enclosing_app_bundle,
     };
     use std::path::Path;
+
+    #[test]
+    #[cfg(unix)]
+    fn app_path_preserves_non_utf8_unix_bytes() {
+        use std::os::unix::ffi::OsStrExt;
+        let bytes = b"/tmp/app-\xff";
+        let path = Path::new(std::ffi::OsStr::from_bytes(bytes));
+        let app = super::AppPath::try_from(path).expect("valid Unix path");
+        assert_eq!(app.as_c_str().to_bytes(), bytes);
+        assert!(super::AppPath::try_from(Path::new(std::ffi::OsStr::from_bytes(b"bad\0path"))).is_err());
+    }
 
     #[test]
     #[cfg(target_os = "macos")]

@@ -220,6 +220,11 @@ test('acquisition completes a manifest-only checkout and preserves its pinned me
   await mkdir(output);
   const manifest = await readFile(resolve(repoRoot, 'apps/vpx-encode/Cargo.toml'));
   await writeFile(resolve(output, 'Cargo.toml'), manifest);
+  // Reproduce Windows Git's checkout conversion even on a Unix test runner.
+  const gitConfig = resolve(temporary, 'gitconfig');
+  await writeFile(gitConfig, '[core]\n    autocrlf = true\n    eol = crlf\n');
+  const previousGlobalConfig = process.env.GIT_CONFIG_GLOBAL;
+  process.env.GIT_CONFIG_GLOBAL = gitConfig;
   const download = spyOn(globalThis, 'fetch').mockResolvedValue(new Response(bytes));
   try {
     await acquireVpxEncode({ repoRoot, policy: reviewed, output });
@@ -229,6 +234,8 @@ test('acquisition completes a manifest-only checkout and preserves its pinned me
     expect(download).toHaveBeenCalledTimes(1);
   } finally {
     download.mockRestore();
+    if (previousGlobalConfig === undefined) delete process.env.GIT_CONFIG_GLOBAL;
+    else process.env.GIT_CONFIG_GLOBAL = previousGlobalConfig;
   }
 });
 
@@ -251,4 +258,22 @@ test('failed acquisition preserves a tracked manifest and rejects modified metad
   } finally {
     download.mockRestore();
   }
+});
+
+test('native CI selects the reviewed SDK and builds Tauri assets before Rust checks', async () => {
+  const workflow = Bun.YAML.parse(
+    await readFile(resolve(repoRoot, '.github/workflows/quality.yml'), 'utf8'),
+  ) as {
+    jobs: Record<string, { steps: Array<{ run?: string; if?: string }> }>;
+  };
+  const steps = workflow.jobs.rust!.steps;
+  const sdk = steps.findIndex((step) =>
+    step.run?.includes('xcode-select --switch /Applications/Xcode_26.3.app/Contents/Developer'),
+  );
+  const assets = steps.findIndex((step) => step.run?.trim() === 'bun run build');
+  const check = steps.findIndex((step) => step.run?.trim() === 'bun run check:rust');
+  expect(sdk).toBeGreaterThanOrEqual(0);
+  expect(steps[sdk]?.if).toBe("runner.os == 'macOS'");
+  expect(assets).toBeGreaterThan(sdk);
+  expect(check).toBeGreaterThan(assets);
 });

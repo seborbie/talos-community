@@ -320,7 +320,11 @@ export async function acquireVpxEncode(options: {
     await copyFile(resolve(extracted, prefix, 'Cargo.toml.orig'), resolve(staged, 'Cargo.toml'));
     await copyFile(resolve(extracted, prefix, 'README.md'), resolve(staged, 'README.md'));
     await copyFile(resolve(extracted, prefix, 'src/lib.rs'), resolve(staged, 'src/lib.rs'));
-    await run('git', ['apply', '--whitespace=nowarn', patchPath], staged);
+    await run(
+      'git',
+      ['-c', 'core.autocrlf=false', '-c', 'core.eol=lf', 'apply', '--whitespace=nowarn', patchPath],
+      staged,
+    );
     await verifyPatchedVpxTree(staged, options.policy);
     await mkdir(dirname(output), { recursive: true });
     if (!manifestOnly) {

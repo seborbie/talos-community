@@ -315,6 +315,9 @@ jobs:
       - name: Verify generated protocol contracts
         run: bun run contracts:check
 
+      - name: Build frontend assets required by Tauri context generation
+        run: bun run build
+
       - name: Run Rust formatting and Clippy checks
         run: bun run check:rust
 
