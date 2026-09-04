@@ -245,6 +245,7 @@ struct RpmPatchCandidate {
     requires_reboot: bool,
 }
 
+#[cfg(any(target_os = "macos", test))]
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct MacosPatchCandidate {
     label: String,
@@ -1650,6 +1651,7 @@ pub(crate) fn build_patch_update_key(title: &str, kb_article: Option<&str>) -> S
     )
 }
 
+#[cfg(any(target_os = "macos", test))]
 pub(crate) fn macos_os_update_version_parts(title: &str) -> Option<Vec<u32>> {
     let normalized = normalize_patch_text(title);
     if !(normalized.starts_with("macos ") || normalized.starts_with("mac os ")) {
@@ -1678,6 +1680,7 @@ pub(crate) fn macos_os_update_version_parts(title: &str) -> Option<Vec<u32>> {
     })
 }
 
+#[cfg(any(target_os = "macos", test))]
 pub(crate) fn compare_patch_version_parts(left: &[u32], right: &[u32]) -> std::cmp::Ordering {
     let len = left.len().max(right.len());
     for index in 0..len {
@@ -2355,7 +2358,7 @@ fn recent_install_log_softwareupdate_lines() -> String {
     lines.join("\n")
 }
 
-#[cfg(target_os = "macos")]
+#[cfg(any(target_os = "macos", test))]
 fn truncate_macos_diagnostic(value: &str) -> String {
     const LIMIT: usize = 12_000;
     if value.len() <= LIMIT {
@@ -2911,6 +2914,7 @@ fn classify_macos_softwareupdate_error(message: &str) -> String {
     .to_string()
 }
 
+#[cfg(any(target_os = "macos", test))]
 fn patch_summary(
     matched: usize,
     downloaded: usize,
@@ -3529,6 +3533,7 @@ fn rpm_terminal_progress_values(
 }
 
 #[cfg(target_os = "linux")]
+#[derive(Debug)]
 struct AptCommandOutput {
     status_code: Option<i32>,
     stdout: String,
@@ -4306,35 +4311,6 @@ fn execute_patch_job_linux_apt(
         }),
         force_reboot_after_report,
     })
-}
-
-#[cfg(target_os = "linux")]
-fn rpm_failure_outcome(
-    job: &PatchRemediationJob,
-    phase: &str,
-    selected: &[RpmPatchCandidate],
-    evidence_updates: Vec<Value>,
-    error: String,
-    downloaded_count: usize,
-) -> PatchExecutionOutcome {
-    PatchExecutionOutcome {
-        status: "failed",
-        evidence: json!({
-            "phase": phase,
-            "job": job_summary(job),
-            "updates": evidence_updates,
-            "summary": apt_progress_summary(
-                selected.len(),
-                downloaded_count,
-                0,
-                selected.len(),
-                0,
-                linux_rpm_reboot_required_for_patch(selected)
-            ),
-            "error": error
-        }),
-        force_reboot_after_report: false,
-    }
 }
 
 #[cfg(target_os = "linux")]
