@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import {
   checkLicensePolicy,
+  isBunStorePackageManifest,
   licensePolicyFailures,
   type LicensePolicyInputs,
 } from './license-policy';
@@ -95,4 +96,15 @@ describe('dependency licence/source policy', () => {
     expect(result.cargoDependencyCount).toBeGreaterThan(700);
     expect(result.failures).toEqual([]);
   });
+});
+
+test('licence scan recognizes Windows and Unix store paths without matching nested fixtures', () => {
+  for (const path of [
+    'pkg@1.0.0/node_modules/pkg/package.json',
+    '@scope+pkg@1.0.0/node_modules/@scope/pkg/package.json',
+  ]) {
+    expect(isBunStorePackageManifest(path)).toBe(true);
+    expect(isBunStorePackageManifest(path.replaceAll('/', '\\'))).toBe(true);
+  }
+  expect(isBunStorePackageManifest('pkg@1/node_modules/pkg/test/package.json')).toBe(false);
 });

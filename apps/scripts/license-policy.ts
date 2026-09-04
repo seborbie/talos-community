@@ -309,6 +309,12 @@ function packageJsonLicense(manifest: PackageJson): string | undefined {
   return undefined;
 }
 
+export function isBunStorePackageManifest(path: string): boolean {
+  return /^[^/]+\/node_modules\/(?:@[^/]+\/)?[^/]+\/package\.json$/.test(
+    path.replaceAll('\\', '/'),
+  );
+}
+
 async function collectBunDependencies(): Promise<DependencyLicense[]> {
   const storeRoot = resolve(APPS_ROOT, 'node_modules/.bun');
   if (!existsSync(storeRoot)) {
@@ -316,10 +322,9 @@ async function collectBunDependencies(): Promise<DependencyLicense[]> {
   }
 
   const dependencies = new Map<string, DependencyLicense>();
-  const packageManifest = /^[^/]+\/node_modules\/(?:@[^/]+\/)?[^/]+\/package\.json$/;
   const glob = new Bun.Glob('**/package.json');
   for await (const path of glob.scan({ cwd: storeRoot, dot: true, onlyFiles: true })) {
-    if (!packageManifest.test(path)) continue;
+    if (!isBunStorePackageManifest(path)) continue;
     const manifest = (await Bun.file(resolve(storeRoot, path)).json()) as PackageJson;
     if (!manifest.name || !manifest.version) continue;
     const license = packageJsonLicense(manifest);
@@ -332,6 +337,8 @@ async function collectBunDependencies(): Promise<DependencyLicense[]> {
       source: 'bun-registry-install',
     });
   }
+  if (dependencies.size === 0)
+    throw new Error('Bun dependency licence scan found no packages; refusing an empty scan');
   return [...dependencies.values()].sort((left, right) =>
     `${left.name}@${left.version}`.localeCompare(`${right.name}@${right.version}`),
   );

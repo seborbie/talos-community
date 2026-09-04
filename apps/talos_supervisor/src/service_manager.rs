@@ -950,9 +950,18 @@ fn systemd_quote_path(path: &Path) -> String {
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", test))]
 fn systemd_escape_text(value: &str) -> String {
-    value.replace('\n', " ").replace('\r', " ")
+    value.replace(['\n', '\r'], " ")
+}
+
+#[test]
+fn systemd_description_keeps_text_on_one_line() {
+    assert_eq!(
+        systemd_escape_text("Talos\r\nworker\nservice"),
+        "Talos  worker service"
+    );
+    assert_eq!(systemd_escape_text("Talos worker"), "Talos worker");
 }
 
 #[cfg(target_os = "linux")]

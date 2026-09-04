@@ -208,7 +208,16 @@ test('acquisition completes a manifest-only checkout and preserves its pinned me
     if ((await process.exited) !== 0) throw new Error(error);
   }
   await run(
-    ['git', 'apply', '--reverse', resolve(repoRoot, reviewed.vpxEncode.patchPath)],
+    [
+      'git',
+      '-c',
+      'core.autocrlf=false',
+      '-c',
+      'core.eol=lf',
+      'apply',
+      '--reverse',
+      resolve(repoRoot, reviewed.vpxEncode.patchPath),
+    ],
     upstream,
   );
   await rename(resolve(upstream, 'Cargo.toml'), resolve(upstream, 'Cargo.toml.orig'));
