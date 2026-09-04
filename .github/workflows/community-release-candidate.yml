@@ -109,7 +109,7 @@ jobs:
             "${GITLEAKS_IMAGE}" dir --config /repo/.gitleaks.toml \
             --max-archive-depth 6 --redact --no-banner --no-color /scan
           (cd "${out}" && sha256sum ./* > SHA256SUMS)
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: ${{ runner.temp }}/source/*
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -155,7 +155,7 @@ jobs:
             "file:/scan/talos-server_${{ needs.validate.outputs.version }}_linux_x86_64" \
             --output spdx-json=/out/launcher-linux.spdx.json
           (cd "${out}" && sha256sum ./* > SHA256SUMS)
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: ${{ runner.temp }}/launcher-linux/*
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -199,7 +199,7 @@ jobs:
           Get-ChildItem $out -File | Sort-Object Name | ForEach-Object {
             "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant())  $($_.Name)"
           } | Set-Content (Join-Path $out "SHA256SUMS") -Encoding utf8NoBOM
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: ${{ runner.temp }}/launcher-windows/*
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -308,7 +308,7 @@ jobs:
             $env:GITLEAKS_IMAGE dir --config /repo/.gitleaks.toml `
             --max-archive-depth 8 --redact --no-banner --no-color /scan
           if ($LASTEXITCODE -ne 0) { throw "native artifact secret scan failed" }
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: apps/installer/artifacts/release/*
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -387,7 +387,7 @@ jobs:
             "${GITLEAKS_IMAGE}" dir --config /repo/.gitleaks.toml \
             --max-archive-depth 8 --redact --no-banner --no-color /scan
           (cd "${out}" && sha256sum ./* > SHA256SUMS)
-      - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: ${{ runner.temp }}/image-${{ matrix.key }}/*
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
