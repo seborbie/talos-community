@@ -13,6 +13,7 @@
     "exceptionExpires": "2026-09-11"
   },
   "requiredFiles": [
+    ".gitattributes",
     ".config/publication-identity.json",
     ".gitleaks.toml",
     ".config/third-party-acquisition.json",
@@ -41,6 +42,7 @@
     "infra/compose.community.yml"
   ],
   "includePatterns": [
+    ".gitattributes",
     ".config/publication-identity.json",
     ".config/dotnet-tools.json",
     ".config/public-export-policy.json",
