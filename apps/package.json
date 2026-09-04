@@ -83,7 +83,7 @@
     "check": "bun run format:check && bun run check:scripts && bun run community:production:check && bun run community:edge:check && bun run installer:versions:check && bun run installer:signing:check && bun run signing:secrets:check && bun run release:inputs:check && bun run release:pipeline:check && bun run license:check && bun run publication:check && bun run --sequential --workspaces --if-present check",
     "test": "bun run scripts:test && bun run --sequential --workspaces --if-present test",
     "build": "bun run --sequential --workspaces --if-present build",
-    "check:rust": "cargo fmt --all -- --check && cargo clippy --workspace --all-targets --locked -- -D warnings && cargo clippy -p talos_protocol --all-targets --features typescript --locked -- -D warnings",
+    "check:rust": "cargo fmt --all -- --check && cargo clippy --workspace --all-targets --locked --keep-going -- -D warnings && cargo clippy -p talos_protocol --all-targets --features typescript --locked -- -D warnings",
     "test:rust": "bun ./scripts/run-rust-tests.ts",
     "audit:js": "bun audit --audit-level=low --ignore GHSA-ggr8-5vv4-36mx --ignore GHSA-pxg6-pf52-xh8x",
     "audit:rust": "cargo audit",
