@@ -2582,7 +2582,7 @@ fn find_ascii_case_insensitive(haystack: &str, needle: &str) -> Option<usize> {
         .position(|window| window.eq_ignore_ascii_case(needle.as_bytes()))
 }
 
-#[cfg(any(test, target_os = "macos"))]
+#[cfg(target_os = "macos")]
 fn macos_update_progress_values(candidates: &[MacosPatchCandidate], state: &str) -> Vec<Value> {
     candidates
         .iter()
@@ -2914,7 +2914,7 @@ fn classify_macos_softwareupdate_error(message: &str) -> String {
     .to_string()
 }
 
-#[cfg(any(target_os = "macos", test))]
+#[cfg(target_os = "macos")]
 fn patch_summary(
     matched: usize,
     downloaded: usize,
