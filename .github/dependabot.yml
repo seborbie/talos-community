@@ -25,6 +25,9 @@ updates:
       time: "06:15"
       timezone: Europe/London
     open-pull-requests-limit: 10
+    # Include transitive Cargo dependencies in routine updates as well as alerts.
+    allow:
+      - dependency-type: all
     groups:
       cargo-minor-and-patch:
         patterns:

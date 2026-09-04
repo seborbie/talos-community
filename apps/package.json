@@ -34,7 +34,8 @@
   "scripts": {
     "preinstall": "bun ./scripts/check-toolchain.ts",
     "toolchain:check": "bun ./scripts/check-toolchain.ts",
-    "workspace:check": "bun ./scripts/check-workspace.ts",
+    "workspace:check": "bun ./scripts/check-workspace.ts && bun run dependabot:check",
+    "dependabot:check": "bun ./scripts/dependabot-contract.ts",
     "installer:versions:check": "bun ./scripts/installer-version-contract.ts",
     "installer:signing:check": "bun ./scripts/installer-signing-contract.ts",
     "signing:secrets:check": "bun ./scripts/signing-secret-policy.ts",

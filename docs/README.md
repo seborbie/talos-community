@@ -27,5 +27,6 @@ Talos Community Edition is alpha software. Start with a disposable local evaluat
 - [Contribution guide](../CONTRIBUTING.md), [code of conduct](../CODE_OF_CONDUCT.md),
   [support](../SUPPORT.md), and [security reporting](../SECURITY.md).
 - [Licensing and provenance](licensing-and-provenance.md) and [third-party notices](../THIRD_PARTY_NOTICES.md).
+- [Dependency maintenance](dependency-maintenance.md): coverage, generated manifests, and update checks.
 - [Release readiness](open-source-readiness.md), [source export](public-source-export.md),
   and [release process](community-release-process.md).

@@ -25,7 +25,8 @@ node_modules/
 apps/*/bun.lock
 apps/installer/tmp/
 # Reconstructed from the digest-pinned upstream archive plus reviewed Talos patch.
-apps/vpx-encode/
+apps/vpx-encode/*
+!apps/vpx-encode/Cargo.toml
 apps/target/
 apps/certs/*
 !apps/certs/README.md
