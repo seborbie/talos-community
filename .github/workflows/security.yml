@@ -2,14 +2,6 @@ name: Dependency security
 
 on:
   pull_request:
-    paths:
-      - .github/workflows/security.yml
-      - apps/bun.lock
-      - apps/package.json
-      - apps/*/package.json
-      - apps/Cargo.lock
-      - apps/Cargo.toml
-      - apps/**/Cargo.toml
   push:
     branches:
       - main
