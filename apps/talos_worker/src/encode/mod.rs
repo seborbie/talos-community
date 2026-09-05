@@ -663,31 +663,6 @@ fn display_stream_mode_for_processing_mode(
     }
 }
 
-#[cfg(all(windows, test))]
-fn display_stream_capabilities_for_processing_mode(
-    processing_mode: crate::display_processing::DisplayProcessingMode,
-) -> Vec<DisplayStreamMode> {
-    match processing_mode {
-        crate::display_processing::DisplayProcessingMode::Legacy => {
-            vec![
-                DisplayStreamMode::LegacyCapture,
-                DisplayStreamMode::ScreenshotOnly,
-            ]
-        }
-        crate::display_processing::DisplayProcessingMode::Gpu => {
-            vec![
-                DisplayStreamMode::ModernCapture,
-                DisplayStreamMode::ScreenshotOnly,
-            ]
-        }
-        crate::display_processing::DisplayProcessingMode::Auto => vec![
-            DisplayStreamMode::LegacyCapture,
-            DisplayStreamMode::ModernCapture,
-            DisplayStreamMode::ScreenshotOnly,
-        ],
-    }
-}
-
 #[cfg(windows)]
 fn profile_id_for_processing_mode(
     processing_mode: crate::display_processing::DisplayProcessingMode,
@@ -745,6 +720,13 @@ pub fn advertised_display_profiles_for_effective_processing_mode(
     context: &'static str,
 ) -> Vec<RemoteDesktopDisplayProfile> {
     let processing_mode = crate::display_processing::effective_display_processing_mode(context);
+    display_profiles_for_processing_mode(processing_mode)
+}
+
+#[cfg(windows)]
+fn display_profiles_for_processing_mode(
+    processing_mode: crate::display_processing::DisplayProcessingMode,
+) -> Vec<RemoteDesktopDisplayProfile> {
     match processing_mode {
         crate::display_processing::DisplayProcessingMode::Legacy => {
             vec![
@@ -5097,7 +5079,7 @@ fn run_capture_encode_dump_impl(
 mod tests {
     use super::{
         apply_dirty_rect_to_frame_shadow, apply_move_rect_to_frame_shadow, clip_move_rect,
-        display_processing_mode_for_profile, display_stream_capabilities_for_processing_mode,
+        display_processing_mode_for_profile, display_profiles_for_processing_mode,
         display_stream_mode_for_processing_mode, display_stream_mode_for_profile,
         pack_dirty_rects_into_atlas, parse_display_stream_mode,
         synthesize_cpu_frame_metadata_from_diff, ClippedMoveRect, DisplayStreamMode,
@@ -5285,21 +5267,24 @@ mod tests {
     }
 
     #[test]
-    fn advertised_stream_modes_follow_explicit_display_processing_mode() {
+    fn advertised_profiles_preserve_screenshot_fallback_in_every_processing_mode() {
+        let ids = |mode| {
+            display_profiles_for_processing_mode(mode)
+                .into_iter()
+                .map(|profile| profile.id)
+                .collect::<Vec<_>>()
+        };
         assert_eq!(
-            display_stream_capabilities_for_processing_mode(DisplayProcessingMode::Legacy),
-            vec![DisplayStreamMode::LegacyCapture]
+            ids(DisplayProcessingMode::Legacy),
+            vec!["legacy", "screenshot_only"]
         );
         assert_eq!(
-            display_stream_capabilities_for_processing_mode(DisplayProcessingMode::Gpu),
-            vec![DisplayStreamMode::ModernCapture]
+            ids(DisplayProcessingMode::Gpu),
+            vec!["modern_gpu", "screenshot_only"]
         );
         assert_eq!(
-            display_stream_capabilities_for_processing_mode(DisplayProcessingMode::Auto),
-            vec![
-                DisplayStreamMode::LegacyCapture,
-                DisplayStreamMode::ModernCapture,
-            ]
+            ids(DisplayProcessingMode::Auto),
+            vec!["modern_gpu", "legacy", "screenshot_only"]
         );
     }
 

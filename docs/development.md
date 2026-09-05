@@ -161,6 +161,12 @@ cargo run -p talos_worker
   - `VPX_VERSION` to your installed libvpx version (e.g. `1.13.0`)
 - macOS/Linux: install libvpx via your package manager and set `VPX_INCLUDE_DIR`/`VPX_LIB_DIR`/`VPX_VERSION` if pkg-config is not available.
 
+Windows worker-helper debug builds (including the test harness) use `asInvoker` without
+`uiAccess`, so unsigned binaries can run from the development checkout. They cannot automate
+higher-integrity windows through UIAccess. Release builds retain the checked-in `uiAccess=true`
+manifest and require the normal signed installation in a trusted location; CI unit tests do not
+replace that release validation.
+
 ### Virtual display driver (Windows)
 For headless or virtual-monitor setups (e.g. RMM, streaming, or screen capture without a physical display), you can install the [Virtual Display Driver](https://github.com/VirtualDrivers/Virtual-Display-Driver) via **winget**:
 

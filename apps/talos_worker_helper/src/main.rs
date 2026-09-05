@@ -1,3 +1,7 @@
+#[cfg(test)]
+#[path = "../build_manifest.rs"]
+mod build_manifest;
+
 #[cfg(target_os = "windows")]
 use std::sync::mpsc;
 #[cfg(target_os = "windows")]
