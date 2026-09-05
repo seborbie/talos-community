@@ -30,3 +30,5 @@ Talos Community Edition is alpha software. Start with a disposable local evaluat
 - [Dependency maintenance](dependency-maintenance.md): coverage, generated manifests, and update checks.
 - [Release readiness](open-source-readiness.md), [source export](public-source-export.md),
   and [release process](community-release-process.md).
+
+- [September 2026 dependency alert triage](security/dependency-alert-triage-2026-09.md) — reviewed updates, advisory coverage differences and the remaining GLib platform constraint.
