@@ -169,6 +169,7 @@ const TRAY_MENU_EXIT_ID: &str = "tray_exit";
 const TRAY_MENU_AUTOSTART_ID: &str = "tray_autostart";
 const TRAY_MENU_ABOUT_ID: &str = "tray_about";
 const TRAY_MENU_CHECK_UPDATES_ID: &str = "tray_check_updates";
+#[cfg(any(windows, target_os = "macos"))]
 const VIEWER_START_ON_LOGIN_ARG: &str = "--autostart";
 const VIEWER_COPYRIGHT: &str = "Copyright (c) 2026 Talos";
 const VIEWER_ABOUT_TITLE: &str = "About Talos Viewer";
@@ -759,6 +760,10 @@ impl WindowState {
         {
             self.viewport.inner.clone()
         }
+        #[cfg(not(any(windows, target_os = "macos")))]
+        {
+            ViewportArc
+        }
     }
 }
 
@@ -1313,7 +1318,8 @@ type ViewportArc = Arc<Mutex<ViewportInner>>;
 #[cfg(target_os = "macos")]
 type ViewportArc = Arc<Mutex<viewport_macos::ViewportInner>>;
 #[cfg(all(not(windows), not(target_os = "macos")))]
-type ViewportArc = ();
+#[derive(Clone)]
+struct ViewportArc;
 
 #[cfg(windows)]
 #[derive(Clone, Copy)]
@@ -2174,6 +2180,7 @@ fn get_viewer_transport() -> String {
     }
 }
 
+#[cfg(any(windows, target_os = "macos"))]
 #[derive(Debug, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct ViewportOcclusionRect {
@@ -2181,6 +2188,20 @@ struct ViewportOcclusionRect {
     y: i32,
     width: u32,
     height: u32,
+}
+
+// Linux renders through the webview and accepts, but does not apply, native occlusions.
+#[cfg(not(any(windows, target_os = "macos")))]
+#[derive(Debug, Clone, Deserialize)]
+struct ViewportOcclusionRect {
+    #[serde(rename = "x")]
+    _x: i32,
+    #[serde(rename = "y")]
+    _y: i32,
+    #[serde(rename = "width")]
+    _width: u32,
+    #[serde(rename = "height")]
+    _height: u32,
 }
 
 #[cfg(windows)]
@@ -10416,6 +10437,14 @@ fn viewer_complete_update_exit_cleanup() {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn viewport_occlusions_preserve_the_input_contract_on_every_platform() {
+        let valid = r#"{"x":-10,"y":20,"width":30,"height":40}"#;
+        assert!(serde_json::from_str::<super::ViewportOcclusionRect>(valid).is_ok());
+        let invalid = r#"{"x":0,"y":0,"width":-1,"height":40}"#;
+        assert!(serde_json::from_str::<super::ViewportOcclusionRect>(invalid).is_err());
+    }
+
     use super::*;
     use std::sync::mpsc::channel;
     use std::time::Duration;

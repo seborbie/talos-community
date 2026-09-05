@@ -709,7 +709,7 @@ mod tests {
             url: database_url.to_string(),
         };
         let (config, secret) = input
-            .validate_and_split(Path::new("/var/lib/talos-server"))
+            .validate_and_split(&std::env::temp_dir().join("talos-server-config-test"))
             .expect("valid request");
 
         let serialized = serde_json::to_string(&config).expect("serialize");
@@ -760,7 +760,7 @@ mod tests {
             url: "postgresql://talos:old-password@db.example.com/talos?sslmode=verify-full&connect_timeout=5".to_string(),
         };
         let (config, secret_input) = input
-            .validate_and_split(Path::new("/var/lib/talos-server"))
+            .validate_and_split(&std::env::temp_dir().join("talos-server-config-test"))
             .expect("valid request");
         let mut secrets = SecretConfig::generate(&config, secret_input);
         secrets.external_database_url = Some(
@@ -813,20 +813,20 @@ mod tests {
         let mut input = request();
         input.edge.relay_domain = input.edge.control_domain.clone();
         assert!(input
-            .validate_and_split(Path::new("/var/lib/talos-server"))
+            .validate_and_split(&std::env::temp_dir().join("talos-server-config-test"))
             .is_err());
 
         let mut input = request();
         input.edge.proxy_ipv4 = "172.31.241.2".to_string();
         assert!(input
-            .validate_and_split(Path::new("/var/lib/talos-server"))
+            .validate_and_split(&std::env::temp_dir().join("talos-server-config-test"))
             .is_err());
     }
 
     #[test]
     fn secrets_are_independent_csprng_values() {
         let (config, input) = request()
-            .validate_and_split(Path::new("/var/lib/talos-server"))
+            .validate_and_split(&std::env::temp_dir().join("talos-server-config-test"))
             .expect("valid request");
         let secrets = SecretConfig::generate(&config, input);
         secrets.validate_for(&config).expect("valid secrets");
@@ -845,7 +845,7 @@ mod tests {
             serde_json::from_str(include_str!("../talos-server.example.json"))
                 .expect("example JSON");
         parsed
-            .validate_and_split(Path::new("/var/lib/talos-server"))
+            .validate_and_split(&std::env::temp_dir().join("talos-server-config-test"))
             .expect("example contract");
     }
 
@@ -854,7 +854,7 @@ mod tests {
         let mut input = request();
         input.edge.http_port = 8080;
         assert!(input
-            .validate_and_split(Path::new("/var/lib/talos-server"))
+            .validate_and_split(&std::env::temp_dir().join("talos-server-config-test"))
             .is_err());
     }
 }
