@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'bun:test';
 import { readFile } from 'node:fs/promises';
 
-// Supplement RustSec with the patched versions reviewed in issue #30. This is a
+// Supplement RustSec with the patched versions reviewed in issues #30 and #14. This is a
 // regression guard for that remediation, not a replacement for current audits.
 const reviewedRanges = [
   { name: 'openssl', vulnerable: '>=0.9.0 <0.10.80', patched: '0.10.80' },
@@ -9,6 +9,7 @@ const reviewedRanges = [
   { name: 'rand', vulnerable: '>=0.7.0 <0.8.6', patched: '0.8.6' },
   { name: 'rand', vulnerable: '>=0.9.0 <0.9.3', patched: '0.9.3' },
   { name: 'rand', vulnerable: '=0.10.0', patched: '0.10.1' },
+  { name: 'chacha20', vulnerable: '>=0.10.0 <0.10.2', patched: '0.10.2' },
 ];
 
 function violations(lockfile: string): string[] {
@@ -57,6 +58,8 @@ describe('reviewed Cargo security fixes', () => {
       ['rand', '0.8.5'],
       ['rand', '0.9.2'],
       ['rand', '0.10.0'],
+      ['chacha20', '0.10.0'],
+      ['chacha20', '0.10.1'],
     ] as const) {
       expect(violations(fixture(name, version)).length).toBeGreaterThan(0);
     }

@@ -87,6 +87,19 @@ At least quarterly, and before every release:
 Tracking: [https://github.com/seborbie/talos-community/issues/14](https://github.com/seborbie/talos-community/issues/14). Owner: Sebastian Orbe / Talos maintainers.
 Review due: 2026-09-11. The 2026-09-04 Rust audit reports `chacha20` 0.10.1 as yanked through
 `quinn` 0.11.11 -> `quinn-proto` 0.11.17 -> `rand` 0.10.2 in the viewer/worker graph.
-Investigate the upstream yank reason and a compatible non-yanked resolution, then run QUIC/session
-regressions and Rust gates. This records an existing warning, grants no vulnerability exception,
-and does not establish exploitability. Rust audit must continue to report zero vulnerabilities.
+The prepared 2026-09-05 remediation updates only this release line to non-yanked `chacha20` 0.10.2.
+Upstream [issue #579](https://github.com/RustCrypto/stream-ciphers/issues/579),
+[fix #580](https://github.com/RustCrypto/stream-ciphers/pull/580), and the
+[0.10.2 release diff](https://github.com/RustCrypto/stream-ciphers/compare/chacha20-v0.10.1...chacha20-v0.10.2)
+identify an SSE4.1 intrinsic used by the SSE2 backend for the RNG and legacy variants. The Cargo
+registry marks 0.10.0 and 0.10.1 yanked, and 0.10.2 not yanked. The fix retains the existing
+Rust 1.85 minimum and MIT OR Apache-2.0 licence. The separate locked 0.9.1 line is unchanged.
+
+The focused Cargo regression rejects reintroducing 0.10.0/0.10.1. Local workspace tests exercise
+Talos's current QUIC/session code, but this macOS ARM machine cannot demonstrate SSE2-only x86
+execution. Native CI and required human review remain integration gates. Verify the lockfile and
+RustSec warning removal after merge before closing issue #14. This grants no vulnerability
+exception and does not establish a demonstrated Talos exploit. Rust audit must continue to report
+zero vulnerabilities.
+
+Validation of the prepared 0.10.2 update: `bun run quality` passed locally (408 JavaScript tests, 411 Rust tests; two optional PostgreSQL integrations skipped). The focused regression fails with the previous 0.10.1 lock and passes with 0.10.2. The current RustSec audit reports zero vulnerabilities and 23 informational/yanked warnings, down from 25 before the rand and chacha20 fixes. Linux/Windows CI has not run for these local commits.
