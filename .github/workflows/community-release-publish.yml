@@ -180,7 +180,7 @@ jobs:
               reference:$reference,digest:$digest,platforms:["linux/amd64","linux/arm64"],
               ociArchiveSha256:$archive_sha,sbomFile:$sbom}' \
             > "${RUNNER_TEMP}/image/${{ matrix.key }}.published.json"
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: community-published-image-${{ matrix.key }}-${{ needs.validate.outputs.version }}
           path: ${{ runner.temp }}/image/${{ matrix.key }}.published.json
@@ -295,7 +295,7 @@ jobs:
       - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: ${{ runner.temp }}/release-output/*
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: community-release-bundle-${{ needs.validate.outputs.version }}
           path: ${{ runner.temp }}/release-output
