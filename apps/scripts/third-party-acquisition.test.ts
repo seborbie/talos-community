@@ -1,5 +1,17 @@
-import { afterEach, describe, expect, test } from 'bun:test';
-import { cp, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { afterEach, describe, expect, spyOn, test } from 'bun:test';
+import {
+  copyFile,
+  cp,
+  mkdir,
+  mkdtemp,
+  readFile,
+  readdir,
+  rename,
+  rm,
+  symlink,
+  writeFile,
+} from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import {
@@ -174,9 +186,103 @@ describe('source and installer build wiring', () => {
     const restores = buildScript.match(/dotnet (?:tool )?restore[^\r\n]*/g) ?? [];
     expect(restores.length).toBe(5);
     expect(restores.every((line) => line.includes('--configfile'))).toBe(true);
-    expect(exportPolicy.excludePatterns).toContain('apps/vpx-encode/**');
+    expect(exportPolicy.excludePatterns).not.toContain('apps/vpx-encode/**');
+    expect(exportPolicy.excludePatterns).toContain('apps/vpx-encode/src/**');
     expect(exportPolicy.excludePatterns).toContain('apps/installer/.wix/**');
     expect(exportPolicy.blockedOmissions.map((entry) => entry.id)).not.toContain('PX-001');
     expect(exportPolicy.blockedOmissions.map((entry) => entry.id)).not.toContain('PX-002');
   });
+});
+
+// Medium regression: real tar/Git patch processing, with an in-memory download response.
+// Build the archive from the verified local tree so tests require no network.
+test('acquisition completes a manifest-only checkout and preserves its pinned metadata', async () => {
+  const reviewed = await policy();
+  const temporary = await mkdtemp(resolve(tmpdir(), 'talos-manifest-bootstrap-'));
+  temporaryDirectories.push(temporary);
+  const upstream = resolve(temporary, reviewed.vpxEncode.archivePrefix);
+  await cp(await vpxFixture(), upstream, { recursive: true });
+  async function run(args: string[], cwd: string): Promise<void> {
+    const process = Bun.spawn(args, { cwd, stdout: 'pipe', stderr: 'pipe' });
+    const error = await new Response(process.stderr).text();
+    if ((await process.exited) !== 0) throw new Error(error);
+  }
+  await run(
+    [
+      'git',
+      '-c',
+      'core.autocrlf=false',
+      '-c',
+      'core.eol=lf',
+      'apply',
+      '--reverse',
+      resolve(repoRoot, reviewed.vpxEncode.patchPath),
+    ],
+    upstream,
+  );
+  await rename(resolve(upstream, 'Cargo.toml'), resolve(upstream, 'Cargo.toml.orig'));
+  const archive = resolve(temporary, 'fixture.crate');
+  await run(['tar', '-czf', archive, reviewed.vpxEncode.archivePrefix], temporary);
+  const bytes = await readFile(archive);
+  reviewed.vpxEncode.archiveSha256 = createHash('sha256').update(bytes).digest('hex');
+  const output = resolve(temporary, 'output');
+  await mkdir(output);
+  const manifest = await readFile(resolve(repoRoot, 'apps/vpx-encode/Cargo.toml'));
+  await writeFile(resolve(output, 'Cargo.toml'), manifest);
+  // Reproduce Windows Git's checkout conversion even on a Unix test runner.
+  const gitConfig = resolve(temporary, 'gitconfig');
+  await writeFile(gitConfig, '[core]\n    autocrlf = true\n    eol = crlf\n');
+  const previousGlobalConfig = process.env.GIT_CONFIG_GLOBAL;
+  process.env.GIT_CONFIG_GLOBAL = gitConfig;
+  const download = spyOn(globalThis, 'fetch').mockResolvedValue(new Response(bytes));
+  try {
+    await acquireVpxEncode({ repoRoot, policy: reviewed, output });
+    await verifyPatchedVpxTree(output, reviewed);
+    expect(await readFile(resolve(output, 'Cargo.toml'))).toEqual(manifest);
+    await acquireVpxEncode({ repoRoot, policy: reviewed, output });
+    expect(download).toHaveBeenCalledTimes(1);
+  } finally {
+    download.mockRestore();
+    if (previousGlobalConfig === undefined) delete process.env.GIT_CONFIG_GLOBAL;
+    else process.env.GIT_CONFIG_GLOBAL = previousGlobalConfig;
+  }
+});
+
+test('failed acquisition preserves a tracked manifest and rejects modified metadata', async () => {
+  const reviewed = await policy();
+  const output = await mkdtemp(resolve(tmpdir(), 'talos-manifest-failure-'));
+  temporaryDirectories.push(output);
+  await copyFile(resolve(repoRoot, 'apps/vpx-encode/Cargo.toml'), resolve(output, 'Cargo.toml'));
+  const download = spyOn(globalThis, 'fetch').mockResolvedValue(new Response('untrusted archive'));
+  try {
+    await expect(acquireVpxEncode({ repoRoot, policy: reviewed, output })).rejects.toThrow(
+      'download SHA-256 mismatch',
+    );
+    expect(await readdir(output)).toEqual(['Cargo.toml']);
+    await writeFile(resolve(output, 'Cargo.toml'), '[package]\nname = "tampered"\n');
+    await expect(acquireVpxEncode({ repoRoot, policy: reviewed, output })).rejects.toThrow(
+      'vpx-encode Cargo.toml SHA-256 mismatch',
+    );
+    expect(download).toHaveBeenCalledTimes(1);
+  } finally {
+    download.mockRestore();
+  }
+});
+
+test('native CI selects the reviewed SDK and builds Tauri assets before Rust checks', async () => {
+  const workflow = Bun.YAML.parse(
+    await readFile(resolve(repoRoot, '.github/workflows/quality.yml'), 'utf8'),
+  ) as {
+    jobs: Record<string, { steps: Array<{ run?: string; if?: string }> }>;
+  };
+  const steps = workflow.jobs.rust!.steps;
+  const sdk = steps.findIndex((step) =>
+    step.run?.includes('xcode-select --switch /Applications/Xcode_26.3.app/Contents/Developer'),
+  );
+  const assets = steps.findIndex((step) => step.run?.trim() === 'bun run build');
+  const check = steps.findIndex((step) => step.run?.trim() === 'bun run check:rust');
+  expect(sdk).toBeGreaterThanOrEqual(0);
+  expect(steps[sdk]?.if).toBe("runner.os == 'macOS'");
+  expect(assets).toBeGreaterThan(sdk);
+  expect(check).toBeGreaterThan(assets);
 });

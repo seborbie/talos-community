@@ -1,0 +1,26 @@
+[package]
+edition = "2018"
+rust-version.workspace = true
+name = "vpx-encode"
+version = "0.6.5"
+authors = [
+    "Andrew Straw <strawman@astraw.com>",
+    "Ram Kaniyur <quadrupleslap@gmail.com>",
+]
+description = "Rust interface to libvpx encoder (patched: VP8 cpu_used=2)"
+license = "MIT"
+repository = "https://github.com/astraw/vpx-encode"
+
+[dependencies.env-libvpx-sys]
+version = "5.1"
+
+[dependencies.thiserror]
+version = "1.0"
+
+[features]
+backtrace = []
+ffi-generate = ["env-libvpx-sys/generate"]
+vp9 = []
+
+[lints]
+workspace = true

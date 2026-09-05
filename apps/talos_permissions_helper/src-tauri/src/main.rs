@@ -3,18 +3,15 @@
 use std::{
     backtrace::Backtrace,
     fs::{self, OpenOptions},
-    io::{BufRead, BufReader, Write},
+    io::Write,
     path::{Path, PathBuf},
     process::{Command, Stdio},
     sync::{Once, OnceLock},
-    thread,
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
 
 #[cfg(unix)]
 use std::os::fd::AsRawFd;
-#[cfg(unix)]
-use std::os::unix::net::UnixStream;
 
 use anyhow::{anyhow, Context, Result};
 use serde::{Deserialize, Serialize};
@@ -25,6 +22,9 @@ use talos_protocol::{
 };
 use tauri::{Manager, UserAttentionType};
 use tracing::{debug, error, info, trace, warn};
+
+mod update_account_ipc;
+use update_account_ipc::macos_update_account_ipc_with_retry;
 
 static LOG_PATH: OnceLock<PathBuf> = OnceLock::new();
 static PANIC_LOGGING_HOOK: Once = Once::new();
@@ -576,68 +576,6 @@ fn run_worker_helper_permission_check_via_app(
         "Worker Helper permission check parsed"
     );
     Ok(check)
-}
-
-fn macos_update_account_ipc_with_retry(
-    request: &MacosUpdateAccountIpcRequest,
-    attempts: usize,
-    delay: Duration,
-) -> Result<MacosUpdateAccountIpcResponse> {
-    let attempts = attempts.max(1);
-    let mut last_error = None;
-    for attempt in 1..=attempts {
-        match macos_update_account_ipc_once(request) {
-            Ok(response) => return Ok(response),
-            Err(err) if is_transient_macos_update_account_error(&err) && attempt < attempts => {
-                debug!(
-                    attempt,
-                    attempts,
-                    error = %err,
-                    "macOS update account IPC unavailable; retrying"
-                );
-                last_error = Some(err);
-                thread::sleep(delay);
-            }
-            Err(err) => return Err(err),
-        }
-    }
-    Err(last_error.unwrap_or_else(|| anyhow!("macOS update account IPC retry exhausted")))
-}
-
-fn macos_update_account_ipc_once(
-    request: &MacosUpdateAccountIpcRequest,
-) -> Result<MacosUpdateAccountIpcResponse> {
-    let mut stream = UnixStream::connect(MACOS_UPDATE_ACCOUNT_SOCKET_PATH)
-        .with_context(|| format!("connect {MACOS_UPDATE_ACCOUNT_SOCKET_PATH}"))?;
-    let mut request_bytes =
-        serde_json::to_vec(request).context("serialize macOS update account IPC request")?;
-    request_bytes.push(b'\n');
-    stream
-        .write_all(&request_bytes)
-        .context("write macOS update account IPC request")?;
-    stream
-        .flush()
-        .context("flush macOS update account IPC request")?;
-    let mut reader = BufReader::new(stream);
-    let mut line = String::new();
-    reader
-        .read_line(&mut line)
-        .context("read macOS update account IPC response")?;
-    if line.trim().is_empty() {
-        return Err(anyhow!("empty macOS update account IPC response"));
-    }
-    serde_json::from_str(line.trim()).context("parse macOS update account IPC response")
-}
-
-fn is_transient_macos_update_account_error(err: &anyhow::Error) -> bool {
-    let chain = err
-        .chain()
-        .map(|cause| cause.to_string())
-        .collect::<Vec<_>>()
-        .join(": ");
-    chain.contains(&format!("connect {MACOS_UPDATE_ACCOUNT_SOCKET_PATH}"))
-        || chain.contains("Connection refused")
-        || chain.contains("empty macOS update account IPC response")
 }
 
 fn run_macos_update_account_approval_prompt(username: &str, password: &str) -> Result<String> {

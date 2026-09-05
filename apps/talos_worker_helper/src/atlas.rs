@@ -563,13 +563,10 @@ fn coalesce_dirty_rects(mut rects: Vec<DirtyRect>) -> Vec<DirtyRect> {
 
     for rect in rects {
         let mut pending = rect;
-        loop {
-            let Some(index) = merged
-                .iter()
-                .position(|existing| should_merge_dirty_rects(*existing, pending))
-            else {
-                break;
-            };
+        while let Some(index) = merged
+            .iter()
+            .position(|existing| should_merge_dirty_rects(*existing, pending))
+        {
             let existing = merged.swap_remove(index);
             pending = union_dirty_rect(existing, pending);
         }
@@ -748,4 +745,30 @@ fn copy_mapped_bgra(mapped: &DXGI_MAPPED_RECT, width: u32, height: u32) -> Resul
         dst.copy_from_slice(src);
     }
     Ok(out)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn coalescing_merges_touching_chain_and_preserves_separate_region() {
+        let rect = |left, right| DirtyRect {
+            left,
+            top: 0,
+            right,
+            bottom: 10,
+        };
+        let merged = coalesce_dirty_rects(vec![
+            rect(20, 30),
+            rect(100, 110),
+            rect(0, 10),
+            rect(10, 20),
+        ]);
+        let bounds: Vec<_> = merged
+            .iter()
+            .map(|r| (r.left, r.top, r.right, r.bottom))
+            .collect();
+        assert_eq!(bounds, vec![(0, 0, 30, 10), (100, 0, 110, 10)]);
+    }
 }

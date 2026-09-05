@@ -53,8 +53,11 @@ const PATCH_INSTALL_INTENT_ID: &str = "talos.patch.install";
 const WU_UPGRADES_CATEGORY_ID: &str = "3689BDC8-B205-4AF4-8D4A-A63924C5E9D5";
 const PATCH_SCAN_PROGRESS_HEARTBEAT_INTERVAL: Duration = Duration::from_secs(30);
 const PATCH_JOB_PROGRESS_HEARTBEAT_INTERVAL: Duration = Duration::from_secs(30);
+#[cfg(any(target_os = "linux", target_os = "macos", test))]
 const DEFAULT_PATCH_COMMAND_TIMEOUT_SECS: u64 = 7200;
+#[cfg(any(target_os = "linux", target_os = "macos", test))]
 const MIN_PATCH_COMMAND_TIMEOUT_SECS: u64 = 60;
+#[cfg(any(target_os = "linux", target_os = "macos", test))]
 const MAX_PATCH_COMMAND_TIMEOUT_SECS: u64 = 86_400;
 const PATCH_REBOOT_MESSAGE: &str =
     "Talos patch management installed updates and requires a restart.";
@@ -67,6 +70,7 @@ const UPDATE_REBOOT_NOTICE_MAX_DEFERRALS: u32 = 4;
 #[cfg(any(target_os = "windows", target_os = "macos"))]
 const UPDATE_REBOOT_NOTICE_CONNECT_TIMEOUT: Duration = Duration::from_secs(45);
 
+#[cfg(any(target_os = "linux", target_os = "macos", test))]
 fn patch_command_timeout_from_env_value(value: Option<&str>) -> Duration {
     let seconds = value
         .and_then(|raw| raw.trim().parse::<u64>().ok())
@@ -245,6 +249,7 @@ struct RpmPatchCandidate {
     requires_reboot: bool,
 }
 
+#[cfg(any(target_os = "macos", test))]
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct MacosPatchCandidate {
     label: String,
@@ -1650,6 +1655,7 @@ pub(crate) fn build_patch_update_key(title: &str, kb_article: Option<&str>) -> S
     )
 }
 
+#[cfg(any(target_os = "macos", test))]
 pub(crate) fn macos_os_update_version_parts(title: &str) -> Option<Vec<u32>> {
     let normalized = normalize_patch_text(title);
     if !(normalized.starts_with("macos ") || normalized.starts_with("mac os ")) {
@@ -1678,6 +1684,7 @@ pub(crate) fn macos_os_update_version_parts(title: &str) -> Option<Vec<u32>> {
     })
 }
 
+#[cfg(any(target_os = "macos", test))]
 pub(crate) fn compare_patch_version_parts(left: &[u32], right: &[u32]) -> std::cmp::Ordering {
     let len = left.len().max(right.len());
     for index in 0..len {
@@ -2355,7 +2362,7 @@ fn recent_install_log_softwareupdate_lines() -> String {
     lines.join("\n")
 }
 
-#[cfg(target_os = "macos")]
+#[cfg(any(target_os = "macos", test))]
 fn truncate_macos_diagnostic(value: &str) -> String {
     const LIMIT: usize = 12_000;
     if value.len() <= LIMIT {
@@ -2579,7 +2586,7 @@ fn find_ascii_case_insensitive(haystack: &str, needle: &str) -> Option<usize> {
         .position(|window| window.eq_ignore_ascii_case(needle.as_bytes()))
 }
 
-#[cfg(any(test, target_os = "macos"))]
+#[cfg(target_os = "macos")]
 fn macos_update_progress_values(candidates: &[MacosPatchCandidate], state: &str) -> Vec<Value> {
     candidates
         .iter()
@@ -2911,6 +2918,7 @@ fn classify_macos_softwareupdate_error(message: &str) -> String {
     .to_string()
 }
 
+#[cfg(target_os = "macos")]
 fn patch_summary(
     matched: usize,
     downloaded: usize,
@@ -3529,6 +3537,7 @@ fn rpm_terminal_progress_values(
 }
 
 #[cfg(target_os = "linux")]
+#[derive(Debug)]
 struct AptCommandOutput {
     status_code: Option<i32>,
     stdout: String,
@@ -4306,35 +4315,6 @@ fn execute_patch_job_linux_apt(
         }),
         force_reboot_after_report,
     })
-}
-
-#[cfg(target_os = "linux")]
-fn rpm_failure_outcome(
-    job: &PatchRemediationJob,
-    phase: &str,
-    selected: &[RpmPatchCandidate],
-    evidence_updates: Vec<Value>,
-    error: String,
-    downloaded_count: usize,
-) -> PatchExecutionOutcome {
-    PatchExecutionOutcome {
-        status: "failed",
-        evidence: json!({
-            "phase": phase,
-            "job": job_summary(job),
-            "updates": evidence_updates,
-            "summary": apt_progress_summary(
-                selected.len(),
-                downloaded_count,
-                0,
-                selected.len(),
-                0,
-                linux_rpm_reboot_required_for_patch(selected)
-            ),
-            "error": error
-        }),
-        force_reboot_after_report: false,
-    }
 }
 
 #[cfg(target_os = "linux")]

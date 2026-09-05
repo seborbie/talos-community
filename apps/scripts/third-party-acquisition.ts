@@ -269,9 +269,27 @@ export async function acquireVpxEncode(options: {
   const output = resolve(options.output ?? resolve(repoRoot, 'apps/vpx-encode'));
   const patchPath = resolve(repoRoot, ...options.policy.vpxEncode.patchPath.split('/'));
   await assertRegularFileSha(patchPath, options.policy.vpxEncode.patchSha256, 'vpx-encode patch');
+  let manifestOnly = false;
   if (await pathExists(output)) {
-    await verifyPatchedVpxTree(output, options.policy);
-    return output;
+    const metadata = await lstat(output);
+    if (!metadata.isDirectory() || metadata.isSymbolicLink()) {
+      throw new Error('vpx-encode root is not a regular directory');
+    }
+    const existing = await filesBelow(output);
+    manifestOnly = existing.length === 1 && existing[0] === 'Cargo.toml';
+    if (!manifestOnly) {
+      await verifyPatchedVpxTree(output, options.policy);
+      return output;
+    }
+    const manifest = options.policy.vpxEncode.patchedFiles.find(
+      (file) => file.path === 'Cargo.toml',
+    );
+    if (!manifest) throw new Error('vpx-encode policy must bind Cargo.toml');
+    await assertRegularFileSha(
+      resolve(output, 'Cargo.toml'),
+      manifest.sha256,
+      'vpx-encode Cargo.toml',
+    );
   }
 
   const temporary = await mkdtemp(join(tmpdir(), 'talos-vpx-acquisition-'));
@@ -279,6 +297,8 @@ export async function acquireVpxEncode(options: {
   const extracted = resolve(temporary, 'extracted');
   const staged = resolve(temporary, 'staged');
   let createdOutput = false;
+  let createdSource = false;
+  let createdReadme = false;
   try {
     await mkdir(extracted);
     await mkdir(resolve(staged, 'src'), { recursive: true });
@@ -300,19 +320,41 @@ export async function acquireVpxEncode(options: {
     await copyFile(resolve(extracted, prefix, 'Cargo.toml.orig'), resolve(staged, 'Cargo.toml'));
     await copyFile(resolve(extracted, prefix, 'README.md'), resolve(staged, 'README.md'));
     await copyFile(resolve(extracted, prefix, 'src/lib.rs'), resolve(staged, 'src/lib.rs'));
-    await run('git', ['apply', '--whitespace=nowarn', patchPath], staged);
+    await run(
+      'git',
+      ['-c', 'core.autocrlf=false', '-c', 'core.eol=lf', 'apply', '--whitespace=nowarn', patchPath],
+      staged,
+    );
     await verifyPatchedVpxTree(staged, options.policy);
     await mkdir(dirname(output), { recursive: true });
-    await mkdir(output);
-    createdOutput = true;
+    if (!manifestOnly) {
+      await mkdir(output);
+      createdOutput = true;
+    }
     await mkdir(resolve(output, 'src'));
-    await copyFile(resolve(staged, 'Cargo.toml'), resolve(output, 'Cargo.toml'));
-    await copyFile(resolve(staged, 'README.md'), resolve(output, 'README.md'));
+    createdSource = true;
+    if (!manifestOnly) {
+      await copyFile(
+        resolve(staged, 'Cargo.toml'),
+        resolve(output, 'Cargo.toml'),
+        fsConstants.COPYFILE_EXCL,
+      );
+    }
+    await copyFile(
+      resolve(staged, 'README.md'),
+      resolve(output, 'README.md'),
+      fsConstants.COPYFILE_EXCL,
+    );
+    createdReadme = true;
     await copyFile(resolve(staged, 'src/lib.rs'), resolve(output, 'src/lib.rs'));
     await verifyPatchedVpxTree(output, options.policy);
     return output;
   } catch (error) {
     if (createdOutput) await rm(output, { recursive: true, force: true });
+    else {
+      if (createdSource) await rm(resolve(output, 'src'), { recursive: true, force: true });
+      if (createdReadme) await rm(resolve(output, 'README.md'), { force: true });
+    }
     throw error;
   } finally {
     await rm(temporary, { recursive: true, force: true });

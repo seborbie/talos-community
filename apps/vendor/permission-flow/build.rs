@@ -1,9 +1,14 @@
+#[cfg(target_os = "macos")]
 use swift_rs::SwiftLinker;
 
+#[cfg(target_os = "macos")]
 const MINIMUM_MACOS_VERSION: &str = "13.0";
+#[cfg(target_os = "macos")]
 const SWIFT_PACKAGE_NAME: &str = "PermissionFlowShimFFI";
+#[cfg(target_os = "macos")]
 const SWIFT_PACKAGE_PATH: &str = "PermissionFlowShim";
 
+#[cfg(target_os = "macos")]
 fn main() {
     println!("cargo:rerun-if-changed=PermissionFlow");
     println!("cargo:rerun-if-changed=PermissionFlowShim");
@@ -20,3 +25,7 @@ fn main() {
         .with_package(SWIFT_PACKAGE_NAME, SWIFT_PACKAGE_PATH)
         .link();
 }
+
+// The non-macOS shim must not link any Swift runtime symbols, even in debug builds.
+#[cfg(not(target_os = "macos"))]
+fn main() {}

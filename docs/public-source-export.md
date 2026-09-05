@@ -10,7 +10,11 @@ non-ignored/untracked, refuses symlinks and submodules, rejects unreviewed binar
 the exact hashes and provenance records of explicitly permitted WebAssembly/SVG assets, and never
 copies `.git`.
 
-Reconstructible third-party build inputs are also excluded. The machine policy at
+Reconstructible third-party source and binary inputs are excluded. The exact generated
+`apps/vpx-encode/Cargo.toml` is retained as dependency metadata for Dependabot; its implementation
+and README remain excluded. App source directories are explicitly allowlisted so this metadata
+exception cannot admit other files from the reconstructed dependency. New app directories require
+an export-policy update. The machine policy at
 `.config/third-party-acquisition.json` binds the `vpx-encode` upstream archive and Talos patch,
 7-Zip/LZMA SDK archives and selected members, WiX packages, and retained notices to exact digests.
 Acquisition requires HTTPS plus `git` and `tar` (or an explicit 7-Zip bootstrap for installer

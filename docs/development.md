@@ -80,8 +80,10 @@ bun run --cwd apps setup
 All JavaScript packages are declared in `apps/package.json`. Do not run installs in
 individual packages or commit nested `bun.lock` files. Use `bun --cwd apps/<package> add <dependency>`
 when changing one package's dependencies, then verify the root lockfile from `apps/`. The generated
-`apps/vpx-encode/` directory is ignored and must match the acquisition policy exactly; the setup
-command refuses changed or additional files instead of overwriting them.
+`apps/vpx-encode/` source is ignored; its exact generated `Cargo.toml` is tracked so Dependabot
+can resolve the workspace without running setup. Setup verifies the manifest, reconstructs the
+remaining files, and refuses changed or additional files instead of overwriting them. See
+[dependency maintenance](dependency-maintenance.md) for coverage and update procedures.
 
 The first time you run `bun run --cwd apps dev`, infra starts and migrations are applied automatically. If the database is fresh, migrations run; if already applied, they are skipped (idempotent). To run migrations manually (e.g. after pulling new migrations):
 
@@ -158,6 +160,12 @@ cargo run -p talos_worker
   - `VPX_LIB_DIR` to your vcpkg lib path (e.g. `C:\vcpkg\installed\x64-windows\lib`)
   - `VPX_VERSION` to your installed libvpx version (e.g. `1.13.0`)
 - macOS/Linux: install libvpx via your package manager and set `VPX_INCLUDE_DIR`/`VPX_LIB_DIR`/`VPX_VERSION` if pkg-config is not available.
+
+Windows worker-helper debug builds (including the test harness) use `asInvoker` without
+`uiAccess`, so unsigned binaries can run from the development checkout. They cannot automate
+higher-integrity windows through UIAccess. Release builds retain the checked-in `uiAccess=true`
+manifest and require the normal signed installation in a trusted location; CI unit tests do not
+replace that release validation.
 
 ### Virtual display driver (Windows)
 For headless or virtual-monitor setups (e.g. RMM, streaming, or screen capture without a physical display), you can install the [Virtual Display Driver](https://github.com/VirtualDrivers/Virtual-Display-Driver) via **winget**:

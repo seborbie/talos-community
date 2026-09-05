@@ -41,6 +41,9 @@ async function runCargo(args: string[], environment: NodeJS.ProcessEnv): Promise
 
 if (import.meta.main) {
   const environment = rustTestEnvironment();
-  await runCargo(['test', '--workspace', '--all-targets', '--locked'], environment);
-  await runCargo(['test', '--workspace', '--doc', '--locked'], environment);
+  await runCargo(
+    ['test', '--workspace', '--all-targets', '--locked', '--no-fail-fast'],
+    environment,
+  );
+  await runCargo(['test', '--workspace', '--doc', '--locked', '--no-fail-fast'], environment);
 }

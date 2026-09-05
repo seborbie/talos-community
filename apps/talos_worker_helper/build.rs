@@ -1,4 +1,7 @@
 #[cfg(windows)]
+mod build_manifest;
+
+#[cfg(windows)]
 #[path = "../build/windows_resource.rs"]
 mod windows_resource;
 
@@ -25,7 +28,8 @@ fn main() {
             "Talos Worker",
             "talos_worker_helper.exe",
         );
-        res.set_manifest_file("talos_worker_helper.exe.manifest");
+        let profile = std::env::var("PROFILE").expect("Cargo build profile");
+        res.set_manifest(&build_manifest::windows_manifest_for_profile(&profile));
         res.compile().unwrap();
     }
 }

@@ -1,0 +1,3 @@
+# Acquisition and export policies bind exact committed bytes, including licence notices.
+# Prevent platform checkout conversion from invalidating those digests.
+* -text

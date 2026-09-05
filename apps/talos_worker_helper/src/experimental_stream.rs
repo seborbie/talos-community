@@ -736,7 +736,7 @@ pub(crate) fn run_experimental_stream_to_pipe(
         Ok(())
     })();
 
-    let error_detail = stream_result.as_ref().err().map(|err| one_line_error(err));
+    let error_detail = stream_result.as_ref().err().map(one_line_error);
     summary.log(
         pipe_name,
         stream_started.elapsed(),

@@ -64,7 +64,7 @@ evidence only for that gate; it is not a general security, legal, or compliance 
 - [x] Recover the exact upstream baseline for the patched `apps/vpx-encode/` copy: upstream tag
       `vpx-encode/v0.6.2`, revision `5519bec430184208ee33221ddc727ccb9429b88e`, published crate
       SHA-256 `cd1f41af42de7667cbdba44e8c38c36e9ede970f1291c32ea57c0ded8eb6f4b6`.
-- [x] Exclude the reconstructed `vpx-encode` tree from the public snapshot and implement an exact
+- [x] Exclude reconstructed `vpx-encode` implementation source from the public snapshot (retain only its generated Cargo manifest for Dependabot) and implement an exact
       crates.io-archive plus reviewed-patch acquisition path with input, patch, and output hashes.
 - [ ] Obtain qualified approval of the `vpx-encode` notice position before redistributing
       reconstructed source or linked binaries. Its Git tree and published crate declare MIT but

@@ -1,4 +1,4 @@
-use std::{path::PathBuf, time::Duration};
+use std::path::PathBuf;
 
 use anyhow::{bail, Context, Result};
 use serde::{Deserialize, Serialize};
@@ -8,7 +8,7 @@ use crate::{
     compose::ComposeProject,
     config::{EdgeMode, InstallationConfig, SecretConfig},
     images::DockerRuntime,
-    process::{output_text, CommandExecutor, CommandSpec},
+    process::{output_text, CommandExecutor},
     redaction::redact_text,
     secure_fs,
     state::{now_unix, DeploymentState},
@@ -143,6 +143,8 @@ fn collect_disk_capacity(
 ) -> Result<String> {
     #[cfg(not(windows))]
     {
+        use crate::process::CommandSpec;
+        use std::time::Duration;
         let executable = [PathBuf::from("/bin/df"), PathBuf::from("/usr/bin/df")]
             .into_iter()
             .find(|candidate| candidate.is_file())

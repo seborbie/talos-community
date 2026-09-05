@@ -7,14 +7,16 @@ use std::{
     path::{Path, PathBuf},
     sync::{
         atomic::{AtomicBool, Ordering},
-        Arc, Mutex, OnceLock,
+        Arc, OnceLock,
     },
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 
 #[cfg(any(target_os = "windows", target_os = "macos"))]
-use std::sync::atomic::AtomicU64;
+use std::sync::{atomic::AtomicU64, Mutex};
 
+#[cfg(target_os = "windows")]
+mod desktop_relay;
 mod feature_upgrade_preflight;
 mod feature_upgrade_stage_iso;
 mod feature_upgrade_start;
@@ -28,6 +30,8 @@ mod macos_events;
 mod macos_telemetry;
 mod patching;
 mod remediation;
+#[cfg(target_os = "windows")]
+use desktop_relay::start_relay_client_once;
 
 #[cfg(any(target_os = "windows", target_os = "macos"))]
 mod chat;
@@ -73,9 +77,11 @@ use talos_collector::event_stream::{
     monitors::{spawn_monitors, MonitorConfig},
     schema::EventInput,
 };
+#[cfg(any(target_os = "windows", target_os = "macos"))]
+use talos_protocol::relay_transport::write_e2e_frame_flush;
 use talos_protocol::relay_transport::{
     build_e2e_cipher, build_relay_client_tls_config, parse_relay_target, read_e2e_frame_from,
-    read_http_response, write_e2e_frame, write_e2e_frame_flush,
+    read_http_response, write_e2e_frame,
 };
 #[cfg(not(target_os = "windows"))]
 use talos_protocol::RemoteDesktopUnavailablePayload;
@@ -86,14 +92,10 @@ use talos_protocol::{
     AgentPlatform, FileTransferRequest, FileTransferResponse, FullSnapshotUpdate, IncomingEnvelope,
     LinuxShellCredentialStoredPayload, LocalAddr, OutgoingEnvelope, PunchStartPayload,
     QuicReflexPayload, ReflexAddress, RelayPreparePayload, RemoteDesktopCapabilities,
-    RemoteDesktopDisplayProfile, RequestFullSnapshotPayload, SessionCapabilitiesRequest,
-    SessionCapabilitiesResponse, SessionTransportMode, ShellCommandPayload, ShellOutputPayload,
-    TelemetryEventsUpdate, TunnelPreparePayload, FILE_TRANSFER_MSG_DATA, FILE_TRANSFER_MSG_FINISH,
-    FILE_TRANSFER_MSG_JSON, HEARTBEAT_PAYLOAD, REMOTE_DESKTOP_CODEC_BGRA_ATLAS_COMMANDS,
-    REMOTE_DESKTOP_CODEC_H264, REMOTE_DESKTOP_CODEC_SCREENSHOT_BGRA, REMOTE_DESKTOP_CODEC_VP8,
-    REMOTE_DESKTOP_PROFILE_EXPERIMENTAL, REMOTE_DESKTOP_PROFILE_LEGACY,
-    REMOTE_DESKTOP_PROFILE_MODERN_CPU, REMOTE_DESKTOP_PROFILE_MODERN_GPU,
-    REMOTE_DESKTOP_PROFILE_SCREENSHOT_ONLY,
+    RequestFullSnapshotPayload, SessionCapabilitiesRequest, SessionCapabilitiesResponse,
+    SessionTransportMode, ShellCommandPayload, ShellOutputPayload, TelemetryEventsUpdate,
+    TunnelPreparePayload, FILE_TRANSFER_MSG_DATA, FILE_TRANSFER_MSG_FINISH, FILE_TRANSFER_MSG_JSON,
+    HEARTBEAT_PAYLOAD,
 };
 #[cfg(target_os = "windows")]
 use talos_protocol::{
@@ -108,6 +110,14 @@ use talos_protocol::{
     CONTROL_PAYLOAD_TIMESTAMP_LEN, CONTROL_TYPE_CONNECTION_PING, CONTROL_TYPE_REGISTRY_REQUEST,
     CONTROL_TYPE_SESSION_LOGOFF, CONTROL_TYPE_SESSION_SWITCH, CONTROL_TYPE_STOP_CAPTURE,
     DISPLAY_RECORD_FRAME_BEGIN, DISPLAY_RECORD_FRAME_END, REGISTRY_META_MESSAGE_TYPE,
+};
+#[cfg(target_os = "macos")]
+use talos_protocol::{
+    RemoteDesktopDisplayProfile, REMOTE_DESKTOP_CODEC_BGRA_ATLAS_COMMANDS,
+    REMOTE_DESKTOP_CODEC_H264, REMOTE_DESKTOP_CODEC_SCREENSHOT_BGRA, REMOTE_DESKTOP_CODEC_VP8,
+    REMOTE_DESKTOP_PROFILE_EXPERIMENTAL, REMOTE_DESKTOP_PROFILE_LEGACY,
+    REMOTE_DESKTOP_PROFILE_MODERN_CPU, REMOTE_DESKTOP_PROFILE_MODERN_GPU,
+    REMOTE_DESKTOP_PROFILE_SCREENSHOT_ONLY,
 };
 #[cfg(any(target_os = "windows", target_family = "unix"))]
 use talos_protocol::{ShellOfferPayload, ShellStartPayload};
@@ -1054,7 +1064,7 @@ struct ControlPipeWriter {
     tx: mpsc::Sender<Vec<u8>>,
 }
 
-#[cfg(any(target_os = "windows", target_os = "macos"))]
+#[cfg(target_os = "macos")]
 #[derive(Clone, Debug)]
 struct CaptureFailure {
     reason: String,
@@ -1121,6 +1131,7 @@ struct CapturePipeline {
     last_chunk_at_ms: Arc<AtomicU64>,
     first_frame_at_ms: Arc<AtomicU64>,
     last_frame_at_ms: Arc<AtomicU64>,
+    #[cfg(target_os = "macos")]
     failure: Arc<Mutex<Option<CaptureFailure>>>,
 }
 
@@ -1141,6 +1152,7 @@ impl CapturePipeline {
             last_chunk_at_ms: Arc::new(AtomicU64::new(created_at_ms)),
             first_frame_at_ms: Arc::new(AtomicU64::new(0)),
             last_frame_at_ms: Arc::new(AtomicU64::new(0)),
+            #[cfg(target_os = "macos")]
             failure: Arc::new(Mutex::new(None)),
         }
     }
@@ -1178,6 +1190,7 @@ impl CapturePipeline {
             .store(now_unix_ms_u64(), Ordering::SeqCst);
     }
 
+    #[cfg(target_os = "macos")]
     fn set_failure(&self, reason: impl Into<String>, message: impl Into<String>) {
         if let Ok(mut guard) = self.failure.lock() {
             *guard = Some(CaptureFailure {
@@ -1190,6 +1203,7 @@ impl CapturePipeline {
         let _ = self.notify.send(self.next_seq.load(Ordering::SeqCst));
     }
 
+    #[cfg(target_os = "macos")]
     fn failure(&self) -> Option<CaptureFailure> {
         self.failure.lock().ok().and_then(|guard| guard.clone())
     }
@@ -3873,7 +3887,7 @@ pub(crate) struct LiveEventInput {
 #[cfg(any(target_os = "windows", target_os = "macos"))]
 const LIVE_EVENT_BACKLOG_CAPACITY: usize = 2048;
 
-#[cfg(any(target_os = "windows", target_os = "macos"))]
+#[cfg(target_os = "macos")]
 impl LiveEventInput {
     pub(crate) fn new(
         event_type: impl Into<String>,
@@ -6602,55 +6616,6 @@ async fn ensure_capture_pipeline(
     pipeline
 }
 
-#[cfg(not(target_os = "macos"))]
-async fn start_relay_client_once(
-    session_id: String,
-    relay_url: String,
-    e2e_key: String,
-    relay_sessions: Arc<RwLock<HashSet<String>>>,
-    punch_sockets: Arc<RwLock<HashMap<String, Arc<UdpSocket>>>>,
-    #[cfg(target_os = "windows")] capture_pipelines: Arc<
-        RwLock<HashMap<String, Arc<CapturePipeline>>>,
-    >,
-    #[cfg(target_os = "windows")] control_queue: control::ControlQueue,
-    #[cfg(target_os = "windows")] control_pipe_writers: Arc<
-        RwLock<HashMap<String, ControlPipeWriter>>,
-    >,
-    #[cfg(target_os = "windows")] helper_target_sessions: Arc<RwLock<HashMap<String, u32>>>,
-) {
-    {
-        let mut sessions = relay_sessions.write().await;
-        if sessions.contains(&session_id) {
-            return;
-        }
-        sessions.insert(session_id.clone());
-    }
-
-    tokio::spawn(async move {
-        if let Err(err) = run_relay_client(
-            session_id.clone(),
-            relay_url,
-            e2e_key,
-            punch_sockets,
-            relay_sessions.clone(),
-            #[cfg(target_os = "windows")]
-            capture_pipelines,
-            #[cfg(target_os = "windows")]
-            control_queue,
-            #[cfg(target_os = "windows")]
-            control_pipe_writers,
-            #[cfg(target_os = "windows")]
-            helper_target_sessions,
-        )
-        .await
-        {
-            warn!(error = %err, session_id = %session_id, "relay client ended unexpectedly");
-        }
-        let mut sessions = relay_sessions.write().await;
-        sessions.remove(&session_id);
-    });
-}
-
 async fn handle_file_transfer_relay_prepare(
     payload: &RelayPreparePayload,
     file_transfer_relay_sessions: &Arc<RwLock<HashSet<String>>>,
@@ -7384,8 +7349,8 @@ where
 
 async fn handle_relay_prepare(
     payload: &RelayPreparePayload,
-    punch_sockets: &Arc<RwLock<HashMap<String, Arc<UdpSocket>>>>,
-    relay_sessions: &Arc<RwLock<HashSet<String>>>,
+    _punch_sockets: &Arc<RwLock<HashMap<String, Arc<UdpSocket>>>>,
+    _relay_sessions: &Arc<RwLock<HashSet<String>>>,
     file_transfer_relay_sessions: &Arc<RwLock<HashSet<String>>>,
     #[cfg(any(target_os = "windows", target_os = "macos"))] chat_relay_sessions: &Arc<
         RwLock<HashSet<String>>,
@@ -7416,7 +7381,7 @@ async fn handle_relay_prepare(
     }
     #[cfg(target_os = "windows")]
     if payload.mode == SessionTransportMode::RemoteRegistry {
-        handle_registry_relay_prepare(payload, relay_sessions).await;
+        handle_registry_relay_prepare(payload, _relay_sessions).await;
         return;
     }
     if payload.mode == SessionTransportMode::Shell {
@@ -7471,8 +7436,11 @@ async fn handle_relay_prepare(
     );
 
     // Relay is a transport fallback; do not gate it on a separate display check.
+    #[cfg(any(target_os = "windows", target_os = "macos"))]
     let session_id = payload.session_id.clone();
+    #[cfg(any(target_os = "windows", target_os = "macos"))]
     let relay_url = payload.relay_url.clone();
+    #[cfg(any(target_os = "windows", target_os = "macos"))]
     let e2e_key = payload.e2e_key.clone();
     #[cfg(target_os = "windows")]
     let (selected_display_profile, profile_changed) =
@@ -7543,8 +7511,8 @@ async fn handle_relay_prepare(
             session_id,
             relay_url,
             e2e_key,
-            relay_sessions.clone(),
-            punch_sockets.clone(),
+            _relay_sessions.clone(),
+            _punch_sockets.clone(),
             capture_pipelines.clone(),
             control_pipe_writers.clone(),
         )
@@ -7557,8 +7525,8 @@ async fn handle_relay_prepare(
             session_id,
             relay_url,
             e2e_key,
-            relay_sessions.clone(),
-            punch_sockets.clone(),
+            _relay_sessions.clone(),
+            _punch_sockets.clone(),
             capture_pipelines.clone(),
             control_queue,
             control_pipe_writers.clone(),
@@ -9234,150 +9202,6 @@ async fn stop_pipeline_if_idle(
         }
     }
     Ok(())
-}
-
-#[cfg(not(target_os = "macos"))]
-async fn run_relay_client(
-    session_id: String,
-    relay_url: String,
-    e2e_key_b64: String,
-    punch_sockets: Arc<RwLock<HashMap<String, Arc<UdpSocket>>>>,
-    relay_sessions: Arc<RwLock<HashSet<String>>>,
-    #[cfg(target_os = "windows")] capture_pipelines: Arc<
-        RwLock<HashMap<String, Arc<CapturePipeline>>>,
-    >,
-    #[cfg(target_os = "windows")] control_queue: control::ControlQueue,
-    #[cfg(target_os = "windows")] control_pipe_writers: Arc<
-        RwLock<HashMap<String, ControlPipeWriter>>,
-    >,
-    #[cfg(target_os = "windows")] helper_target_sessions: Arc<RwLock<HashMap<String, u32>>>,
-) -> Result<()> {
-    #[cfg(not(target_os = "windows"))]
-    let _ = (&punch_sockets, &relay_sessions);
-
-    let relay_target = parse_relay_target(&relay_url)?;
-    let addr = format!("{}:{}", relay_target.host, relay_target.port);
-    let connect_timeout = Duration::from_secs(
-        env::var("RMM_RELAY_CONNECT_TIMEOUT_SECS")
-            .ok()
-            .and_then(|value| value.parse::<u64>().ok())
-            .unwrap_or(10),
-    );
-    let tcp_stream = timeout(connect_timeout, TcpStream::connect(addr))
-        .await
-        .map_err(|_| anyhow!("connect relay tcp timed out"))?
-        .context("connect relay tcp")?;
-    tcp_stream
-        .set_nodelay(true)
-        .context("set relay TCP_NODELAY")?;
-
-    let tls_config = build_relay_client_tls_config(None, None)?;
-    let connector = TlsConnector::from(Arc::new(tls_config));
-    let server_name =
-        ServerName::try_from(relay_target.host.clone()).context("build relay server name")?;
-    let mut stream = timeout(connect_timeout, connector.connect(server_name, tcp_stream))
-        .await
-        .map_err(|_| anyhow!("relay tls connect timed out"))?
-        .context("relay tls connect")?;
-
-    let request = format!(
-        "GET /relay/{session_id} HTTP/1.1\r\nHost: {host}\r\n\r\n",
-        session_id = session_id,
-        host = relay_target.host
-    );
-    stream
-        .write_all(request.as_bytes())
-        .await
-        .context("write relay request")?;
-    timeout(connect_timeout, read_http_response(&mut stream))
-        .await
-        .map_err(|_| anyhow!("read relay response timed out"))??;
-
-    let key_bytes = BASE64_STANDARD
-        .decode(e2e_key_b64.trim())
-        .context("decode relay e2e key")?;
-    let cipher = build_e2e_cipher(&key_bytes)?;
-
-    let mut send_counter = 0u64;
-    write_e2e_frame(&mut stream, &cipher, &mut send_counter, b"hello-world").await?;
-    info!(session_id = %session_id, "relay hello-world frame sent");
-
-    #[cfg(target_os = "windows")]
-    {
-        let (rdp_sessions_payload, session_count) = build_rdp_sessions_payload_json();
-        write_e2e_frame(
-            &mut stream,
-            &cipher,
-            &mut send_counter,
-            &rdp_sessions_payload,
-        )
-        .await
-        .context("send rdp session list over relay")?;
-        info!(
-            session_id = %session_id,
-            session_count = session_count,
-            "rdp_sessions payload sent over relay"
-        );
-
-        let pipeline = ensure_capture_pipeline(
-            session_id.clone(),
-            &capture_pipelines,
-            control_pipe_writers.clone(),
-            helper_target_sessions.clone(),
-        )
-        .await;
-        let (reader, mut writer) = tokio::io::split(stream);
-        let cipher_read = build_e2e_cipher(&key_bytes)?;
-        tokio::spawn(run_heartbeat_read_loop(
-            session_id.clone(),
-            reader,
-            cipher_read,
-            pipeline.clone(),
-            control_queue.clone(),
-            control_pipe_writers.clone(),
-            capture_pipelines.clone(),
-            helper_target_sessions.clone(),
-        ));
-        if let Err(e) = stream_relay_ivf(
-            session_id.clone(),
-            &mut writer,
-            &cipher,
-            &mut send_counter,
-            pipeline,
-            punch_sockets.clone(),
-            relay_sessions.clone(),
-            capture_pipelines.clone(),
-            control_pipe_writers.clone(),
-            helper_target_sessions.clone(),
-        )
-        .await
-        {
-            if is_relay_connection_closed(&e) {
-                info!(session_id = %session_id, "relay session ended (viewer disconnected)");
-                return Ok(());
-            }
-            return Err(e);
-        }
-        info!(session_id = %session_id, "relay IVF stream finished");
-        Ok(())
-    }
-
-    #[cfg(not(target_os = "windows"))]
-    loop {
-        match read_e2e_frame_from(&mut stream, &cipher).await {
-            Ok(payload) => {
-                let message = String::from_utf8_lossy(&payload);
-                info!(session_id = %session_id, payload = %message.trim(), "relay frame received");
-            }
-            Err(e) => {
-                if is_relay_connection_closed(&e) {
-                    info!(session_id = %session_id, "relay session ended (viewer disconnected)");
-                    return Ok(());
-                }
-                return Err(e);
-            }
-        }
-    }
 }
 
 fn is_relay_connection_closed(err: &anyhow::Error) -> bool {

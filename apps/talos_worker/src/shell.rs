@@ -10,6 +10,11 @@
 //!    or an unrecoverable error occurs.
 
 #[cfg(target_family = "unix")]
+mod pty;
+#[cfg(target_family = "unix")]
+use pty::open_unix_pty;
+
+#[cfg(target_family = "unix")]
 use std::ffi::CStr;
 #[cfg(target_family = "unix")]
 use std::ffi::CString;
@@ -17,7 +22,7 @@ use std::ffi::CString;
 use std::fs::File;
 use std::io::{Read, Write};
 #[cfg(target_family = "unix")]
-use std::os::fd::{AsRawFd, FromRawFd, RawFd};
+use std::os::fd::AsRawFd;
 #[cfg(target_family = "unix")]
 use std::os::unix::process::CommandExt;
 #[cfg(target_family = "unix")]
@@ -955,35 +960,6 @@ fn unix_shell_path() -> &'static str {
 #[cfg(all(target_family = "unix", not(target_os = "macos")))]
 fn unix_shell_path() -> &'static str {
     "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-}
-
-#[cfg(target_family = "unix")]
-fn open_unix_pty() -> Result<(File, File)> {
-    let mut master_fd: libc::c_int = -1;
-    let mut slave_fd: libc::c_int = -1;
-    let mut winsize = libc::winsize {
-        ws_row: DEFAULT_ROWS as libc::c_ushort,
-        ws_col: DEFAULT_COLS as libc::c_ushort,
-        ws_xpixel: 0,
-        ws_ypixel: 0,
-    };
-
-    let result = unsafe {
-        libc::openpty(
-            &mut master_fd,
-            &mut slave_fd,
-            std::ptr::null_mut(),
-            std::ptr::null_mut(),
-            &mut winsize,
-        )
-    };
-    if result != 0 {
-        return Err(std::io::Error::last_os_error()).context("open Unix PTY");
-    }
-
-    let master = unsafe { File::from_raw_fd(master_fd as RawFd) };
-    let slave = unsafe { File::from_raw_fd(slave_fd as RawFd) };
-    Ok((master, slave))
 }
 
 #[cfg(target_family = "unix")]

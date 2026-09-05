@@ -1,3 +1,7 @@
+#[cfg(test)]
+#[path = "../build_manifest.rs"]
+mod build_manifest;
+
 #[cfg(target_os = "windows")]
 use std::sync::mpsc;
 #[cfg(target_os = "windows")]
@@ -1150,7 +1154,7 @@ fn main() {
         eprintln!("{e:#}");
     }
     pause_console_before_exit();
-    if let Err(_) = outcome {
+    if outcome.is_err() {
         std::process::exit(1);
     }
 }
