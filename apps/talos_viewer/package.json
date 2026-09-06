@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "catalog:",
-    "@tauri-apps/cli": "2.11.4",
+    "@tauri-apps/cli": "2.10.1",
     "svelte-check": "catalog:",
     "typescript": "catalog:",
     "vite": "7.3.6"
