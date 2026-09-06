@@ -29,9 +29,11 @@ the vpx patch, WiX/7-Zip acquisition policy, and container pins in Dockerfiles/C
 maintenance items; the daily repository review must include them. Existing CI, licence, lockfile,
 and advisory gates continue to apply to dependency changes. No advisory is ignored by this fix.
 
-The owner currently wants only `main` on public GitHub. Maintainers prepare fixes locally until the
-owner authorizes the normal reviewed change flow. Dependabot itself creates temporary PR branches
-when updates are available; it cannot apply updates while permanently keeping exactly one branch.
+The owner has authorized autonomous maintenance branches, PR creation, review, and normal merges
+once required checks and reviews are satisfied. Use temporary `codex/` branches, verify main after
+integration, and delete merged maintenance branches after safely retargeting dependent PRs.
+Author self-review does not substitute for required independent or qualified human review.
+Dependabot itself creates temporary PR branches when updates are available; it cannot apply updates while permanently keeping exactly one branch.
 Do not automatically delete those new proposals. Closed older proposals may require a Dependabot
 recheck/recreation after the repair is merged.
 
@@ -39,3 +41,14 @@ After landing this change, run a Cargo Dependabot update from GitHub's dependenc
 and verify that it progresses beyond manifest fetching and produces either an update or a no-update
 result. A local manifest check is not proof that GitHub's hosted updater has succeeded. Continue to
 track the existing alert triage in [issue #30](https://github.com/seborbie/talos-community/issues/30).
+
+## Hosted verification on 2026-09-06
+
+The repair reached `main` in `10e1698ae892c73453252305abbec40c3f105231`.
+[Main quality](https://github.com/seborbie/talos-community/actions/runs/33962065445) and
+[dependency security](https://github.com/seborbie/talos-community/actions/runs/33962065398) passed.
+The [hosted Cargo security update](https://github.com/seborbie/talos-community/actions/runs/33962071554)
+progressed beyond manifest fetching and reported `security_update_not_possible`: GLib 0.18.5 is
+the latest resolvable version, while the first fixed version is 0.20.0. This verifies the manifest
+repair, but does not resolve the GLib finding or establish a successful routine Cargo update;
+the concurrent routine Cargo run was cancelled. Bun and GitHub Actions updates produced new PRs.
