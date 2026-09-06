@@ -102,4 +102,13 @@ RustSec warning removal after merge before closing issue #14. This grants no vul
 exception and does not establish a demonstrated Talos exploit. Rust audit must continue to report
 zero vulnerabilities.
 
-Validation of the prepared 0.10.2 update: `bun run quality` passed locally (408 JavaScript tests, 411 Rust tests; two optional PostgreSQL integrations skipped). The focused regression fails with the previous 0.10.1 lock and passes with 0.10.2. The current RustSec audit reports zero vulnerabilities and 23 informational/yanked warnings, down from 25 before the rand and chacha20 fixes. Linux/Windows CI has not run for these local commits.
+Validation of the prepared 0.10.2 update: `bun run quality` passed locally (408 JavaScript tests, 411 Rust tests; two optional PostgreSQL integrations skipped). The focused regression fails with the previous 0.10.1 lock and passes with 0.10.2. The current RustSec audit reports zero vulnerabilities and 23 informational/yanked warnings, down from 25 before the rand and chacha20 fixes. Subsequent Linux, macOS and Windows checks passed after integration on main; see the verification below.
+
+### DR-013 integration verification (2026-09-06)
+
+The fix is present on main at `10e1698ae892c73453252305abbec40c3f105231` through PRs #32 and #31.
+[Main quality](https://github.com/seborbie/talos-community/actions/runs/33962065445) passed on all
+three native platforms, including PostgreSQL integration;
+[main dependency security](https://github.com/seborbie/talos-community/actions/runs/33962065398)
+also passed. This supersedes the pending-hosted-validation status above. Hosted x86 runners are
+not evidence of execution on an SSE2-only CPU; that hardware-specific limitation remains explicit.
