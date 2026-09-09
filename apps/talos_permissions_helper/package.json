@@ -13,9 +13,9 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "2.11.0",
+    "@tauri-apps/api": "2.11.1",
     "@veecore/tauri-plugin-permission-flow-api": "0.1.40",
-    "svelte": "5.55.9"
+    "svelte": "5.57.0"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "catalog:",
