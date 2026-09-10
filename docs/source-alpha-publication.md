@@ -50,3 +50,7 @@ expired exception. Do not convert this decision into legal, security, or product
 
 Platform installer lifecycle, complete binary notices/SBOMs, production Compose/ACME and
 backup/restore evidence remain gates for an official packaged release.
+
+The [September follow-up review packet](security/source-alpha-review-2026-09.md) maps the open
+PUB-001 acceptance items to current source and verification evidence. Its pending items do not
+change this publication decision or its deadline.
