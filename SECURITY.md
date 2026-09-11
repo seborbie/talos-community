@@ -12,11 +12,14 @@ when a supported release line exists.
 Do not open a public issue for a suspected vulnerability or include secrets, exploit details,
 customer information, or private endpoints in public discussions.
 
-Use GitHub's [private vulnerability reporting form](../../security/advisories/new). This relative
-link resolves to the current Talos repository regardless of its GitHub owner. Private vulnerability reporting is enabled for the official repository. The signed-in
-non-maintainer intake check remains tracked in [PUB-001](https://github.com/seborbie/talos-community/issues/1).
-Fork owners must enable reporting and verify their own intake destination. Do not publish vulnerability details in an
-issue or discussion.
+When available, use GitHub's [private vulnerability reporting form](../../security/advisories/new).
+This relative link resolves to the current Talos repository regardless of its GitHub owner.
+GitHub provides this feature for public repositories. On 2026-09-11, the official repository was
+verified as private and its reporting API returned 404; the form must not be assumed available.
+Restoring a verified private intake route and testing it from a signed-in non-maintainer account
+remain tracked in [PUB-001](https://github.com/seborbie/talos-community/issues/1).
+Fork owners must enable reporting and verify their own intake destination. Do not publish
+vulnerability details in an issue or discussion.
 
 When the private destination is available, include:
 

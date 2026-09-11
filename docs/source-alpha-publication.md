@@ -54,3 +54,12 @@ backup/restore evidence remain gates for an official packaged release.
 The [September follow-up review packet](security/source-alpha-review-2026-09.md) maps the open
 PUB-001 acceptance items to current source and verification evidence. Its pending items do not
 change this publication decision or its deadline.
+
+## Status reassessed September 11, 2026
+
+The official repository is now private according to GitHub's API. The enabled-reporting and
+protection evidence above describes the original publication, not the current configuration.
+Private-reporting inspection now returns 404, and protection/ruleset inspection returns 403 with a
+plan/visibility restriction. The [current review packet](security/source-alpha-review-2026-09.md)
+records the resulting intake and review blockers. PUB-001 remains open and due September 11;
+no deadline, release permission, or security setting was changed by this reassessment.

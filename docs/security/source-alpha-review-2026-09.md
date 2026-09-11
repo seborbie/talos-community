@@ -1,6 +1,6 @@
 # PUB-001 source-alpha review packet
 
-Prepared 2026-09-10 for [issue #1](https://github.com/seborbie/talos-community/issues/1).
+Prepared 2026-09-10; reassessed 2026-09-11 for [issue #1](https://github.com/seborbie/talos-community/issues/1).
 Owner: Sebastian Orbe. The existing **2026-09-11** deadline is unchanged.
 All human acceptance items below remain pending. This packet supplies review inputs; it does not
 approve publication, extend the exception, or authorize a supported release.
@@ -15,7 +15,8 @@ Windows and the disposable PostgreSQL integration job. These are prior hosted re
 executed platform tests. Any material source change requires reviewing its diff and refreshing
 applicable evidence.
 
-The current GitHub API confirms private vulnerability reporting is enabled. Only the GLib alert
+The September 10 API check confirmed private vulnerability reporting was enabled; this evidence
+is superseded by the September 11 status below. Only the GLib alert
 remains open in GitHub. The [last hosted GLib updater](https://github.com/seborbie/talos-community/actions/runs/34341771460)
 failed to find a compatible fixed resolution. [Issue #30](https://github.com/seborbie/talos-community/issues/30)
 is still overdue (September 7). Green RustSec checks do not clear that finding: RustSec classifies
@@ -27,6 +28,32 @@ passed (97 assertions); the Cargo security regression passed (3 tests, 17 assert
 748 Cargo packages), and `bun run workspace:check` passed. Relative source links and
 `git diff --check` passed. Full local quality and local PostgreSQL/platform execution were not
 repeated for this documentation-only change; fresh hosted results belong on PR #40.
+
+## September 11 visibility and intake reassessment
+
+The repository API now reports `private: true` and `visibility: private`. The private vulnerability
+reporting endpoint returns HTTP 404. GitHub documents private vulnerability reporting for
+[public repositories](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository).
+The previously enabled intake cannot be relied on as a current compensating control. No alternate
+private destination or non-maintainer submission has been verified. The security and conduct
+policies now state this limitation and retain the prohibition on publishing sensitive details.
+
+Branch-protection and ruleset inspection both return HTTP 403 with a plan/visibility restriction.
+A blank GitHub review decision is not evidence that the required independent review occurred.
+Continue to require the repository's review policy before any merge. This maintenance run did not
+change visibility, protections, reporting settings, or the Actions allowlist.
+
+PUB-001 remains open and due **today, September 11**. Sebastian must establish a verified private
+intake route and record the outstanding qualified reviews or explicitly reassess the risks under
+the existing exception process. The fallback channel is not yet concrete enough for acceptance.
+Private visibility does not retroactively complete the source-publication follow-up or extend its
+deadline. No supported release is cleared by this reassessment.
+
+PR #40 at `bd961d426cf6a9d005f60839d552dfd9df715c96` passed all seven
+[Quality jobs](https://github.com/seborbie/talos-community/actions/runs/34453229795) and its
+[manual security audit](https://github.com/seborbie/talos-community/actions/runs/34453259926)
+on September 10. These results were inspected September 11; they predate this documentation
+correction. Independent approval remains absent.
 
 ## Private security and conduct intake
 
