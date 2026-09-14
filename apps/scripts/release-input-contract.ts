@@ -29,8 +29,8 @@ export function macosViewerReleaseInputFailures(
     const manifest = JSON.parse(packageJson) as {
       devDependencies?: Record<string, string>;
     };
-    if (manifest.devDependencies?.['@tauri-apps/cli'] !== '2.10.1') {
-      failures.push('talos_viewer must declare @tauri-apps/cli exactly at 2.10.1');
+    if (manifest.devDependencies?.['@tauri-apps/cli'] !== '2.11.4') {
+      failures.push('talos_viewer must declare @tauri-apps/cli exactly at 2.11.4');
     }
   } catch {
     failures.push('talos_viewer/package.json must be valid JSON');
@@ -40,7 +40,7 @@ export function macosViewerReleaseInputFailures(
     ...requireSnippets(
       buildScript,
       [
-        'TAURI_CLI_VERSION="2.10.1"',
+        'TAURI_CLI_VERSION="2.11.4"',
         'bun install --frozen-lockfile --filter talos_viewer',
         'node_modules/@tauri-apps/cli/tauri.js',
         'bun --bun "$local_tauri_cli" build',
