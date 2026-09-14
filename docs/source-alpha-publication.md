@@ -50,3 +50,33 @@ expired exception. Do not convert this decision into legal, security, or product
 
 Platform installer lifecycle, complete binary notices/SBOMs, production Compose/ACME and
 backup/restore evidence remain gates for an official packaged release.
+
+The [September follow-up review packet](security/source-alpha-review-2026-09.md) maps the open
+PUB-001 acceptance items to current source and verification evidence. Its pending items do not
+change this publication decision or its deadline.
+
+## Status reassessed September 11, 2026
+
+The official repository is now private according to GitHub's API. The enabled-reporting and
+protection evidence above describes the original publication, not the current configuration.
+Private-reporting inspection now returns 404, and protection/ruleset inspection returns 403 with a
+plan/visibility restriction. The [current review packet](security/source-alpha-review-2026-09.md)
+records the resulting intake and review blockers. PUB-001 remains open and due September 11;
+no deadline, release permission, or security setting was changed by this reassessment.
+
+## Status reassessed September 14, 2026
+
+GitHub now reports public visibility and private vulnerability reporting enabled. This supersedes
+the September 11 availability evidence above; a non-maintainer submission and maintainer receipt
+are still unverified. PUB-001 remains overdue from September 11, and its qualified reviews remain
+outstanding. No exception deadline has changed.
+
+The main branch protection endpoint now returns HTTP 404 (`Branch not protected`), and the
+repository ruleset list is empty. These results differ from the earlier visibility/plan error.
+Sebastian must review the missing protection configuration; maintenance has not changed any
+security settings and continues to require independent review before integration.
+
+PR #40 at `da80edb77a3f88b7274c0683ec21b5b1efa92907` passed all seven hosted Quality jobs
+(run 34748147939) and dependency security (34748166328), executed September 13 and inspected
+September 14. These results predate this status correction. PR #41 is still its prerequisite
+and requires independent review. No integration or supported release is claimed.
