@@ -126,3 +126,20 @@ findings, and accepted/blocked outcome on issue #1 without private report conten
 complete or explicitly reassess unresolved publication checks by September 11 under the existing
 exception process. A reassessment must state the outstanding risk and disposition; this document
 grants no extension. Keep issue #1 open until its acceptance requirements are actually met.
+
+## Status reassessed September 14, 2026
+
+GitHub now reports public visibility and private vulnerability reporting enabled. This supersedes
+the September 11 availability evidence above; a non-maintainer submission and maintainer receipt
+are still unverified. PUB-001 remains overdue from September 11, and its qualified reviews remain
+outstanding. No exception deadline has changed.
+
+The main branch protection endpoint now returns HTTP 404 (`Branch not protected`), and the
+repository ruleset list is empty. These results differ from the earlier visibility/plan error.
+Sebastian must review the missing protection configuration; maintenance has not changed any
+security settings and continues to require independent review before integration.
+
+PR #40 at `da80edb77a3f88b7274c0683ec21b5b1efa92907` passed all seven hosted Quality jobs
+(run 34748147939) and dependency security (34748166328), executed September 13 and inspected
+September 14. These results predate this status correction. PR #41 is still its prerequisite
+and requires independent review. No integration or supported release is claimed.

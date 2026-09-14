@@ -15,9 +15,9 @@ customer information, or private endpoints in public discussions.
 When available, use GitHub's [private vulnerability reporting form](../../security/advisories/new).
 This relative link resolves to the current Talos repository regardless of its GitHub owner.
 GitHub provides this feature for public repositories. On 2026-09-11, the official repository was
-verified as private and its reporting API returned 404; the form must not be assumed available.
-Restoring a verified private intake route and testing it from a signed-in non-maintainer account
-remain tracked in [PUB-001](https://github.com/seborbie/talos-community/issues/1).
+verified as private and its reporting API returned 404. On 2026-09-14, the repository was public
+again and the API reported private vulnerability reporting enabled. Submission and receipt from
+a signed-in non-maintainer account remain unverified and tracked in [PUB-001](https://github.com/seborbie/talos-community/issues/1).
 Fork owners must enable reporting and verify their own intake destination. Do not publish
 vulnerability details in an issue or discussion.
 
