@@ -39,3 +39,17 @@ After landing this change, run a Cargo Dependabot update from GitHub's dependenc
 and verify that it progresses beyond manifest fetching and produces either an update or a no-update
 result. A local manifest check is not proof that GitHub's hosted updater has succeeded. Continue to
 track the existing alert triage in [issue #30](https://github.com/seborbie/talos-community/issues/30).
+
+### Tauri CLI release pin coordination
+
+A viewer CLI dependency update must also update `TAURI_CLI_VERSION` in
+`scripts/build-macos-viewer.sh` and the exact-version expectation in
+`apps/scripts/release-input-contract.ts`. The 2.11.4 update in PR #42 exposed this coupling:
+the frozen install selected 2.11.4 while the release script still required 2.10.1.
+Keep the runtime version comparison, frozen installation and Cargo `--locked` checks intact.
+Run the release-input regression tests and repository quality gates, and obtain qualified
+release review before integration. Roll back the manifest/lock and script/contract pins together.
+
+The upstream [2.11.4 CLI changelog](https://github.com/tauri-apps/tauri/blob/tauri-cli-v2.11.4/crates/tauri-cli/CHANGELOG.md)
+records bundler and signing dependency changes since 2.10.1. A passing frontend build or
+CLI version check does not verify packaged application signing or installer execution.

@@ -22,10 +22,33 @@ describe('release input contract', () => {
       JSON.stringify({ devDependencies: {} }),
       'bun x @tauri-apps/cli build',
     );
-    expect(failures).toContain('talos_viewer must declare @tauri-apps/cli exactly at 2.10.1');
+    expect(failures).toContain('talos_viewer must declare @tauri-apps/cli exactly at 2.11.4');
     expect(failures).toContain(
       'build-macos-viewer.sh must not fetch the Tauri CLI dynamically with bun x',
     );
+  });
+
+  test('rejects stale or floating viewer CLI pins in either release input', async () => {
+    const script = await Bun.file(
+      new URL('../../scripts/build-macos-viewer.sh', import.meta.url),
+    ).text();
+    const manifest = (version: string) =>
+      JSON.stringify({ devDependencies: { '@tauri-apps/cli': version } });
+
+    expect(macosViewerReleaseInputFailures(manifest('2.11.4'), script)).toEqual([]);
+    for (const version of ['2.10.1', '^2.11.4', 'latest']) {
+      expect(macosViewerReleaseInputFailures(manifest(version), script)).toContain(
+        'talos_viewer must declare @tauri-apps/cli exactly at 2.11.4',
+      );
+      expect(
+        macosViewerReleaseInputFailures(
+          manifest('2.11.4'),
+          script.replace('TAURI_CLI_VERSION="2.11.4"', `TAURI_CLI_VERSION="${version}"`),
+        ),
+      ).toContain(
+        'build-macos-viewer.sh is missing release-input protection: TAURI_CLI_VERSION="2.11.4"',
+      );
+    }
   });
 
   test('requires custom libvpx source digest and cache verification', () => {
