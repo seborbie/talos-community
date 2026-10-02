@@ -35,7 +35,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 uuid = { version = "1.8", features = ["v4"] }
 dotenvy = "0.15"
 quinn = "0.11.11"
-rustls = { version = "0.23.36", features = ["ring"] }
+rustls = { version = "0.23.45", features = ["ring"] }
 rustls-pemfile = "2.2.0"
 stunclient = "0.4.2"
 url = "2.5.2"
