@@ -35,12 +35,22 @@ The default network pair is:
 ```dotenv
 TALOS_EDGE_SUBNET=172.31.240.0/24
 TALOS_TRAEFIK_IPV4=172.31.240.2
+TALOS_EDGE_DYNAMIC_RANGE=172.31.240.128/25
 ```
 
 The launcher must validate that both values are IPv4, the proxy address is a usable member of the
 subnet, and the subnet does not overlap a host route or another Docker network. If it does overlap,
 select a new private `/24` and a usable address together; never broaden `API_TRUSTED_PROXIES` to
 work around a collision.
+
+Automatic container allocation uses the half of the subnet that does not contain Traefik's static
+address. This prevents an application starting first from consuming the trusted proxy IP. The
+launcher derives `TALOS_EDGE_DYNAMIC_RANGE` for a custom subnet/proxy pair; manual Compose users
+must set an equivalent non-overlapping allocation range and keep the proxy inside the parent
+subnet. The proxy cannot use the subnet's first usable address, which Docker reserves as gateway.
+Existing networks made without this pool require a deliberate stop/network recreation with data
+volumes preserved; never use `down --volumes` to change IPAM. Back up first and follow the launcher
+recovery journal if an earlier startup already reached migrations.
 
 ## Choose exactly one edge mode
 

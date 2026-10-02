@@ -12,6 +12,7 @@ networks:
     ipam:
       config:
         - subnet: "${TALOS_EDGE_SUBNET:-172.31.240.0/24}"
+          ip_range: "${TALOS_EDGE_DYNAMIC_RANGE:-172.31.240.128/25}"
 
 services:
   api_backend:

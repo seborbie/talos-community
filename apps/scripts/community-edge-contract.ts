@@ -140,6 +140,11 @@ function composeModeFailures(
   if (firstIpamConfig.subnet !== EDGE_SUBNET_EXPRESSION) {
     failures.push(`${label} must define the reviewed private edge subnet contract`);
   }
+  if (firstIpamConfig.ip_range !== '${TALOS_EDGE_DYNAMIC_RANGE:-172.31.240.128/25}') {
+    failures.push(
+      `${label} must exclude the static trusted proxy address from automatic allocation`,
+    );
+  }
   if (traefik?.read_only !== true) {
     failures.push(`${label} Traefik must use a read-only root filesystem`);
   }
