@@ -18,11 +18,47 @@ and help make it better.
 
 ## Quick start
 
-For a download that needs no compilation, use an approved Windows x64 or Linux x86-64 bundle from
-[GitHub Releases](https://github.com/seborbie/talos-community/releases), start Docker, and run the
-bundled launcher. [Download and startup instructions](docs/getting-started-downloads.md) cover the
-local browser, certificate trust, persistence, and public Linux container images. Release workflows
-are implemented; an approved binary/container prerelease is not yet claimed.
+**Download availability:** the first controller bundles and public container images are being
+prepared. No approved download is published yet. When a prerelease is approved, its versioned
+archives, `SHA256SUMS`, source and notices will appear on
+[GitHub Releases](https://github.com/seborbie/talos-community/releases).
+
+### Windows x64 — download and double-click
+
+1. Install/start your approved **Docker Desktop** with **Linux containers** selected.
+2. From the same approved release, download `talos-community-<version>-windows-x86_64-UNSIGNED.zip`
+   and `SHA256SUMS`. Verify the archive using the [download guide](docs/getting-started-downloads.md).
+3. Extract the entire ZIP and double-click **Start-Talos.cmd**. The launcher starts the server
+   stack, retains its database, and opens **https://talos.localhost:8443** when healthy.
+
+### Linux x86-64 — run public containers
+
+The download baseline is **Ubuntu 24.04 x86-64** with **Docker Engine and Compose v2 or newer**.
+Download the approved release's `talos-community-<version>-linux-x86_64.tar.gz` and `SHA256SUMS`,
+verify the archive, then extract it and enter its directory. Set `VERSION` to that release's version
+without the `community-v` tag prefix:
+
+```sh
+VERSION='replace-with-release-version'
+tar -xzf "talos-community-${VERSION}-linux-x86_64.tar.gz"
+cd "talos-community-${VERSION}"
+sudo ./start-talos.sh
+```
+
+The launcher pulls the release's public GHCR images (`talos-api-backend`, `talos-frontend`,
+`talos-server`, and `talos-relay` under `ghcr.io/seborbie`) at their recorded immutable digests and
+runs them with PostgreSQL and Traefik. No image build, registry login, separately installed
+database, or Redis is required. Native clients are not included in the controller-only download.
+
+For either platform, explicitly approve the generated **local certificate** using the
+[download guide](docs/getting-started-downloads.md), then create your first account at
+**https://talos.localhost:8443**. There is no default password; registration closes after the first
+account. Evaluation listens only on this machine's loopback address. Follow the
+[deployment guide](docs/community-deployment.md) when connecting remote devices.
+
+To stop/start again, use `Start-Talos.cmd stop` / `Start-Talos.cmd` on Windows, or
+`sudo ./start-talos.sh stop` / `sudo ./start-talos.sh` on Linux. Stopping preserves the database and
+generated credentials. Neither platform requires Bun, Rust, Git, or a compiler to run the bundle.
 
 ### Build from source
 
