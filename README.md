@@ -85,6 +85,7 @@ setup. Public registration closes after the first account; Talos ships no defaul
 - [Documentation](docs/README.md): setup, configuration, deployment, architecture, and limitations.
 - [Screenshots](docs/screenshots/community-edition/README.md).
 - [Contributing](CONTRIBUTING.md), [support](SUPPORT.md), and [reporting vulnerabilities](SECURITY.md).
+- Maintainers: [first controller release checklist](docs/first-controller-release-checklist.md).
 
 Initial official Windows binaries are intentionally **unsigned** and may trigger SmartScreen.
 Verify `SHA256SUMS`; do not disable security controls. Read the [binary trust guide](docs/release-signing.md).
