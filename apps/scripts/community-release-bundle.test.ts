@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from 'bun:test';
 import { createHash } from 'node:crypto';
-import { lstat, mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { chmod, lstat, mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import {
@@ -45,7 +45,9 @@ async function hash(contents: string): Promise<string> {
   return createHash('sha256').update(contents).digest('hex');
 }
 
-async function fixtureInputs(): Promise<CommunityBundleInputs> {
+async function fixtureInputs(): Promise<
+  CommunityBundleInputs & { nativeArtifactsDirectory: string }
+> {
   const root = await mkdtemp(resolve(tmpdir(), 'talos-release-bundle-'));
   roots.push(root);
   const native = resolve(root, 'native');
@@ -115,6 +117,32 @@ async function fixtureInputs(): Promise<CommunityBundleInputs> {
 }
 
 describe('Community release bundle', () => {
+  test('controller-only release has no client signer prerequisite and explicit unsigned scope', async () => {
+    const { nativeArtifactsDirectory, ...inputs } = await fixtureInputs();
+    await rm(nativeArtifactsDirectory, { recursive: true });
+    await rm(resolve(inputs.sbomDirectory, 'native-clients.spdx.json'));
+    await assembleCommunityReleaseBundle({ ...inputs, distribution: 'controller' });
+    expect(await Bun.file(resolve(inputs.outputDirectory, 'clients')).exists()).toBe(false);
+    const manifest = await Bun.file(
+      resolve(inputs.outputDirectory, 'release-manifest.json'),
+    ).json();
+    expect(manifest.distribution).toBe('controller');
+    expect(manifest.signing.updaterManifestPublicKeySha256).toBeNull();
+    expect(manifest.signing.windowsAuthenticode).toBe('unsigned');
+    expect(
+      await Bun.file(resolve(inputs.outputDirectory, 'UNSIGNED-BINARIES.txt')).text(),
+    ).toContain('UNSIGNED COMMUNITY BINARIES');
+    expect(await Bun.file(resolve(inputs.outputDirectory, 'README.txt')).text()).toContain(
+      'native clients/updater manifests are not included',
+    );
+    await expect(
+      assembleCommunityReleaseBundle({
+        ...inputs,
+        distribution: 'controller',
+        nativeArtifactsDirectory,
+      }),
+    ).rejects.toThrow('controller-only bundle must not include native clients');
+  });
   test('requires one immutable digest record for every appliance image', () => {
     expect(validatePublishedImageRecords(imageRecords, '1.2.3-rc.1', sourceSha)).toHaveProperty(
       'control_server.reference',
@@ -186,6 +214,90 @@ describe('Community release bundle', () => {
       'community-install.example.json',
     );
   });
+
+  test('local evaluation needs no DNS edits, shared password or registry-version guess', async () => {
+    const inputs = await fixtureInputs();
+    await assembleCommunityReleaseBundle(inputs);
+    const local = JSON.parse(
+      await readFile(resolve(inputs.outputDirectory, 'community-install.local.json'), 'utf8'),
+    );
+    expect(local.release_version).toBe('1.2.3-rc.1');
+    expect(local.database).toEqual({ mode: 'bundled', user: 'talos', database: 'talos' });
+    expect(local.images).toEqual(
+      Object.fromEntries(imageRecords.map((image) => [image.key, image.reference])),
+    );
+    expect(local.edge).toEqual({
+      mode: 'local',
+      frontend_domain: 'talos.localhost',
+      api_domain: 'api.talos.localhost',
+      control_domain: 'control.talos.localhost',
+      relay_domain: 'relay.talos.localhost',
+      http_port: 8080,
+      https_port: 8443,
+      subnet: '172.31.240.0/24',
+      proxy_ipv4: '172.31.240.2',
+    });
+    const checksums = await readFile(resolve(inputs.outputDirectory, 'SHA256SUMS'), 'utf8');
+    for (const name of [
+      'community-install.local.json',
+      'Start-Talos.cmd',
+      'start-talos.sh',
+      'GETTING_STARTED.md',
+    ]) {
+      const contents = await readFile(resolve(inputs.outputDirectory, name));
+      expect(checksums).toContain(
+        `${createHash('sha256').update(contents).digest('hex')}  ${name}`,
+      );
+    }
+    if (process.platform !== 'win32') {
+      expect((await lstat(resolve(inputs.outputDirectory, 'start-talos.sh'))).mode & 0o777).toBe(
+        0o755,
+      );
+      expect(
+        (await lstat(resolve(inputs.outputDirectory, 'bin/linux-x86_64/talos-server'))).mode &
+          0o777,
+      ).toBe(0o755);
+      expect(
+        (await lstat(resolve(inputs.outputDirectory, 'community-install.local.json'))).mode & 0o777,
+      ).toBe(0o600);
+    }
+    const windows = await readFile(resolve(inputs.outputDirectory, 'Start-Talos.cmd'), 'utf8');
+    expect(windows).toContain('if errorlevel 1 goto failed');
+    expect(windows.indexOf('if errorlevel 1 goto failed')).toBeLessThan(
+      windows.indexOf('start "" "https://'),
+    );
+    expect(windows).toContain('%LOCALAPPDATA%\\Talos\\Server');
+    expect(windows).not.toContain('certutil');
+    expect(windows).not.toContain('RunAs');
+  });
+
+  test.if(process.platform !== 'win32')(
+    'Linux wrapper preserves paths with spaces, commands and failures (medium)',
+    async () => {
+      const inputs = await fixtureInputs();
+      inputs.outputDirectory = resolve(inputs.outputDirectory, 'folder with spaces');
+      await assembleCommunityReleaseBundle(inputs);
+      const log = resolve(inputs.outputDirectory, 'argv.txt');
+      const launcher = resolve(inputs.outputDirectory, 'bin/linux-x86_64/talos-server');
+      await writeFile(
+        launcher,
+        '#!/bin/sh\nprintf \'%s\\n\' "$@" > "$TALOS_ARGV_OUTPUT"\nexit 23\n',
+      );
+      await chmod(launcher, 0o755);
+      const invoke = (args: string[]) =>
+        Bun.spawnSync(['/bin/sh', resolve(inputs.outputDirectory, 'start-talos.sh'), ...args], {
+          env: { ...process.env, TALOS_ARGV_OUTPUT: log },
+          stdout: 'pipe',
+          stderr: 'pipe',
+        });
+      expect(invoke([]).exitCode).toBe(23);
+      expect(await readFile(log, 'utf8')).toBe(
+        `quickstart\n--config\n${inputs.outputDirectory}/community-install.local.json\n`,
+      );
+      expect(invoke(['status']).exitCode).toBe(23);
+      expect(await readFile(log, 'utf8')).toBe('status\n');
+    },
+  );
 
   test('fails closed on a native artifact checksum mismatch or symlink', async () => {
     const checksumInputs = await fixtureInputs();

@@ -13,6 +13,9 @@ pub struct Cli {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum CliCommand {
+    Quickstart {
+        config: PathBuf,
+    },
     Install {
         config: PathBuf,
         external_database_backup: Option<PathBuf>,
@@ -109,6 +112,16 @@ fn parse_command(name: &str, arguments: &[OsString]) -> Result<CliCommand> {
             Ok(CliCommand::Install {
                 config: config.context("--config is required")?,
                 external_database_backup,
+            })
+        }
+        "quickstart" => {
+            let mut config = None;
+            parse_options(arguments, |key, value| match key {
+                "--config" => set_once_path(&mut config, required_option_value(key, value)?, key),
+                _ => bail!("unknown quickstart option {key}"),
+            })?;
+            Ok(CliCommand::Quickstart {
+                config: config.context("--config is required")?,
             })
         }
         "start" => {
@@ -302,6 +315,7 @@ fn require_no_arguments(arguments: &[OsString]) -> Result<()> {
 pub const HELP: &str = r#"Talos Community appliance launcher
 
 Usage:
+  talos-server [--state-dir <absolute-path>] [--docker <absolute-path>] quickstart --config <community-install.local.json>
   talos-server [--state-dir <absolute-path>] [--docker <absolute-path>] install --config <request.json> [--external-database-backup <file>]
   talos-server [--state-dir <absolute-path>] start|stop|status
   talos-server [--state-dir <absolute-path>] update --config <request.json> [--external-database-backup <file>]
@@ -325,6 +339,14 @@ mod tests {
 
     #[test]
     fn parses_documented_commands() {
+        assert!(matches!(
+            parse(&["quickstart", "--config", "request.json"])
+                .expect("quickstart")
+                .command,
+            CliCommand::Quickstart { .. }
+        ));
+        assert!(parse(&["quickstart"]).is_err());
+        assert!(parse(&["quickstart", "--config", "request.json", "--remove-data"]).is_err());
         assert!(matches!(
             parse(&[
                 "--state-dir",

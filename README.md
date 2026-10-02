@@ -18,6 +18,14 @@ and help make it better.
 
 ## Quick start
 
+For a download that needs no compilation, use an approved Windows x64 or Linux x86-64 bundle from
+[GitHub Releases](https://github.com/seborbie/talos-community/releases), start Docker, and run the
+bundled launcher. [Download and startup instructions](docs/getting-started-downloads.md) cover the
+local browser, certificate trust, persistence, and public Linux container images. Release workflows
+are implemented; an approved binary/container prerelease is not yet claimed.
+
+### Build from source
+
 For local evaluation, install **Bun 1.3.14**, **Rust 1.95.0**, and **Docker with Compose v2**.
 From the repository root:
 

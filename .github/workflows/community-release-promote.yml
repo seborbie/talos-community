@@ -144,11 +144,18 @@ jobs:
             exit 1
           fi
           release="${RUNNER_TEMP}/release"
-          archive="$(find "${release}" -maxdepth 1 -type f \
-            -name 'talos-community-*.tar.gz' -print -quit)"
-          manifest="$(tar -xOf "${archive}" --wildcards '*/release-manifest.json')"
+          archive="${release}/talos-community-${{ needs.validate.outputs.version }}-linux-x86_64.tar.gz"
+          test -f "${archive}"
+          manifest="$(tar -xOf "${archive}" "talos-community-${{ needs.validate.outputs.version }}/release-manifest.json")"
           fingerprint="$(jq -r '.signing.updaterManifestPublicKeySha256' <<<"${manifest}")"
-          [[ "${fingerprint}" =~ ^[0-9a-f]{64}$ ]]
+          distribution="$(jq -r '.distribution' <<<"${manifest}")"
+          if [[ "${distribution}" = controller ]]; then
+            test "${fingerprint}" = null
+            fingerprint="not applicable (controller-only; native clients not included)"
+          else
+            test "${distribution}" = full
+            [[ "${fingerprint}" =~ ^[0-9a-f]{64}$ ]]
+          fi
           notes="${RUNNER_TEMP}/RELEASE_NOTES.md"
           sed \
             -e 's/REPLACE_WITH_FULL_COMMIT_SHA/${{ needs.validate.outputs.source_sha }}/g' \
