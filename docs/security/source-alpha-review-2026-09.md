@@ -5,9 +5,14 @@ Owner: Sebastian Orbe. The existing **2026-09-11** deadline is unchanged.
 All human acceptance items below remain pending. This packet supplies review inputs; it does not
 approve publication, extend the exception, or authorize a supported release.
 
+The September sections preserve historical evidence. Use the October 2 reassessment below for
+the current source revision and proposed repairs; green historical checks do not clear newer
+advisories or complete human acceptance.
+
 ## Revision and automated evidence
 
-Review production source at `21cd13f0f04dbb0193f0c472cb5818ef81e3cf5b` (main after PR #38).
+The initial production-source review target was `21cd13f0f04dbb0193f0c472cb5818ef81e3cf5b`
+(main after PR #38).
 [Quality run 34341760078](https://github.com/seborbie/talos-community/actions/runs/34341760078)
 and [security run 34341760389](https://github.com/seborbie/talos-community/actions/runs/34341760389)
 passed on September 9; their status was rechecked September 10. Quality includes Linux, macOS,
@@ -143,3 +148,34 @@ PR #40 at `da80edb77a3f88b7274c0683ec21b5b1efa92907` passed all seven hosted Qua
 (run 34748147939) and dependency security (34748166328), executed September 13 and inspected
 September 14. These results predate this status correction. PR #41 is still its prerequisite
 and requires independent review. No integration or supported release is claimed.
+
+## Status reassessed October 2, 2026
+
+The current main revision is `e76907551f335af84c439dadb431cb9f2fad0c7e`. GitHub still reports
+public visibility, private vulnerability reporting enabled, an unprotected main branch and no
+rulesets. The non-maintainer intake and qualified human acceptance items remain unverified.
+Issues #1 and #30 remain open with their original overdue dates. No security setting, deadline or
+exception was changed by this reassessment.
+
+Main's September CI predates the October dependency findings. The proposed
+[security repair #48](https://github.com/seborbie/talos-community/pull/48), at
+`6e1c9c22bc400c403c0079a20b337649d67861c3`, pins devalue 5.9.4 and rustls 0.23.45.
+All seven [Quality jobs](https://github.com/seborbie/talos-community/actions/runs/36978858958)
+and the [dependency audit](https://github.com/seborbie/talos-community/actions/runs/36978858927)
+passed on that exact proposed head. The written
+[devalue threat analysis](devalue-advisory-triage-2026-10.md) and
+[rustls threat analysis](rustls-advisory-triage-2026-10.md) describe the affected boundaries and
+verification limits. Those fixes are not on main and still require qualified human review.
+
+GLib 0.18.5 remains unresolved in the Linux Tauri dependency graph. The owner chose to await a
+supported upstream Tauri migration; no private backport or incompatible GLib override is proposed.
+Passing RustSec policy with registered informational warnings does not establish advisory
+clearance or supported-release readiness. PRs #33–#37 remain blocked by their proposed exact
+action pins being absent from the repository allowlist. Release authorization and an Actions
+security-settings change are separate outstanding decisions.
+
+This documentation branch incorporates the refreshed release fixture prerequisite #41 and the
+shared #48 security commits. Its residual change against #41 is documentation only. Retarget #41
+after #48 merges, then retarget this PR after #41 merges, before deleting either base branch.
+Fresh CI belongs to the updated PR heads; earlier September results remain historical evidence.
+No release publication, protection bypass, or acceptance of the overdue review items is claimed.

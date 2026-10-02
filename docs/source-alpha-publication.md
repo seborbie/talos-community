@@ -80,3 +80,12 @@ PR #40 at `da80edb77a3f88b7274c0683ec21b5b1efa92907` passed all seven hosted Qua
 (run 34748147939) and dependency security (34748166328), executed September 13 and inspected
 September 14. These results predate this status correction. PR #41 is still its prerequisite
 and requires independent review. No integration or supported release is claimed.
+
+## Status reassessed October 2, 2026
+
+Main remains `e76907551f335af84c439dadb431cb9f2fad0c7e`; it is public with private reporting
+enabled, but main is unprotected and the ruleset list is empty. Non-maintainer intake and
+qualified human acceptance remain unverified. PUB-001 and the dependency review issue #30 are
+still overdue with unchanged dates. The [updated review packet](security/source-alpha-review-2026-09.md)
+records the proposed October dependency repairs, their exact CI evidence, and the unresolved
+Linux GLib finding. The repairs are not integrated and do not clear a supported release.
