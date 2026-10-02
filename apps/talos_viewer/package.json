@@ -18,7 +18,7 @@
     "@tauri-apps/plugin-global-shortcut": "2.3.2",
     "@xterm/addon-fit": "catalog:",
     "@xterm/xterm": "catalog:",
-    "svelte": "5.57.0"
+    "svelte": "5.57.1"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "catalog:",
