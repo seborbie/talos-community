@@ -11,7 +11,8 @@ PR41/40 and the separate PR49 Tauri repair remain independent integration work.
 - `cargo fmt --all --check` and focused controller Clippy with `-D warnings` passed.
 - The Linux x64 launcher was built and its locked tests executed in an amd64 Docker builder.
 - The bundle, edge and release-pipeline focused tests passed: 39 tests, including actual Bash/jq
-  candidate identity, controller/full signing-scope rejection, and exact archive-selection checks. TypeScript script checks
+  candidate identity, controller/full signing-scope rejection, and exact archive-selection checks.
+  TypeScript script checks
   and formatting passed. Temporary diagnostic logging was removed.
 - `bun run quality` passed toolchain/workspace/frozen-lock/protocol checks, static and licence
   checks, 171 script tests, 215 API tests, 30 frontend tests and native frontend placeholder tests,
@@ -21,8 +22,8 @@ PR41/40 and the separate PR49 Tauri repair remain independent integration work.
 - Standalone JS and Rust audits passed on the PR48 base; Rust reported 13 existing allowed warnings.
 - Some subsequent local filesystem-heavy test runs exceeded Bun's existing five-second timeout.
   A temporary checkout outside Documents, with the reviewed excluded libvpx source reconstructed,
-  passed the complete 185-test script suite at the normal timeout before the final two archive
-  regression tests were added. The standalone signing-secret policy scan also passed in the
+  passed the complete 187-test script suite at the normal timeout, including the final archive
+  regression tests. The standalone signing-secret policy scan also passed in the
   original checkout (946 files). No timeout policy was changed.
 
 ## Actual local runtime acceptance
