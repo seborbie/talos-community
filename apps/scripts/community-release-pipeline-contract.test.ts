@@ -250,9 +250,20 @@ test.each([true, false])(
       const checks = promotionWorkflow
         .slice(start, end)
         .replaceAll('${{ needs.validate.outputs.version }}', '1.2.3');
+      // Git Bash's GNU tar treats a drive-colon path as a remote archive. The workflow runs on
+      // Linux; translate only this Windows fixture to MSYS's local drive path for the real check.
+      const bashFixture =
+        process.platform === 'win32'
+          ? fixture
+              .replaceAll('\\', '/')
+              .replace(/^([a-z]):/i, (_, drive: string) => `/${drive.toLowerCase()}`)
+          : fixture;
       const result = Bun.spawnSync(['bash', '-c', `set -euo pipefail\n${checks}`], {
-        env: { ...process.env, release: fixture },
+        env: { ...process.env, release: bashFixture },
       });
+      if (includeBundle && result.exitCode !== 0) {
+        throw new Error(`Archive selection failed: ${new TextDecoder().decode(result.stderr)}`);
+      }
       expect(result.exitCode === 0).toBe(includeBundle);
     } finally {
       await rm(fixture, { recursive: true, force: true });
