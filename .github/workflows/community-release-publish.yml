@@ -35,10 +35,12 @@ jobs:
     timeout-minutes: 30
     permissions:
       actions: read
+      attestations: read
       contents: read
     outputs:
       version: ${{ steps.identity.outputs.version }}
       source_sha: ${{ steps.identity.outputs.source_sha }}
+      distribution: ${{ steps.distribution.outputs.distribution }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -71,6 +73,30 @@ jobs:
           test "$(jq -r .name <<<"${run_json}")" = "Community release candidate"
           test "$(jq -r .conclusion <<<"${run_json}")" = "success"
           test "$(jq -r .head_sha <<<"${run_json}")" = "${source_sha}"
+      - name: Read the attested candidate distribution scope
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: community-source-${{ steps.identity.outputs.version }}
+          path: ${{ runner.temp }}/identity
+          run-id: ${{ inputs.candidate_run_id }}
+          github-token: ${{ github.token }}
+      - name: Verify distribution identity
+        id: distribution
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          identity="${RUNNER_TEMP}/identity"
+          (cd "${identity}" && sha256sum --check SHA256SUMS)
+          gh attestation verify "${identity}/release-identity.json" --repo "${GITHUB_REPOSITORY}"
+          jq -e --arg version "${{ steps.identity.outputs.version }}" \
+            --arg sha "${{ steps.identity.outputs.source_sha }}" --arg tag "${RELEASE_TAG}" \
+            '.schemaVersion == 1 and .releaseVersion == $version and .sourceSha == $sha and
+             .releaseTag == $tag and (.distribution == "controller" or .distribution == "full")' \
+            "${identity}/release-identity.json" >/dev/null
+          echo "distribution=$(jq -r .distribution "${identity}/release-identity.json")" >> "${GITHUB_OUTPUT}"
       - name: Scan candidate workflow logs
         env:
           GH_TOKEN: ${{ github.token }}
@@ -167,6 +193,17 @@ jobs:
           test "${source_digest}" = "${published_digest}" ||
             { echo "registry digest changed during promotion" >&2; exit 1; }
           immutable_reference="ghcr.io/${owner}/${{ matrix.image }}@${published_digest}"
+          # No authfile or host credential mount: operators must be able to pull publicly.
+          # Configure first-time package visibility explicitly; never change access here.
+          anonymous_manifest="${RUNNER_TEMP}/anonymous-${{ matrix.key }}.manifest.json"
+          docker run --rm "${SKOPEO_IMAGE}" inspect --raw \
+            "docker://${immutable_reference}" > "${anonymous_manifest}" || {
+              echo "Anonymous GHCR access failed. The owner must configure this package as public and rerun this exact-digest publication." >&2
+              exit 1
+            }
+          anonymous_digest="sha256:$(sha256sum "${anonymous_manifest}" | cut -d' ' -f1)"
+          test "${anonymous_digest}" = "${published_digest}" ||
+            { echo "anonymous registry digest does not match reviewed image" >&2; exit 1; }
           archive_sha="$(sha256sum "${RUNNER_TEMP}/image/${{ matrix.key }}.oci.tar" | cut -d' ' -f1)"
           jq -n \
             --arg key "${{ matrix.key }}" \
@@ -232,12 +269,17 @@ jobs:
           mkdir -p "${RUNNER_TEMP}/sbom"
           find "${RUNNER_TEMP}/inputs" -name '*.spdx.json' -type f \
             -exec cp {} "${RUNNER_TEMP}/sbom/" \;
-          native="$(find "${RUNNER_TEMP}/inputs" -type d \
-            -name 'community-native-clients-UNSIGNED-*' -print -quit)"
-          docker run --rm --volume "${native}:/scan:ro" \
-            --volume "${RUNNER_TEMP}/sbom:/out" \
-            "${SYFT_IMAGE}" scan dir:/scan \
-            --output spdx-json=/out/native-clients.spdx.json
+          native_arguments=()
+          if [[ "${{ needs.validate.outputs.distribution }}" = full ]]; then
+            native="$(find "${RUNNER_TEMP}/inputs" -type d \
+              -name 'community-native-clients-UNSIGNED-*' -print -quit)"
+            test -n "${native}"
+            native_arguments=(--native-artifacts "${native}")
+            docker run --rm --volume "${native}:/scan:ro" \
+              --volume "${RUNNER_TEMP}/sbom:/out" \
+              "${SYFT_IMAGE}" scan dir:/scan \
+              --output spdx-json=/out/native-clients.spdx.json
+          fi
           linux="$(find "${RUNNER_TEMP}/inputs" -type f \
             -name 'talos-server_*_linux_x86_64' -print -quit)"
           windows="$(find "${RUNNER_TEMP}/inputs" -type f \
@@ -250,6 +292,7 @@ jobs:
             --output spdx-json=/out/launcher-windows.spdx.json
           cd apps
           bun ./scripts/community-release-bundle.ts \
+            --distribution "${{ needs.validate.outputs.distribution }}" \
             --repo-root .. \
             --output "${RUNNER_TEMP}/talos-community-${{ needs.validate.outputs.version }}" \
             --release-tag "${{ inputs.release_tag }}" \
@@ -257,7 +300,7 @@ jobs:
             --source-sha "${{ needs.validate.outputs.source_sha }}" \
             --linux-launcher "${linux}" \
             --windows-launcher "${windows}" \
-            --native-artifacts "${native}" \
+            "${native_arguments[@]}" \
             --image-records "${RUNNER_TEMP}/published-images.json" \
             --sbom-directory "${RUNNER_TEMP}/sbom"
           cd ..
@@ -265,19 +308,24 @@ jobs:
           mkdir -p "${output}"
           epoch="$(git show -s --format=%ct "${{ needs.validate.outputs.source_sha }}")"
           tar --sort=name --mtime="@${epoch}" --owner=0 --group=0 --numeric-owner \
-            -czf "${output}/talos-community-${{ needs.validate.outputs.version }}.tar.gz" \
+            -czf "${output}/talos-community-${{ needs.validate.outputs.version }}-linux-x86_64.tar.gz" \
             -C "${RUNNER_TEMP}" "talos-community-${{ needs.validate.outputs.version }}"
           (
             cd "${RUNNER_TEMP}"
             find "talos-community-${{ needs.validate.outputs.version }}" -type f -print |
               LC_ALL=C sort |
-              zip -X -q "${output}/talos-community-${{ needs.validate.outputs.version }}.zip" -@
+              zip -X -q "${output}/talos-community-${{ needs.validate.outputs.version }}-windows-x86_64-UNSIGNED.zip" -@
           )
           find "${RUNNER_TEMP}/inputs/community-source-${{ needs.validate.outputs.version }}" \
             -maxdepth 1 -type f ! -name SHA256SUMS -exec cp {} "${output}/" \;
           fingerprint="$(jq -r '.signing.updaterManifestPublicKeySha256' \
             "${RUNNER_TEMP}/talos-community-${{ needs.validate.outputs.version }}/release-manifest.json")"
-          [[ "${fingerprint}" =~ ^[0-9a-f]{64}$ ]]
+          if [[ "${{ needs.validate.outputs.distribution }}" = controller ]]; then
+            test "${fingerprint}" = null
+            fingerprint="not applicable (controller-only; native clients not included)"
+          else
+            [[ "${fingerprint}" =~ ^[0-9a-f]{64}$ ]]
+          fi
           sed \
             -e 's/REPLACE_WITH_FULL_COMMIT_SHA/${{ needs.validate.outputs.source_sha }}/g' \
             -e "s/REPLACE_WITH_REVIEWED_FINGERPRINT/${fingerprint}/g" \
@@ -302,3 +350,37 @@ jobs:
           if-no-files-found: error
           retention-days: 90
           compression-level: 0
+
+  smoke-linux:
+    needs: [validate, bundle]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ needs.validate.outputs.source_sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: community-release-bundle-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/release
+      - name: Verify and run the assembled bundle as a fresh Linux user
+        env:
+          TALOS_DISPOSABLE_SMOKE: "yes"
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "${RUNNER_TEMP}/release"
+          sha256sum --check SHA256SUMS
+          bash "${GITHUB_WORKSPACE}/scripts/smoke-community-bundle.sh" \
+            "${RUNNER_TEMP}/release/talos-community-${{ needs.validate.outputs.version }}-linux-x86_64.tar.gz" \
+            "${RUNNER_TEMP}/smoke-evidence"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: community-linux-startup-evidence-${{ needs.validate.outputs.version }}
+          path: ${{ runner.temp }}/smoke-evidence
+          if-no-files-found: error
+          retention-days: 90

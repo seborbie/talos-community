@@ -29,6 +29,12 @@ where
     crate::config::validate_absolute_path("state directory", &cli.state_dir)?;
     let executor = SystemExecutor;
     match cli.command {
+        CliCommand::Quickstart { config } => crate::quickstart::run(
+            &cli.state_dir,
+            cli.docker_path.as_deref(),
+            &config,
+            &executor,
+        ),
         CliCommand::Install {
             config,
             external_database_backup,
@@ -111,7 +117,7 @@ fn ensure_supported_host() -> Result<()> {
     }
 }
 
-fn install(
+pub(crate) fn install(
     root: &Path,
     docker_path: Option<&Path>,
     request_path: &Path,
@@ -255,7 +261,11 @@ fn install(
     Ok(())
 }
 
-fn start(root: &Path, docker_path: Option<&Path>, executor: &dyn CommandExecutor) -> Result<()> {
+pub(crate) fn start(
+    root: &Path,
+    docker_path: Option<&Path>,
+    executor: &dyn CommandExecutor,
+) -> Result<()> {
     let _lock = OperationLock::acquire(root)?;
     let (config, secrets, mut state) = load_installation(root)?;
     require_no_incomplete_operation(&state)?;

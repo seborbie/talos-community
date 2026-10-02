@@ -7,6 +7,7 @@ pub mod images;
 pub mod network;
 pub mod orchestrator;
 pub mod process;
+pub mod quickstart;
 pub mod redaction;
 pub mod secure_fs;
 pub mod state;

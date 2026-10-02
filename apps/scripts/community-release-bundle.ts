@@ -2,7 +2,16 @@
 
 import { createHash } from 'node:crypto';
 import { createReadStream } from 'node:fs';
-import { copyFile, lstat, mkdir, opendir, readFile, readdir, writeFile } from 'node:fs/promises';
+import {
+  chmod,
+  copyFile,
+  lstat,
+  mkdir,
+  opendir,
+  readFile,
+  readdir,
+  writeFile,
+} from 'node:fs/promises';
 import { dirname, relative, resolve, sep } from 'node:path';
 import { parseCommunityReleaseIdentity } from './community-release-version';
 
@@ -22,6 +31,7 @@ const DOCUMENT_ASSETS = [
   'docs/community-edge.md',
   'docs/community-release-process.md',
   'docs/release-signing.md',
+  'docs/getting-started-downloads.md',
   'apps/talos_appliance/README.md',
 ] as const;
 const LEGAL_ASSETS = ['LICENSE', 'THIRD_PARTY_NOTICES.md'] as const;
@@ -43,6 +53,7 @@ export type PublishedImageRecord = {
 };
 
 export type CommunityBundleInputs = {
+  distribution?: 'controller' | 'full';
   repoRoot: string;
   outputDirectory: string;
   releaseTag: string;
@@ -50,7 +61,7 @@ export type CommunityBundleInputs = {
   sourceSha: string;
   linuxLauncher: string;
   windowsLauncher: string;
-  nativeArtifactsDirectory: string;
+  nativeArtifactsDirectory?: string;
   imageRecordsFile: string;
   sbomDirectory: string;
 };
@@ -269,12 +280,13 @@ async function inspectWindowsTrust(directory: string, sourceSha: string): Promis
 async function verifySboms(
   directory: string,
   imageRecords: Record<ImageKey, PublishedImageRecord>,
+  includeNativeClients: boolean,
 ): Promise<void> {
   const required = new Set([
     'source.spdx.json',
     'launcher-linux.spdx.json',
     'launcher-windows.spdx.json',
-    'native-clients.spdx.json',
+    ...(includeNativeClients ? ['native-clients.spdx.json'] : []),
     ...IMAGE_KEYS.map((key) => imageRecords[key].sbomFile),
   ]);
   for (const relativePath of required) {
@@ -344,6 +356,13 @@ async function writeChecksums(root: string): Promise<void> {
 }
 
 export async function assembleCommunityReleaseBundle(inputs: CommunityBundleInputs): Promise<void> {
+  const distribution = inputs.distribution ?? 'full';
+  if (distribution !== 'full' && distribution !== 'controller') {
+    throw new Error('distribution must be controller or full');
+  }
+  if (distribution === 'controller' && inputs.nativeArtifactsDirectory !== undefined) {
+    throw new Error('controller-only bundle must not include native clients');
+  }
   const identity = parseCommunityReleaseIdentity({
     tag: inputs.releaseTag,
     sourceSha: inputs.sourceSha,
@@ -365,11 +384,15 @@ export async function assembleCommunityReleaseBundle(inputs: CommunityBundleInpu
     inputs.releaseVersion,
     inputs.sourceSha,
   );
-  const manifestFingerprint = await inspectWindowsTrust(
-    inputs.nativeArtifactsDirectory,
-    inputs.sourceSha,
-  );
-  await verifySboms(inputs.sbomDirectory, imageRecords);
+  let manifestFingerprint: string | null = null;
+  if (distribution === 'full') {
+    if (!inputs.nativeArtifactsDirectory) throw new Error('full bundle requires native artifacts');
+    manifestFingerprint = await inspectWindowsTrust(
+      inputs.nativeArtifactsDirectory,
+      inputs.sourceSha,
+    );
+  }
+  await verifySboms(inputs.sbomDirectory, imageRecords, distribution === 'full');
   await verifyRuntimeDependencyContract(inputs.repoRoot);
   await mkdir(inputs.outputDirectory, { recursive: true });
 
@@ -381,11 +404,30 @@ export async function assembleCommunityReleaseBundle(inputs: CommunityBundleInpu
     inputs.windowsLauncher,
     resolve(inputs.outputDirectory, 'bin/windows-x86_64/talos-server-UNSIGNED.exe'),
   );
-  await copyDirectory(
-    inputs.nativeArtifactsDirectory,
-    resolve(inputs.outputDirectory, 'clients/UNSIGNED-WINDOWS'),
-  );
+  if (distribution === 'full' && inputs.nativeArtifactsDirectory) {
+    await copyDirectory(
+      inputs.nativeArtifactsDirectory,
+      resolve(inputs.outputDirectory, 'clients/UNSIGNED-WINDOWS'),
+    );
+  }
   await copyDirectory(inputs.sbomDirectory, resolve(inputs.outputDirectory, 'sbom'));
+  await writeFile(
+    resolve(inputs.outputDirectory, 'UNSIGNED-BINARIES.txt'),
+    'IMPORTANT: UNSIGNED COMMUNITY BINARIES. Windows launchers are not Authenticode-signed. Verify checksums and provenance and follow organisation approval policy; do not disable security controls.\n',
+  );
+  // Artifact download loses executable mode. Restore it explicitly in the Linux archive.
+  await chmod(resolve(inputs.outputDirectory, 'bin/linux-x86_64/talos-server'), 0o755);
+  for (const name of ['Start-Talos.cmd', 'start-talos.sh']) {
+    await copyRegularFile(
+      resolve(inputs.repoRoot, 'apps/talos_appliance/bundle', name),
+      resolve(inputs.outputDirectory, name),
+    );
+  }
+  await chmod(resolve(inputs.outputDirectory, 'start-talos.sh'), 0o755);
+  await copyRegularFile(
+    resolve(inputs.repoRoot, 'docs/getting-started-downloads.md'),
+    resolve(inputs.outputDirectory, 'GETTING_STARTED.md'),
+  );
 
   for (const asset of LEGAL_ASSETS) {
     await copyRegularFile(resolve(inputs.repoRoot, asset), resolve(inputs.outputDirectory, asset));
@@ -431,6 +473,33 @@ export async function assembleCommunityReleaseBundle(inputs: CommunityBundleInpu
     },
   };
   await writeFile(
+    resolve(inputs.outputDirectory, 'community-install.local.json'),
+    `${JSON.stringify(
+      {
+        schema_version: 1,
+        release_version: inputs.releaseVersion,
+        update_channel: 'stable',
+        images: imageReferences,
+        database: { mode: 'bundled', user: 'talos', database: 'talos' },
+        edge: {
+          mode: 'local',
+          frontend_domain: 'talos.localhost',
+          api_domain: 'api.talos.localhost',
+          control_domain: 'control.talos.localhost',
+          relay_domain: 'relay.talos.localhost',
+          http_port: 8080,
+          https_port: 8443,
+          subnet: '172.31.240.0/24',
+          proxy_ipv4: '172.31.240.2',
+        },
+        paths: {},
+      },
+      null,
+      2,
+    )}\n`,
+    { encoding: 'utf8', mode: 0o600 },
+  );
+  await writeFile(
     resolve(inputs.outputDirectory, 'image-references.json'),
     `${JSON.stringify(
       { schemaVersion: 1, ...identity, images: imageRecords, runtimeDependencies },
@@ -471,12 +540,17 @@ export async function assembleCommunityReleaseBundle(inputs: CommunityBundleInpu
     resolve(inputs.outputDirectory, 'README.txt'),
     `Talos Community ${inputs.releaseVersion}\n\n` +
       '1. Verify SHA256SUMS before using any file.\n' +
-      '2. Edit community-install.example.json and replace every example.invalid value.\n' +
-      '3. Run the launcher for your platform: talos-server install --config <absolute-path>.\n' +
+      '2. Start Docker with Compose v2 or newer (Linux containers on Windows).\n' +
+      '3. Windows: double-click Start-Talos.cmd. Linux x86-64: sudo ./start-talos.sh.\n' +
+      '   Open https://talos.localhost:8443 and create the first account.\n' +
+      '   See GETTING_STARTED.md for certificate trust, persistence and troubleshooting.\n' +
+      '   Local mode binds only 127.0.0.1; remote device access needs a public deployment.\n' +
       '4. Windows launchers and client artifacts in this release are intentionally unsigned.\n' +
-      '5. The updater manifests remain cryptographically signed; their public-key fingerprint is\n' +
-      `   ${manifestFingerprint}.\n\n` +
-      'See notices-and-guides/docs/community-deployment.md and docs/release-signing.md.\n',
+      (manifestFingerprint
+        ? `5. Included client updater manifests are signed. Public-key SHA-256: ${manifestFingerprint}.\n\n`
+        : '5. Controller-only release: native clients/updater manifests are not included.\n\n') +
+      'For public deployment edit community-install.example.json and follow\n' +
+      'notices-and-guides/docs/community-deployment.md and docs/release-signing.md.\n',
     'utf8',
   );
 
@@ -493,6 +567,7 @@ export async function assembleCommunityReleaseBundle(inputs: CommunityBundleInpu
     `${JSON.stringify(
       {
         schemaVersion: 1,
+        distribution,
         release: identity,
         generatedBy: 'apps/scripts/community-release-bundle.ts',
         provenanceKind: 'release-bundle-metadata-not-cryptographic-attestation',
@@ -525,8 +600,16 @@ function rawOption(name: string): string {
   return value;
 }
 
+function distributionOption(): 'controller' | 'full' {
+  const value = rawOption('--distribution');
+  if (value !== 'controller' && value !== 'full')
+    throw new Error('distribution must be controller or full');
+  return value;
+}
+
 if (import.meta.main) {
   await assembleCommunityReleaseBundle({
+    distribution: distributionOption(),
     repoRoot: option('--repo-root'),
     outputDirectory: option('--output'),
     releaseTag: rawOption('--release-tag'),
@@ -534,7 +617,9 @@ if (import.meta.main) {
     sourceSha: rawOption('--source-sha'),
     linuxLauncher: option('--linux-launcher'),
     windowsLauncher: option('--windows-launcher'),
-    nativeArtifactsDirectory: option('--native-artifacts'),
+    ...(Bun.argv.includes('--native-artifacts')
+      ? { nativeArtifactsDirectory: option('--native-artifacts') }
+      : {}),
     imageRecordsFile: option('--image-records'),
     sbomDirectory: option('--sbom-directory'),
   });

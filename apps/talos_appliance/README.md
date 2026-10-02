@@ -10,6 +10,14 @@ and expect Windows SmartScreen to warn until project-funded code signing is avai
 
 ## Install request
 
+Release archives include `community-install.local.json` with exact public image digests, local
+loopback ports 8080/8443, bundled PostgreSQL, and no shared credentials. Windows users can extract
+and double-click `Start-Talos.cmd`; Linux x86-64 users can run `sudo ./start-talos.sh`. Read the
+bundled `GETTING_STARTED.md` for Docker and certificate trust. The wrappers invoke
+`quickstart --config <absolute-path>`: first launch installs, matching later launches start saved
+state, and changes require explicit update. Windows quickstart uses
+`%LOCALAPPDATA%\Talos\Server`; bare CLI commands retain the ProgramData default below.
+
 Start from [talos-server.example.json](talos-server.example.json), replace all four example registry
 references with one Talos release's immutable digests, and set four distinct domains. For public
 ACME, make DNS and inbound TCP 80/443 work before installation.
@@ -36,6 +44,8 @@ Use --docker with an absolute path only when automatic Docker CLI discovery is u
 launcher detects prerequisites but never installs a privileged container runtime.
 
 ## Commands
+
+    talos-server quickstart --config community-install.local.json
 
     talos-server install --config request.json [--external-database-backup file]
     talos-server start
