@@ -39,6 +39,10 @@ updater-manifest signing policy.
 
 ## Linux
 
+The release workflow targets **Ubuntu 24.04 x86-64** for the launcher build and startup smoke.
+That is the download baseline; older glibc distributions and musl/Alpine hosts are not verified.
+The separately published application containers carry their own runtime dependencies.
+
 Download `talos-community-<version>-linux-x86_64.tar.gz` and `SHA256SUMS`. Compare its
 `sha256sum` with the corresponding line, extract it, and enter the extracted folder:
 

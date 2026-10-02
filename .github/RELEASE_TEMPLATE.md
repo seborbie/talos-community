@@ -32,6 +32,7 @@
   approve its trust for both frontend and API. Remote devices require the public deployment guide.
 - No default account or password; registration closes after the first account.
 - Four public Linux images support amd64/arm64; the downloadable launchers support x86-64 only.
+- Linux download baseline: Ubuntu 24.04 x86-64; older glibc and musl/Alpine hosts are unverified.
 - The bundle includes PostgreSQL; no separately installed database or Redis is required.
 - OS service registration and automatic Docker installation are not provided.
 

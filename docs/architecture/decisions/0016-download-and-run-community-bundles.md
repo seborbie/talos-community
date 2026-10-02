@@ -96,6 +96,8 @@ One archive, one launcher action, and browser setup replace source compilation a
 for evaluation. Docker and certificate trust remain explicit prerequisites. Images cover amd64 and
 arm64, while downloadable launchers cover x86-64 only. Windows/Linux binaries remain unsigned as
 specified by the existing release policy. No offline installer or Windows service is claimed.
+The Linux download baseline is Ubuntu 24.04 x86-64, matching the hosted builder and release smoke;
+compatibility with older glibc or musl hosts is not established by the local Docker test.
 
 Focused tests cover dispatch, prerequisites, first/repeated startup selection, configuration drift,
 and unsafe recovery. Bundle tests verify exact local image references, no credentials, checksums,
