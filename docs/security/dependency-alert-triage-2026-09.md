@@ -5,7 +5,7 @@ Review due: **2026-09-07**. Prepared 2026-09-05; this document does not close th
 
 ## Priority and scope
 
-The GitHub baseline has 11 alerts: five high, four moderate and two low. This is the highest actionable maintenance item: severity 4 (high-impact security), urgency 4 (due within 48 hours), score 16. No demonstrated Talos exploit or active exploitation was established by this review.
+The initial GitHub baseline had 11 alerts: five high, four moderate and two low. At preparation this was the highest actionable maintenance item: severity 4 (high-impact security), urgency 4 (due within 48 hours), score 16. No demonstrated Talos exploit or active exploitation was established by this review.
 
 The local remediation updates three existing dependencies within their owning manifest constraints:
 
@@ -37,4 +37,24 @@ This patch changes dependency resolution, not trust configuration, credentials, 
 
 ## Validation
 
-`bun run quality` passed locally on macOS with 408 JavaScript tests and 411 Rust tests, including the focused security regression. `bun run license:check` passed for 299 Bun and 748 Cargo packages. The security regression was also executed against the pre-update lockfile and failed as intended. Two opt-in PostgreSQL integrations were skipped locally because their database URLs were not configured. Windows/Linux CI and a GitHub dependency rescan have not run for this local patch. No claim of a closed GitHub alert is made.
+`bun run quality` passed locally on macOS with 408 JavaScript tests and 411 Rust tests, including the focused security regression. `bun run license:check` passed for 299 Bun and 748 Cargo packages. The security regression was also executed against the pre-update lockfile and failed as intended. Two opt-in PostgreSQL integrations were skipped locally because their database URLs were not configured. At preparation, Windows/Linux CI and the GitHub dependency rescan were pending. The integration verification below supersedes that status.
+
+## Integration verified on 2026-09-06
+
+PR #32 was merged into the repair branch, then [PR #31](https://github.com/seborbie/talos-community/pull/31)
+landed both fixes on main as `10e1698ae892c73453252305abbec40c3f105231` on September 5.
+[Main quality](https://github.com/seborbie/talos-community/actions/runs/33962065445) passed all seven
+platform/integration jobs, and [dependency security](https://github.com/seborbie/talos-community/actions/runs/33962065398)
+passed. These hosted checks were executed September 5 and inspected September 6; the local
+validation above is historical evidence, not a rerun today.
+
+The GitHub alert API now reports alerts 2–11 fixed, with fix timestamps on September 5: all eight
+OpenSSL alerts, serde_with, and rand. Alert 1 (GLib, moderate) remains open. The current #30
+priority is severity 3 × urgency 4 (September 7 deadline), score 12. No active exploit was
+established. The [hosted GLib update](https://github.com/seborbie/talos-community/actions/runs/33962071554)
+confirms that 0.18.5 is the latest resolvable version and 0.20.0 the first fixed version. Keep
+#30 and DR-001 open while evaluating a supported upstream migration; no deadline or exception
+has been extended. PUB-001 human reviews remain due September 11 (severity 3 × urgency 3 = 9).
+
+On September 6, `bun test scripts/cargo-security-regression.test.ts` passed again against the
+integrated lockfile (3 tests, 17 assertions). Full local quality was not rerun for this documentation-only update.
