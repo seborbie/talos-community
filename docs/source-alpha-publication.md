@@ -54,3 +54,61 @@ retroactively complete any review, renew PUB-001 or establish missing ownership/
 
 Platform installer lifecycle, complete binary notices/SBOMs, production Compose/ACME and
 backup/restore evidence remain gates for an official packaged release.
+
+The [September follow-up review packet](security/source-alpha-review-2026-09.md) maps the open
+PUB-001 acceptance items to current source and verification evidence. Its pending items do not
+change this publication decision or its deadline.
+
+## Historical status reassessed September 11, 2026
+
+The official repository is now private according to GitHub's API. The enabled-reporting and
+protection evidence above describes the original publication, not the current configuration.
+Private-reporting inspection now returns 404, and protection/ruleset inspection returns 403 with a
+plan/visibility restriction. The [current review packet](security/source-alpha-review-2026-09.md)
+records the resulting intake and review blockers. PUB-001 remains open and due September 11;
+no deadline, release permission, or security setting was changed by this reassessment.
+
+## Historical status reassessed September 14, 2026
+
+GitHub now reports public visibility and private vulnerability reporting enabled. This supersedes
+the September 11 availability evidence above; a non-maintainer submission and maintainer receipt
+are still unverified. PUB-001 remains overdue from September 11, and its qualified reviews remain
+outstanding. No exception deadline has changed.
+
+The main branch protection endpoint now returns HTTP 404 (`Branch not protected`), and the
+repository ruleset list is empty. These results differ from the earlier visibility/plan error.
+Sebastian must review the missing protection configuration; maintenance has not changed any
+security settings and continues to require independent review before integration.
+
+PR #40 at `da80edb77a3f88b7274c0683ec21b5b1efa92907` passed all seven hosted Quality jobs
+(run 34748147939) and dependency security (34748166328), executed September 13 and inspected
+September 14. These results predate this status correction. PR #41 is still its prerequisite
+and requires independent review. No integration or supported release is claimed.
+
+## Historical status reassessed October 2, 2026
+
+Main remains `e76907551f335af84c439dadb431cb9f2fad0c7e`; it is public with private reporting
+enabled, but main is unprotected and the ruleset list is empty. Non-maintainer intake and
+qualified human acceptance remain unverified. PUB-001 and the dependency review issue #30 are
+still overdue with unchanged dates. The [updated review packet](security/source-alpha-review-2026-09.md)
+records the proposed October dependency repairs, their exact CI evidence, and the unresolved
+Linux GLib finding. The repairs are not integrated and do not clear a supported release.
+
+## Status reassessed October 5, 2026
+
+The dependency repairs and independent AI-or-human review policy are now integrated. This
+packet's actual main base is `7f3d24e24fc06e576b1185de3474ab9980d36715`, including merged
+#55 exposure/expiry corrections and the independently reviewed, fully checked #41 fixture fix.
+[The follow-up packet](security/source-alpha-review-2026-09.md) records exact earlier main
+and prerequisite-head CI, distinguishes this documentation head's pending verification, and
+retains the unresolved high deepmerge-ts, low cookie and Linux GLib findings. DR-008/DR-009
+expiry is not approved or established; their review date does not complete release acceptance.
+
+Read-only October 5 observations confirmed public visibility and enabled private reporting.
+The dated protection snapshot still showed unprotected main and no rulesets. Both policy routes'
+non-maintainer submission/private receipt, full source security review, licence/notice/name-logo
+acceptance and packaged-release evidence remain pending. PUB-001 remains open and overdue from
+September 11; issue #30 remains open and overdue from September 7. The current review policy
+permits independent qualified AI or human review, without supplying missing rights, platform
+approvals or acceptance evidence. This update changes no security setting, exception deadline
+or release authorization.

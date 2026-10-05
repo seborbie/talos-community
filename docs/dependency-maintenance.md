@@ -29,9 +29,13 @@ the vpx patch, WiX/7-Zip acquisition policy, and container pins in Dockerfiles/C
 maintenance items; the daily repository review must include them. Existing CI, licence, lockfile,
 and advisory gates continue to apply to dependency changes. No advisory is ignored by this fix.
 
-The owner currently wants only `main` on public GitHub. Maintainers prepare fixes locally until the
-owner authorizes the normal reviewed change flow. Dependabot itself creates temporary PR branches
-when updates are available; it cannot apply updates while permanently keeping exactly one branch.
+The owner has authorized autonomous maintenance branches, PR creation, review, and normal merges
+once required checks and reviews are satisfied. Use temporary `codex/` branches, verify main after
+integration, and delete merged maintenance branches after safely retargeting dependent PRs.
+Author self-review does not substitute for independent qualified AI or human review under
+[the review policy](review-policy.md). Repository security-setting changes and release actions
+require separate authorization. Dependabot creates temporary PR branches when updates are
+available; it cannot apply updates while permanently keeping exactly one branch.
 Do not automatically delete those new proposals. Closed older proposals may require a Dependabot
 recheck/recreation after the repair is merged.
 
@@ -78,6 +82,18 @@ ADR-0018 records the Tauri 2.12.1 / deep-link 2.6.1 alignment and its regression
 reads the workspace lockfiles/manifests directly because Tauri's npm-based discovery does not
 report the installed packages in this isolated Bun workspace. Do not bypass its native version
 check or infer compatibility from a CLI version output. Roll back JavaScript/Rust pins and both
-locks together. The recovered Vite migration remains a separate draft, preserving ADR-0017 and
-its preprocessing/CSS regressions. Native installer/signing execution and independent qualified
-AI or human review remain separate gates; the Linux GLib finding is unchanged.
+locks together. The recovered native coordination and Vite migration were merged through
+PRs #52 and #53 on October 5, preserving ADR-0017/0018 and their regressions. Native
+installer/signing execution and independent qualified AI or human review remain separate gates;
+the Linux GLib finding is unchanged.
+
+## Hosted verification on 2026-09-06
+
+The repair reached `main` in `10e1698ae892c73453252305abbec40c3f105231`.
+[Main quality](https://github.com/seborbie/talos-community/actions/runs/33962065445) and
+[dependency security](https://github.com/seborbie/talos-community/actions/runs/33962065398) passed.
+The [hosted Cargo security update](https://github.com/seborbie/talos-community/actions/runs/33962071554)
+progressed beyond manifest fetching and reported `security_update_not_possible`: GLib 0.18.5 is
+the latest resolvable version, while the first fixed version is 0.20.0. This verifies the manifest
+repair, but does not resolve the GLib finding or establish a successful routine Cargo update;
+the concurrent routine Cargo run was cancelled. Bun and GitHub Actions updates produced new PRs.
