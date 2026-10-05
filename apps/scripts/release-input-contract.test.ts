@@ -22,7 +22,7 @@ describe('release input contract', () => {
       JSON.stringify({ devDependencies: {} }),
       'bun x @tauri-apps/cli build',
     );
-    expect(failures).toContain('talos_viewer must declare @tauri-apps/cli exactly at 2.11.5');
+    expect(failures).toContain('talos_viewer must declare @tauri-apps/cli exactly at 2.12.1');
     expect(failures).toContain(
       'build-macos-viewer.sh must not fetch the Tauri CLI dynamically with bun x',
     );
@@ -35,18 +35,18 @@ describe('release input contract', () => {
     const manifest = (version: string) =>
       JSON.stringify({ devDependencies: { '@tauri-apps/cli': version } });
 
-    expect(macosViewerReleaseInputFailures(manifest('2.11.5'), script)).toEqual([]);
-    for (const version of ['2.10.1', '2.11.4', '^2.11.5', 'latest']) {
+    expect(macosViewerReleaseInputFailures(manifest('2.12.1'), script)).toEqual([]);
+    for (const version of ['2.10.1', '2.11.5', '2.12.0', '^2.12.1', 'latest']) {
       expect(macosViewerReleaseInputFailures(manifest(version), script)).toContain(
-        'talos_viewer must declare @tauri-apps/cli exactly at 2.11.5',
+        'talos_viewer must declare @tauri-apps/cli exactly at 2.12.1',
       );
       expect(
         macosViewerReleaseInputFailures(
-          manifest('2.11.5'),
-          script.replace('TAURI_CLI_VERSION="2.11.5"', `TAURI_CLI_VERSION="${version}"`),
+          manifest('2.12.1'),
+          script.replace('TAURI_CLI_VERSION="2.12.1"', `TAURI_CLI_VERSION="${version}"`),
         ),
       ).toContain(
-        'build-macos-viewer.sh is missing release-input protection: TAURI_CLI_VERSION="2.11.5"',
+        'build-macos-viewer.sh is missing release-input protection: TAURI_CLI_VERSION="2.12.1"',
       );
     }
   });
