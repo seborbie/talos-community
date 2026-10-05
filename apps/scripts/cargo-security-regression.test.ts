@@ -10,6 +10,7 @@ const reviewedRanges = [
   { name: 'rand', vulnerable: '>=0.9.0 <0.9.3', patched: '0.9.3' },
   { name: 'rand', vulnerable: '=0.10.0', patched: '0.10.1' },
   { name: 'chacha20', vulnerable: '>=0.10.0 <0.10.2', patched: '0.10.2' },
+  { name: 'rustls', vulnerable: '>=0.23.13 <0.23.45', patched: '0.23.45' },
 ];
 
 function violations(lockfile: string): string[] {
@@ -60,6 +61,8 @@ describe('reviewed Cargo security fixes', () => {
       ['rand', '0.10.0'],
       ['chacha20', '0.10.0'],
       ['chacha20', '0.10.1'],
+      ['rustls', '0.23.36'],
+      ['rustls', '0.23.44'],
     ] as const) {
       expect(violations(fixture(name, version)).length).toBeGreaterThan(0);
     }
