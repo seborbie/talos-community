@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import { communityContainerBuildInputFailures } from './community-container-build-input-contract';
 import {
   authenticodeInstallerSequenceFailures,
   wixToolManifestFailures,
@@ -352,6 +353,7 @@ export async function checkReleaseInputContract(
     workspaceManifest,
     rustToolchain,
     wixToolManifest,
+    candidateWorkflow,
   ] = await Promise.all([
     Bun.file(resolve(repoRoot, 'apps/talos_viewer/package.json')).text(),
     Bun.file(resolve(repoRoot, 'scripts/build-macos-viewer.sh')).text(),
@@ -368,10 +370,12 @@ export async function checkReleaseInputContract(
     Bun.file(resolve(repoRoot, 'apps/package.json')).text(),
     Bun.file(resolve(repoRoot, 'apps/rust-toolchain.toml')).text(),
     Bun.file(resolve(repoRoot, '.config/dotnet-tools.json')).text(),
+    Bun.file(resolve(repoRoot, '.github/workflows/community-release-candidate.yml')).text(),
   ]);
 
   return {
     failures: [
+      ...communityContainerBuildInputFailures(candidateWorkflow),
       ...macosViewerReleaseInputFailures(viewerPackage, viewerBuild),
       ...macosLibvpxReleaseInputFailures(macosAgentBuild, macosDocs),
       ...linuxRustupReleaseInputFailures(linuxBuild, windowsBuild),

@@ -172,7 +172,28 @@ the exact locally generated certificate via `--cacert`, never a trust-store chan
 bypass. Only non-secret statuses/checksums/results are uploaded; auth responses and synthetic
 passwords stay in a private temporary directory and are removed. This job must pass for the
 publication run to succeed and become eligible for promotion. It supplements the broader manual
-Windows/Linux release evidence below; it does not clear that evidence or human review.
+Windows/Linux release evidence below; it does not complete that evidence or independent
+qualified AI or human review under [the review policy](review-policy.md).
+
+The candidate's image-build job pins its privileged emulator image to the reviewed
+`tonistiigi/binfmt` digest and installs only the ARM64 emulator required by the amd64/arm64
+image matrix. Buildx `v0.37.2` is downloaded from its exact upstream release URL and checked
+against the reviewed SHA-256 before execution and after installation into an isolated Docker
+configuration. The helper checks the setup action's actual availability probe and the selected
+version; the setup action retains that installed plugin with its version input omitted and binary
+caching disabled. Its upstream source still has an unverified download fallback if availability
+changes inside the action; the preceding unconditional guard covers the normal, unchanged-runner
+path rather than removing that fallback. The Docker-container driver selects the reviewed
+`moby/buildkit` digest instead of an implicit moving image. The setup action SHAs remain the
+existing permitted versions while the proposed Actions updates await separate approval.
+The parsed build-input contract rejects missing, floating, duplicate or conditionally skipped
+setup inputs in that job. Changing these pins requires reviewing upstream provenance/licences
+and refreshing the contract and applicable checks. Source checks do not execute or qualify
+these tools, the candidate images or the assembled release; those remain release evidence gates.
+The checksum comes from the [official Buildx v0.37.2 release](https://github.com/docker/buildx/releases/tag/v0.37.2)
+and its [published checksum file](https://github.com/docker/buildx/releases/download/v0.37.2/checksums.txt),
+which agree on the Linux amd64 binary digest. Published provenance/signature files are separate
+evidence; this source check does not verify their cryptographic identity or subject binding.
 
 The assembler can also be exercised locally after obtaining all protected inputs:
 

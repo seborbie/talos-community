@@ -90,6 +90,15 @@ image private; owner visibility configuration followed by an idempotent exact-di
 it without retagging. Smoke runs contain only synthetic users and no production infrastructure;
 raw auth responses, generated credentials and certificate keys are excluded from evidence uploads.
 
+The image builder's privileged binfmt image and BuildKit driver image use reviewed immutable
+digests. Its Buildx plugin uses the fixed upstream v0.37.2 asset and published SHA-256, checked
+before execution and after installation in an isolated temporary Docker configuration. The helper
+must pass the pinned setup action's availability probe and selected-version check immediately
+before setup; no acquisition cache or action version input is used. An unexpected later
+availability failure can still reach the upstream action's unverified downloader, so release
+qualification must inspect the actual setup log and selected tool. These source controls do not
+prove signed upstream provenance or successful emulator, builder or container execution.
+
 ## Consequences and verification
 
 One archive, one launcher action, and browser setup replace source compilation and public DNS setup
@@ -105,13 +114,15 @@ notices, and executable Linux modes. Linux release smoke covers anonymous releas
 first-account creation/closure, stop/restart and preserve-data uninstall with login persistence,
 secret persistence, and loopback ports. Actual Windows double-click/DACL/SmartScreen, browser trust,
 native installer/updater, ARM64 runtime, public ACME and real relay traffic still require the
-existing clean-host evidence and qualified human review.
+existing clean-host evidence and independent qualified AI or human review under
+[the review policy](../../review-policy.md).
 
 ## Rollout and rollback
 
-Integrate after independent review and required checks, without conflicting with pending #41/#40
-or the separately owned dependency lockfile repairs. This work is stacked on the exact PR48
-security repair, without duplicating its lockfile changes. Complete protected environment review,
+Integrate the final main-based head after independent qualified AI or human review and required
+checks under [the review policy](../../review-policy.md). Preserve the merged dependency and
+publication ancestry when refreshing this branch. Its October 2 source base was the exact PR48
+security repair; that historical stack does not verify a later integration head. Complete protected environment review,
 owner package visibility, licence/source/security reviews, and platform evidence
 before running publication. No new persistent credential is introduced; Actions uses its scoped
 ephemeral token. No release is cleared by this ADR alone.

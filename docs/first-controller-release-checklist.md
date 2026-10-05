@@ -1,21 +1,32 @@
 # First controller prerelease: exact owner actions
 
-Status on 2026-10-02: no GitHub release or approved download exists. Main is
+Historical status on 2026-10-02: no GitHub release or approved download exists. Main is
 `e76907551f335af84c439dadb431cb9f2fad0c7e`. The controller change is
 [PR #50](https://github.com/seborbie/talos-community/pull/50), stacked on the security repair
-[PR #48](https://github.com/seborbie/talos-community/pull/48). Both currently lack human reviews.
+[PR #48](https://github.com/seborbie/talos-community/pull/48). Both lacked human reviews under the policy then in force.
 The implemented build/test source at `93687057762d4d7ad4f78442cb49b02f50721b57` passed
 [all seven hosted quality jobs](https://github.com/seborbie/talos-community/actions/runs/36986467520).
 Later README-only changes do not constitute release approval.
 
+## Review-policy reassessment — 2026-10-05
+
+The security and dependency repair stack, including #48, is now merged. The current
+[review policy](review-policy.md) permits independent qualified AI or human review. The
+original #50 source received a separate independent review that requested four documentation
+corrections; a future repaired main-based head still requires its own approval and fresh checks.
+Historical hosted results above do not verify that future head. This policy change does not
+extend source-only publication to binaries/containers, renew an exception or complete missing
+rights, platform evidence or protected approval.
+
 ## 1. Unblock the reviewed source commit — needed next
 
-- Name a qualified reviewer and obtain review of #48 and #50. The requirement is explicit in
+- Obtain independent qualified AI or human release/security review of the exact final
+  main-based #50 head under [the review policy](review-policy.md),
   [AGENTS.md](../AGENTS.md#safety-sensitive-areas) and
-  [ENGINEERING_QUALITY.md](../ENGINEERING_QUALITY.md#review-and-automated-agent-behavior):
-  “release pipelines require qualified human review”. Resolve review comments and integrate
-  through the repository's normal review process; rerun checks on the final integration commit.
-  Preserve the separately owned #41/#40 publication work and #49 dependency repair.
+  [ENGINEERING_QUALITY.md](../ENGINEERING_QUALITY.md#review-and-automated-agent-behavior).
+  Resolve findings and integrate through the normal review process with fresh applicable checks.
+  Preserve the already reviewed dependency repairs and publication work. Author self-review
+  and passing CI do not supply independent approval or release authorization.
 - Include the authorised **controller-only alpha** distribution in that qualified review: Windows x64
   launcher, Ubuntu 24.04 x86-64
   launcher, four public amd64/arm64 application images, bundled PostgreSQL/Traefik, corresponding

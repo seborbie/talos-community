@@ -60,7 +60,8 @@ repository/package security-setting change occurred.
 ## Still required before publication
 
 Run the unchanged hosted quality/security gates on the final integration commit. Complete
-qualified human installer/release review and confirm binary/container licensing and source
+independent qualified AI or human installer/release review under [the review policy](../review-policy.md)
+and confirm binary/container licensing and source
 publication approval. The existing publication decision covers a source-only alpha; this report
 cannot extend its scope. Inspect protected environment/tag rules before dispatching any release.
 
@@ -75,3 +76,13 @@ ARM64 runtime support, public ACME and real relay/WebSocket traffic are not demo
 local test. Clean-host upgrade and deliberately failed-update recovery evidence also remain
 release requirements. Full native-client scope additionally needs its protected signer,
 PFX/password and independently reviewed updater-key fingerprint; controller-only scope does not.
+
+## Review-policy addendum — 2026-10-05
+
+Current reviewer eligibility follows the independent AI-or-human policy above. The execution
+results in this dated record remain historical, including the local macOS quality failure and
+emulated/preloaded-image limitations. A repaired main-based #50 head needs separate exact-head
+source approval and fresh applicable hosted checks. No release workflow, anonymous final-archive
+smoke or missing clean-host/platform acceptance is completed by this addendum. The recorded
+source-only publication decision and every outstanding licence, rights and protected approval
+requirement remain unchanged.

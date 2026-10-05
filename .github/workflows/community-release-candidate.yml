@@ -363,6 +363,8 @@ jobs:
     needs: validate
     runs-on: ubuntu-24.04
     timeout-minutes: 180
+    env:
+      DOCKER_CONFIG: ${{ runner.temp }}/talos-community-docker
     permissions:
       contents: read
       id-token: write
@@ -394,7 +396,20 @@ jobs:
       - working-directory: apps
         run: bun run third-party:vpx:prepare
       - uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+        with:
+          image: docker.io/tonistiigi/binfmt@sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0
+          platforms: arm64
+      - name: Install and verify the pinned Buildx plugin
+        id: verified-buildx
+        shell: bash
+        run: bash scripts/install-community-buildx.sh
       - uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+        with:
+          # The preceding checksum/availability guard installs the exact plugin; a version
+          # input here would invoke this action's unverified release downloader instead.
+          cache-binary: false
+          driver: docker-container
+          driver-opts: image=moby/buildkit@sha256:cec9f139f45e93c5c69c60f8b07cfad9f43f4ef6b6a6cd917527fea5ff2e3dea
       - uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
