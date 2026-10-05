@@ -98,7 +98,7 @@
   "devDependencies": {
     "@types/bun": "catalog:",
     "@types/node": "catalog:",
-    "prettier": "3.9.6",
+    "prettier": "3.9.9",
     "prettier-plugin-svelte": "4.1.1",
     "prisma": "catalog:",
     "typescript": "catalog:"
