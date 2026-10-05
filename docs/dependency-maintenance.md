@@ -53,3 +53,21 @@ release review before integration. Roll back the manifest/lock and script/contra
 The upstream [2.11.5 CLI release](https://github.com/tauri-apps/tauri/releases/tag/tauri-cli-v2.11.5)
 includes an updater signature/version binding fix. A passing frontend build or
 CLI version check does not verify packaged application signing or installer execution.
+
+### Replacement groups and native package compatibility
+
+Dependabot replaced #47 with #51 on October 5 and deleted #47's branch, which also closed the
+stacked Vite proposal #43 unmerged. Preserve the reviewed commits in maintainer-owned recovery
+branches; do not mistake either closure for integration. The replacement group incorporates the
+shared #48/#49 repair ancestry while leaving those PRs' scope unchanged. Its CLI 2.12.1 pin moves
+with the script and contract. Native Tauri API and Rust crate major/minor versions, including
+installed plugins, must also match. Direct viewer WebView2/Windows core types must share Wry's
+COM crate identities; frontend-only builds do not verify either boundary.
+
+ADR-0018 records the Tauri 2.12.1 / deep-link 2.6.1 alignment and its regression. The regression
+reads the workspace lockfiles/manifests directly because Tauri's npm-based discovery does not
+report the installed packages in this isolated Bun workspace. Do not bypass its native version
+check or infer compatibility from a CLI version output. Roll back JavaScript/Rust pins and both
+locks together. The recovered Vite migration remains a separate draft, preserving ADR-0017 and
+its preprocessing/CSS regressions. Native installer/signing execution and human review remain
+separate gates; the Linux GLib finding is unchanged.
