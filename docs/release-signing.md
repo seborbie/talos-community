@@ -80,8 +80,11 @@ For each release line:
 
 1. Record the expected public-key fingerprint in protected release records. Configure the exact
    lowercase value as `TALOS_EXPECTED_MANIFEST_KEY_SHA256` in the protected
-   `community-manifest-signing` GitHub environment and have a second maintainer compare it with the
-   bootstrap output. The candidate workflow fails before artifact handoff when the variable is
+   `community-manifest-signing` GitHub environment. A separate qualified AI or human reviewer must
+   compare the actual bootstrap output with the approved fingerprint and inspect the custody
+   evidence under [the review policy](review-policy.md), without accessing secret key material.
+   This review does not replace configured environment approval or authorize changes to protected
+   settings. The candidate workflow fails before artifact handoff when the variable is
    missing, malformed, or differs from `build-provenance.json` or `manifest.json`.
 2. Store the encrypted PFX and its password in separate protected systems. Keep at least one tested
    offline recovery copy of each, with access logging and a documented custodian.

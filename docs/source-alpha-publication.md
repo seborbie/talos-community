@@ -30,7 +30,7 @@ Tracking: [PUB-001](https://github.com/seborbie/talos-community/issues/1).
 Owner: Sebastian Orbe. Expiry/review deadline: **2026-09-11**.
 
 The exact unmet requirements are the non-maintainer reporting test and the outstanding qualified
-human/security, licence/notice, and name/logo reviews recorded in the readiness checklist. The
+security, licence/notice, and name/logo reviews recorded in the readiness checklist. The
 owner authorized this source publication after receiving the outstanding-checks report; this
 records that decision without claiming those reviews passed.
 
@@ -47,6 +47,10 @@ allowlisted and scanned source snapshot, passing automated licence checks, promi
 limitations, and exclusion of reconstructed vendor source and binary payloads. Complete or
 explicitly reassess the tracked checks by the deadline; subsequent releases must not rely on an
 expired exception. Do not convert this decision into legal, security, or production certification.
+
+As of October 5, [the review policy](review-policy.md) permits independent qualified AI or human
+review. The publication session lacked an independent reviewer; the eligibility change does not
+retroactively complete any review, renew PUB-001 or establish missing ownership/licence facts.
 
 Platform installer lifecycle, complete binary notices/SBOMs, production Compose/ACME and
 backup/restore evidence remain gates for an official packaged release.

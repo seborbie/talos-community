@@ -33,7 +33,7 @@ The focused Cargo security regression supplements current audits by rejecting th
 
 GLib 0.18.5 remains selected by the Linux Tauri/GTK stack. [RUSTSEC-2024-0429](https://rustsec.org/advisories/RUSTSEC-2024-0429.html) affects VariantStrIter and is fixed in GLib 0.20.0. A forced transitive bump across incompatible GTK/GLib versions is not a supported fix. [DR-001 / issue #2](https://github.com/seborbie/talos-community/issues/2) continues to track the platform migration. The one remaining moderate GitHub alert must remain open until a compatible solution is integrated and verified.
 
-This patch changes dependency resolution, not trust configuration, credentials, authorization, TLS policy or update-signing policy. Required human review and native CI remain necessary before integration. After merge, verify main CI, rescan the GitHub alerts, and confirm that the ten addressed alerts close while the GLib finding remains tracked. Do not claim resolution from this local lockfile alone. Rollback restores the previous lockfile but also restores the affected versions, so any rollback requires an explicit risk assessment.
+This patch changes dependency resolution, not trust configuration, credentials, authorization, TLS policy or update-signing policy. Independent qualified AI or human review under [the review policy](../review-policy.md) and native CI remain necessary before integration. After merge, verify main CI, rescan the GitHub alerts, and confirm that the ten addressed alerts close while the GLib finding remains tracked. Do not claim resolution from this local lockfile alone. Rollback restores the previous lockfile but also restores the affected versions, so any rollback requires an explicit risk assessment.
 
 ## Validation
 

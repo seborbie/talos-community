@@ -17,6 +17,10 @@ weaken the root contract.
 4. Add or update tests for changed behavior. Add a regression test for every bug fix.
 5. Run the narrowest relevant checks first, then every applicable repository gate.
 6. Review the complete diff. Report commands run, failures, skipped checks, and remaining risk.
+7. For required review of automated changes, delegate to a separate AI review agent or obtain
+   review from a qualified human reviewer. The authoring agent's self-review does not satisfy this
+   requirement. Record the exact reviewed commit and evidence under
+   [the review policy](docs/review-policy.md).
 
 Never claim a check passed unless it was executed. Never bypass or weaken a gate merely to make a
 change green. A necessary exception must follow the documented exception process.
@@ -60,4 +64,5 @@ Do not create package-local Bun lockfiles or install dependencies independently 
 
 Authentication, authorization, cryptography, remote commands, installers and updates, unsafe Rust,
 database migrations, protocol compatibility, and release pipelines require focused tests and
-qualified human review.
+independent qualified review by an AI or human reviewer under
+[the review policy](docs/review-policy.md).
