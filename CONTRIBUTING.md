@@ -55,7 +55,9 @@ contracts, migrations, and architecture decisions in the same contribution when 
 - State every command actually run and every check that could not be run.
 - Preserve unrelated changes; do not reformat or regenerate broad areas without a reason.
 - Maintainers may require qualified review for authentication, authorization, cryptography,
-  updates/installers, remote command execution, unsafe Rust, or schema migrations.
+  updates/installers, remote command execution, unsafe Rust, or schema migrations. An independent
+  AI or human reviewer may provide it under [the review policy](docs/review-policy.md); author
+  self-review and passing CI alone do not satisfy required review.
 
 Security vulnerabilities must follow [SECURITY.md](SECURITY.md), not a public issue. Support and
 usage questions follow [SUPPORT.md](SUPPORT.md). Participation is governed by

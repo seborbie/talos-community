@@ -61,4 +61,6 @@
 - [ ] SPDX 2.3 source, launcher and image SBOMs reviewed; native-client SBOM also reviewed for full scope
 - [ ] Public ACME issuance/renewal and real WebSocket/relay traffic verified where applicable
 - [ ] Secret scan confirms no PFX/private key in source, artifacts, logs, or images
-- [ ] Qualified human review of cryptography, updater, installer, and release changes
+- [ ] Independent qualified AI or human review of cryptography, updater, installer, and release
+      changes; exact source revision, reviewer/session, evidence and findings recorded
+- [ ] Separate explicit publication authorization and configured environment approvals recorded

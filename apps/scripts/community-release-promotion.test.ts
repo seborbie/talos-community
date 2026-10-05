@@ -1,4 +1,4 @@
-import { expect, test } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
 import { copyFile, mkdir, mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
@@ -6,8 +6,11 @@ import { resolve } from 'node:path';
 const repoRoot = resolve(import.meta.dir, '../..');
 type ValidationStep = { name?: string; run?: string; 'working-directory'?: string };
 
+// Keep fixture creation/cleanup in separately bounded hooks: Windows Git/Bash startup
+// made the combined setup + validation exceed the default five-second test budget.
+// Each hook and the actual validation retain Bun's default timeout; no retries or skips.
 // Medium test: execute the actual workflow's local validation in Bash and a disposable Git repo.
-test.each([
+describe.each([
   ['community-v1.2.3', true, 'tag'],
   ['community-v1.2.3-rc.1', true, 'tag'],
   ['community-v01.2.3', false, 'tag'],
@@ -15,9 +18,10 @@ test.each([
   ['community-v1.2.3', false, 'commit'],
 ] as const)(
   'promotion validates %s (expected success: %s, object: %s)',
-  async (tag, accepted, objectType) => {
-    const fixture = await mkdtemp(resolve(tmpdir(), 'talos-promotion-'));
-    try {
+  (tag, accepted, objectType) => {
+    let fixture: string | undefined;
+    beforeEach(async () => {
+      fixture = await mkdtemp(resolve(tmpdir(), 'talos-promotion-'));
       const scripts = resolve(fixture, 'apps/scripts');
       await mkdir(scripts, { recursive: true });
       await copyFile(
@@ -35,7 +39,14 @@ test.each([
       git('commit', '--allow-empty', '-qm', 'Test release');
       if (objectType === 'tag') git('tag', '-a', tag, '-m', 'Test tag');
       else git('tag', tag);
+    });
+    afterEach(async () => {
+      if (fixture) await rm(fixture, { recursive: true, force: true });
+      fixture = undefined;
+    });
 
+    test('executes local workflow validation with an isolated Git fixture', async () => {
+      if (!fixture) throw new Error('promotion fixture is missing');
       const workflow = Bun.YAML.parse(
         await readFile(
           resolve(repoRoot, '.github/workflows/community-release-promote.yml'),
@@ -63,14 +74,17 @@ test.each([
           GITHUB_OUTPUT: output,
         },
       });
-      expect(result.exitCode === 0).toBe(accepted);
+      expect(result.exitCode === 0, result.stderr.toString()).toBe(accepted);
       if (accepted) {
         expect(await readFile(output, 'utf8')).toContain(
           `version=${tag.slice('community-v'.length)}\n`,
         );
+      } else {
+        expect(result.stderr.toString()).toContain(
+          objectType === 'commit' ? 'require an annotated tag' : 'release tag must match',
+        );
+        expect(await Bun.file(output).exists()).toBe(false);
       }
-    } finally {
-      await rm(fixture, { recursive: true, force: true });
-    }
+    });
   },
 );

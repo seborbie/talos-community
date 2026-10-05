@@ -13,15 +13,15 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@tauri-apps/api": "2.11.1",
+    "@tauri-apps/api": "2.12.1",
     "@veecore/tauri-plugin-permission-flow-api": "0.1.40",
-    "svelte": "5.57.0"
+    "svelte": "5.57.1"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "catalog:",
-    "@tauri-apps/cli": "2.11.2",
+    "@tauri-apps/cli": "2.12.1",
     "svelte-check": "catalog:",
     "typescript": "catalog:",
-    "vite": "7.3.6"
+    "vite": "8.3.0"
   }
 }
