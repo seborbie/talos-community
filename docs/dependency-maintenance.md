@@ -47,7 +47,7 @@ A viewer CLI dependency update must also update `TAURI_CLI_VERSION` in
 `apps/scripts/release-input-contract.ts`. The 2.11.5 group update in PR #47 exposed this
 coupling: the frozen install selected 2.11.5 while the release script still required 2.10.1.
 Keep the runtime version comparison, frozen installation and Cargo `--locked` checks intact.
-Run the release-input regression tests and repository quality gates, and obtain qualified
+Run the release-input regression tests and repository quality gates, and obtain
 independent qualified AI or human release review under [the review policy](review-policy.md)
 before integration. Roll back the manifest/lock and script/contract pins together.
 
