@@ -66,8 +66,10 @@ The `DR-*` entries below link to public tracking issues created for source publi
 ## Resolved findings
 
 DR-011 ([issue #12](https://github.com/seborbie/talos-community/issues/12)) is retired by the
-coordinated Vite 8.3.0 / Svelte plugin 7.3.1 migration in PR #43. On 2026-10-02, the complete
-frontend build with normal warning reporting produced no registered generated annotation or
+coordinated Vite 8.3.0 / Svelte plugin 7.3.1 migration originally repaired in PR #43. That PR
+closed unmerged after Dependabot deleted its base branch; the maintainer-owned recovered Vite
+proposal preserves this repair separately after #52. On 2026-10-02, the complete frontend build
+with normal warning reporting produced no registered generated annotation or
 source-map diagnostics. The prior Vite 7.3.6 graph still produced them with Svelte 5.57.1.
 The obsolete filter and its exception are removed; other diagnostics remain visible. Restore
 the constrained filter and register entry if a rollback restores those warnings. See
