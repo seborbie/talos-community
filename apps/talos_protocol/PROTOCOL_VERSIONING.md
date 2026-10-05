@@ -5,7 +5,7 @@ Golden fixtures live under `fixtures/current` and `fixtures/old`. Every protocol
 ## Compatibility Rules
 
 - Additive JSON fields must be optional, have `#[serde(default)]`, or be represented as `Option<T>`.
-- Do not remove, rename, or make an optional field required without a human-approved revision or major version bump.
+- Do not remove, rename, or make an optional field required without an independently reviewed revision or major version bump.
 - Struct payloads ignore unknown fields by default. Keep this behavior unless strict validation is explicitly required at the boundary.
 - Enum payloads reject unknown variants unless the enum has an explicit fallback. `OperationErrorCode` maps unknown values to `Unknown`; most command/request enums intentionally remain strict because an unknown operation cannot be safely executed.
 - Prefer string capability/profile identifiers for negotiated features when older peers can safely ignore a new option.
@@ -21,5 +21,5 @@ Golden fixtures live under `fixtures/current` and `fixtures/old`. Every protocol
 ## Version Bumps
 
 - Ordinary additive protocol work should bump the minor component for each touched shipped crate.
-- Wire-incompatible changes require human approval for a revision or major bump before implementation is finalized.
+- Wire-incompatible changes require independent qualified AI or human review of the revision or major bump before implementation is finalized, under [the review policy](../../docs/review-policy.md).
 - When a new peer must refuse older/newer peers, add an explicit protocol version field and a fixture for the refusal behavior.

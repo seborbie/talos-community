@@ -48,7 +48,8 @@ A viewer CLI dependency update must also update `TAURI_CLI_VERSION` in
 coupling: the frozen install selected 2.11.5 while the release script still required 2.10.1.
 Keep the runtime version comparison, frozen installation and Cargo `--locked` checks intact.
 Run the release-input regression tests and repository quality gates, and obtain qualified
-release review before integration. Roll back the manifest/lock and script/contract pins together.
+independent qualified AI or human release review under [the review policy](review-policy.md)
+before integration. Roll back the manifest/lock and script/contract pins together.
 
 The upstream [2.11.5 CLI release](https://github.com/tauri-apps/tauri/releases/tag/tauri-cli-v2.11.5)
 includes an updater signature/version binding fix. A passing frontend build or
@@ -78,5 +79,5 @@ reads the workspace lockfiles/manifests directly because Tauri's npm-based disco
 report the installed packages in this isolated Bun workspace. Do not bypass its native version
 check or infer compatibility from a CLI version output. Roll back JavaScript/Rust pins and both
 locks together. The recovered Vite migration remains a separate draft, preserving ADR-0017 and
-its preprocessing/CSS regressions. Native installer/signing execution and human review remain
-separate gates; the Linux GLib finding is unchanged.
+its preprocessing/CSS regressions. Native installer/signing execution and independent qualified
+AI or human review remain separate gates; the Linux GLib finding is unchanged.

@@ -108,7 +108,8 @@ Rust 1.85 minimum and MIT OR Apache-2.0 licence. The separate locked 0.9.1 line 
 
 The focused Cargo regression rejects reintroducing 0.10.0/0.10.1. Local workspace tests exercise
 Talos's current QUIC/session code, but this macOS ARM machine cannot demonstrate SSE2-only x86
-execution. Native CI and required human review remain integration gates. Verify the lockfile and
+execution. Native CI and independent qualified AI or human review under
+[the review policy](../review-policy.md) remain integration gates. Verify the lockfile and
 RustSec warning removal after merge before closing issue #14. This grants no vulnerability
 exception and does not establish a demonstrated Talos exploit. Rust audit must continue to report
 zero vulnerabilities.

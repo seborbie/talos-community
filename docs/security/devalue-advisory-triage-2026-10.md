@@ -25,5 +25,6 @@ Failure modes include disclosure of unrelated process data in a server response 
 CPU or memory work. The safe response to a future advisory is to update the lockfile and
 verify all resolved copies, not suppress the audit. Rollback to the prior lockfile restores
 the affected release and needs explicit security review. This patch changes only dependency
-resolution and does not add privileges, network access, logging, or credentials. Qualified
-human review and cross-platform CI are required before integration.
+resolution and does not add privileges, network access, logging, or credentials. Independent
+qualified AI or human review under [the review policy](../review-policy.md) and cross-platform CI
+are required before integration.

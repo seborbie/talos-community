@@ -58,8 +58,9 @@ reviewed Apache-2.0 OR MIT licensing. Generated dependency changes must pass lic
 policy, current advisory checks, full platform Clippy/tests and frontend build gates.
 
 No first-party authorization, protocol, signing identity, credentials, endpoint or updater
-policy changes. Native signing, installer/update/rollback execution and qualified human review
-are still required before a supported release. Tauri 2.12 remains on the GTK/GLib 0.18 graph;
+policy changes. Native signing, installer/update/rollback execution and independent qualified
+AI or human review under [the review policy](../../review-policy.md) are still required before a
+supported release. Tauri 2.12 remains on the GTK/GLib 0.18 graph;
 this decision does not resolve or suppress the tracked Linux GLib finding.
 
 ## Rollout
