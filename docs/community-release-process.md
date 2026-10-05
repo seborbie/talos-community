@@ -1,8 +1,8 @@
 # Talos Community release process
 
 This process creates a reviewed candidate, promotes exact container bytes and assembles a no-Bun
-bundle, then creates a GitHub **prerelease** only after a separate protected approval. None of the
-workflows publishes from a pull request, branch push, schedule, or successful build automatically.
+bundle, then creates a GitHub **prerelease** only after separate explicit publication authorization
+and the configured protected approval. None of the workflows publishes from a pull request, branch push, schedule, or successful build automatically.
 
 The workflows are implemented but have not been run to publish Talos. The source-candidate phase
 intentionally fails while `.config/public-export-policy.json` contains unresolved owner or
@@ -31,9 +31,10 @@ pull-request runner is not suitable.
 
 Store the PFX and password in separate owner-controlled systems before placing their CI copies in
 the protected environment. Record the expected public-key SHA-256 outside GitHub, configure the
-matching `TALOS_EXPECTED_MANIFEST_KEY_SHA256` protected-environment variable, and require a second
-maintainer to review both. The candidate validates the variable as lowercase SHA-256 and refuses
-the artifact handoff unless both `build-provenance.json` and `manifest.json` match it exactly. The
+matching `TALOS_EXPECTED_MANIFEST_KEY_SHA256` protected-environment variable, and require a separate
+qualified AI or human reviewer to assess the public fingerprint and custody evidence under
+[the review policy](review-policy.md), without exposing signing secrets. The candidate validates
+the variable as lowercase SHA-256 and refuses the artifact handoff unless both `build-provenance.json` and `manifest.json` match it exactly. The
 signing inputs and expected-fingerprint expression exist only in the named signer step; checkout,
 dependency installation, and lifecycle scripts cannot see them. The step removes the environment
 values before the build command and destroys the temporary PFX in `finally`.
@@ -152,8 +153,8 @@ Linux and Windows hosts. Retain an access-controlled evidence package covering:
   failures;
 - real WebSocket/relay traffic; and, for public mode, DNS/NAT/IPv6, Let's Encrypt staging then
   production issuance, renewal, and retained ACME state; and
-- vulnerability, licence/notices, checksum, attestation, and known-limitations review by qualified
-  humans.
+- vulnerability, licence/notices, checksum, attestation, and known-limitations review by an
+  independent qualified AI or human reviewer, with the exact candidate and evidence recorded.
 
 Hash the final evidence package with SHA-256 and publish it at an authenticated HTTPS location.
 Then manually run `Community release prerelease promotion` with the publication run ID, tag,

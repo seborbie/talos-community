@@ -113,13 +113,16 @@ evidence only for that gate; it is not a general security, legal, or compliance 
 
 Before tagging a public release, attach exact evidence for every applicable item above, run the
 canonical gates in [ENGINEERING_QUALITY.md](../ENGINEERING_QUALITY.md), resolve or renew every
-dependency-risk entry, and obtain qualified human review for authentication, remote execution,
-cryptography, installers, updates, and legal/licence content.
+dependency-risk entry, and obtain independent qualified AI or human review for authentication,
+remote execution, cryptography, installers, updates, and legal/licence content under
+[the review policy](review-policy.md). Eligibility does not establish legal ownership, supply
+missing notices or satisfy unexecuted platform checks; retain the evidence blockers above.
 
 ## Initial source-alpha publication decision
 
 The owner approved publication after reviewing the README and the remaining-checks report on
 2026-09-04. [PUB-001](https://github.com/seborbie/talos-community/issues/1) records a scoped,
-time-bounded follow-up for the unchecked human reviews and non-maintainer intake test.
+time-bounded follow-up for the unchecked qualified reviews and non-maintainer intake test. The
+October 5 reviewer-eligibility change does not mark those historical checks as completed.
 This source publication does not certify those checks as passed or authorize a supported binary
 release. See [publication evidence](source-alpha-publication.md).
