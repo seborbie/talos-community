@@ -239,6 +239,10 @@ export function communityReleasePipelineFailures(
         'provenance: mode=max',
         'sbom: true',
         'push: false',
+        'org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}',
+        'org.opencontainers.image.revision=${{ needs.validate.outputs.source_sha }}',
+        'org.opencontainers.image.version=${{ needs.validate.outputs.version }}',
+        'org.opencontainers.image.licenses=AGPL-3.0-only',
         'environment: community-manifest-signing',
         'runs-on: [self-hosted, windows, x64, talos-release]',
         'UNSIGNED-BINARIES.txt',
@@ -247,6 +251,10 @@ export function communityReleasePipelineFailures(
         'windowsAuthenticodeStatus',
         'Remove-Item $pfx -Force -ErrorAction SilentlyContinue',
         'Scan protected native artifact handoff for secrets',
+        'include_native_clients:',
+        'default: false',
+        'if: ${{ inputs.include_native_clients }}',
+        'release-identity.json',
       ],
       'candidate workflow',
     ),
@@ -273,6 +281,15 @@ export function communityReleasePipelineFailures(
   }
 
   const signerStep = stepBody(candidate, SIGNER_STEP_NAME);
+  const windowsLauncher = jobBody(candidate, 'launcher-windows');
+  if (
+    !windowsLauncher?.includes('RUSTFLAGS: "-C target-feature=+crt-static"') ||
+    !windowsLauncher.includes('Exercise the Windows entry script with the built launcher')
+  ) {
+    failures.push(
+      'Windows launcher must statically link its CRT and execute the packaged entry script',
+    );
+  }
   if (!signerStep) {
     failures.push(`candidate workflow is missing protected step: ${SIGNER_STEP_NAME}`);
   } else {
@@ -334,6 +351,11 @@ export function communityReleasePipelineFailures(
         'RELEASE_NOTES.md',
         'actions/attest-build-provenance@',
         'Scan candidate workflow logs',
+        '-linux-x86_64.tar.gz',
+        '-windows-x86_64-UNSIGNED.zip',
+        'anonymous registry digest does not match reviewed image',
+        'gh attestation verify "${identity}/release-identity.json"',
+        '--distribution "${{ needs.validate.outputs.distribution }}"',
       ],
       'publication workflow',
     ),
@@ -349,6 +371,33 @@ export function communityReleasePipelineFailures(
   }
   if (count(publish, 'packages: write') !== 1) {
     failures.push('packages: write must occur exactly once in the publication workflow');
+  }
+  const anonymousStart = publishImages?.indexOf('          anonymous_manifest=') ?? -1;
+  const anonymousEnd = publishImages?.indexOf('          archive_sha=', anonymousStart) ?? -1;
+  const anonymous = publishImages?.slice(anonymousStart, anonymousEnd);
+  if (
+    anonymousStart < 0 ||
+    anonymousEnd < anonymousStart ||
+    !anonymous ||
+    !anonymous.includes('docker run --rm "${SKOPEO_IMAGE}" inspect --raw') ||
+    !anonymous.includes('"docker://${immutable_reference}"') ||
+    !anonymous.includes('test "${anonymous_digest}" = "${published_digest}"') ||
+    /--(?:authfile|env|volume|mount)|\$\{HOME\}/.test(anonymous)
+  ) {
+    failures.push('publication must verify the exact public digest without registry credentials');
+  }
+  const smoke = jobBody(publish, 'smoke-linux');
+  if (
+    !smoke ||
+    !smoke.includes('needs: [validate, bundle]') ||
+    !smoke.includes('scripts/smoke-community-bundle.sh') ||
+    !smoke.includes('sha256sum --check SHA256SUMS') ||
+    !smoke.includes('community-release-bundle-${{ needs.validate.outputs.version }}') ||
+    /^\s+(?:contents|packages):\s+write\s*$/m.test(smoke)
+  ) {
+    failures.push(
+      'publication must gate success on the verified released-bundle Linux startup smoke',
+    );
   }
   if (/^\s+contents:\s+write\s*$/m.test(publish)) {
     failures.push('image/bundle publication workflow must not create a GitHub release');
@@ -375,6 +424,9 @@ export function communityReleasePipelineFailures(
         'gh release create "${RELEASE_TAG}"',
         '--prerelease --verify-tag',
         'a GitHub release already exists',
+        'test "${distribution}" = full',
+        'test "${fingerprint}" = null',
+        'archive="${release}/talos-community-${{ needs.validate.outputs.version }}-linux-x86_64.tar.gz"',
       ],
       'promotion workflow',
     ),

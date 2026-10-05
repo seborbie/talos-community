@@ -41,6 +41,18 @@ const sources = {
 };
 
 describe('Community Traefik edge contract', () => {
+  test('a service starting before Traefik cannot take its trusted proxy address', () => {
+    const failures = communityEdgeContractFailures({
+      ...sources,
+      localCompose: sources.localCompose.replace(
+        '          ip_range: "${TALOS_EDGE_DYNAMIC_RANGE:-172.31.240.128/25}"\n',
+        '',
+      ),
+    });
+    expect(failures).toContain(
+      'local self-signed edge must exclude the static trusted proxy address from automatic allocation',
+    );
+  });
   test('the tracked edge modes satisfy the contract', async () => {
     expect((await checkCommunityEdgeContract(repoRoot)).failures).toEqual([]);
   });

@@ -586,6 +586,8 @@ pub fn materialize_environment(
         ("TALOS_TRAEFIK_IMAGE", traefik.digest.as_str()),
     ];
     let frontend_url = public_https_url(&config.edge.frontend_domain, config.edge.https_port);
+    let dynamic_ip_range =
+        crate::config::edge_dynamic_ip_range(&config.edge.subnet, &config.edge.proxy_ipv4)?;
     let api_url = public_https_url(&config.edge.api_domain, config.edge.https_port);
     let control_url = public_https_url(&config.edge.control_domain, config.edge.https_port);
     let agent_url = format!("{}/agent/ws", control_url.replacen("https://", "wss://", 1));
@@ -593,6 +595,7 @@ pub fn materialize_environment(
     let http_port = config.edge.http_port.to_string();
     let https_port = config.edge.https_port.to_string();
     variables.extend([
+        ("TALOS_EDGE_DYNAMIC_RANGE", dynamic_ip_range.as_str()),
         ("TALOS_PUBLIC_FRONTEND_URL", frontend_url.as_str()),
         ("TALOS_PUBLIC_API_URL", api_url.as_str()),
         ("TALOS_PUBLIC_RMM_API_URL", control_url.as_str()),
@@ -993,6 +996,7 @@ mod tests {
             secure_fs::read_protected_file(&root.join("talos.env"), 1024 * 1024).expect("read env");
         let environment = String::from_utf8(environment).expect("utf8");
         assert!(environment.contains(&format!("TALOS_TRAEFIK_IMAGE='{}'", traefik.digest)));
+        assert!(environment.contains("TALOS_EDGE_DYNAMIC_RANGE='172.31.240.128/25'"));
         assert!(!environment.contains("traefik:latest"));
     }
 

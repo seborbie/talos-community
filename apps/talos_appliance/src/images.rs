@@ -54,11 +54,33 @@ pub fn detect_docker(
         bail!("Docker Engine returned an empty version");
     }
 
+    let operating_system = executor.execute(
+        &CommandSpec::new(&executable).args(["info", "--format", "{{json .OSType}}"]),
+        DOCKER_TIMEOUT,
+    )?;
+    require_success(
+        "Docker Linux-container prerequisite",
+        &operating_system,
+        &[],
+    )?;
+    validate_engine_os(&output_text(&operating_system.stdout))?;
+
     Ok(DockerRuntime {
         executable,
         compose_version,
         engine_version,
     })
+}
+
+fn validate_engine_os(value: &str) -> Result<()> {
+    let os: String = serde_json::from_str(value)
+        .context("Docker Engine returned an unrecognized container operating system")?;
+    if os != "linux" {
+        bail!(
+            "Talos requires Linux containers; switch Docker Desktop to Linux containers and retry"
+        );
+    }
+    Ok(())
 }
 
 pub fn pull_release_images(
@@ -179,6 +201,14 @@ fn parse_optional_json_string(value: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn rejects_windows_container_mode_and_malformed_daemon_metadata() {
+        assert!(validate_engine_os("\"linux\"").is_ok());
+        assert!(validate_engine_os("\"windows\"").is_err());
+        assert!(validate_engine_os("null").is_err());
+        assert!(validate_engine_os("linux").is_err());
+    }
 
     #[test]
     fn selects_only_an_official_traefik_digest() {

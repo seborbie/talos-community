@@ -2,6 +2,12 @@ name: Community release candidate
 
 on:
   workflow_dispatch:
+    inputs:
+      include_native_clients:
+        description: Include signed updater-capable agent/viewer packages (requires protected Windows signer)
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -65,6 +71,8 @@ jobs:
           bun run third-party:vpx:prepare
           bun run quality
       - name: Export, scan, and archive the policy-reviewed public source
+        env:
+          INCLUDE_NATIVE_CLIENTS: ${{ inputs.include_native_clients }}
         working-directory: apps
         shell: bash
         run: |
@@ -72,6 +80,13 @@ jobs:
           out="${RUNNER_TEMP}/source"
           exported="${RUNNER_TEMP}/talos-community-${{ steps.identity.outputs.version }}"
           mkdir -p "${out}"
+          [[ "${INCLUDE_NATIVE_CLIENTS}" = true || "${INCLUDE_NATIVE_CLIENTS}" = false ]]
+          jq -n --arg version "${{ steps.identity.outputs.version }}" \
+            --arg sha "${{ steps.identity.outputs.source_sha }}" \
+            --arg tag "${GITHUB_REF_NAME}" --arg include "${INCLUDE_NATIVE_CLIENTS}" \
+            '{schemaVersion:1,releaseVersion:$version,sourceSha:$sha,releaseTag:$tag,
+              distribution:(if $include == "true" then "full" else "controller" end)}' \
+            > "${out}/release-identity.json"
 
           # This fails closed while any owner or provenance gate in the reviewed export policy
           # remains unresolved. Never add --allow-incomplete to a release workflow.
@@ -169,6 +184,9 @@ jobs:
     needs: validate
     runs-on: windows-2025
     timeout-minutes: 60
+    env:
+      # A clean Windows host must not need a separately installed Visual C++ redistributable.
+      RUSTFLAGS: "-C target-feature=+crt-static"
     permissions:
       contents: read
       id-token: write
@@ -194,11 +212,32 @@ jobs:
           New-Item -ItemType Directory -Force -Path $out | Out-Null
           $name = "talos-server_${{ needs.validate.outputs.version }}_windows_x86_64_UNSIGNED.exe"
           Copy-Item "apps\target\release\talos-server.exe" (Join-Path $out $name)
+          $help = & (Join-Path $out $name) help
+          if ($LASTEXITCODE -ne 0 -or ($help -join "`n") -notmatch 'quickstart --config') {
+            throw "Downloaded launcher startup/help did not execute successfully."
+          }
           "IMPORTANT: UNSIGNED COMMUNITY BINARY. Verify SHA256SUMS; do not disable security controls." |
             Set-Content (Join-Path $out "UNSIGNED-BINARIES.txt") -Encoding utf8NoBOM
           Get-ChildItem $out -File | Sort-Object Name | ForEach-Object {
             "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant())  $($_.Name)"
           } | Set-Content (Join-Path $out "SHA256SUMS") -Encoding utf8NoBOM
+      - name: Exercise the Windows entry script with the built launcher
+        shell: pwsh
+        run: |
+          $fixture = Join-Path $env:RUNNER_TEMP "Talos wrapper with spaces"
+          $bin = Join-Path $fixture "bin\windows-x86_64"
+          New-Item -ItemType Directory -Force -Path $bin | Out-Null
+          Copy-Item "apps\target\release\talos-server.exe" (Join-Path $bin "talos-server-UNSIGNED.exe")
+          Copy-Item "apps\talos_appliance\bundle\Start-Talos.cmd" $fixture
+          Push-Location $fixture
+          try {
+            $help = & $env:ComSpec /d /c Start-Talos.cmd help
+            if ($LASTEXITCODE -ne 0 -or ($help -join "`n") -notmatch 'quickstart --config') {
+              throw "Windows wrapper did not preserve native command dispatch."
+            }
+          } finally {
+            Pop-Location
+          }
       - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: ${{ runner.temp }}/launcher-windows/*
@@ -210,6 +249,7 @@ jobs:
           retention-days: 30
 
   native-clients:
+    if: ${{ inputs.include_native_clients }}
     needs: validate
     runs-on: [self-hosted, windows, x64, talos-release]
     timeout-minutes: 240
@@ -354,7 +394,24 @@ jobs:
       - working-directory: apps
         run: bun run third-party:vpx:prepare
       - uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+        with:
+          image: docker.io/tonistiigi/binfmt@sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0
+          platforms: arm64
+      - name: Install and verify the pinned Buildx plugin
+        id: verified-buildx
+        shell: bash
+        env:
+          DOCKER_CONFIG: ${{ runner.temp }}/talos-community-docker
+        run: |
+          bash scripts/install-community-buildx.sh
+          printf 'DOCKER_CONFIG=%s\n' "${DOCKER_CONFIG}" >> "${GITHUB_ENV}"
       - uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+        with:
+          # The preceding checksum/availability guard installs the exact plugin; a version
+          # input here would invoke this action's unverified release downloader instead.
+          cache-binary: false
+          driver: docker-container
+          driver-opts: image=moby/buildkit@sha256:cec9f139f45e93c5c69c60f8b07cfad9f43f4ef6b6a6cd917527fea5ff2e3dea
       - uses: docker/build-push-action@263435318d21b8e681c14492fe198d362a7d2c83 # v6.18.0
         with:
           context: .
@@ -362,6 +419,11 @@ jobs:
           target: ${{ matrix.target }}
           platforms: linux/amd64,linux/arm64
           build-args: PROFILE=release
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ needs.validate.outputs.source_sha }}
+            org.opencontainers.image.version=${{ needs.validate.outputs.version }}
+            org.opencontainers.image.licenses=AGPL-3.0-only
           outputs: type=oci,dest=${{ runner.temp }}/${{ matrix.key }}.oci.tar
           provenance: mode=max
           sbom: true

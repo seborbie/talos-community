@@ -541,11 +541,29 @@ fn validate_proxy_network(subnet: &str, proxy: &str) -> Result<()> {
     }
     if proxy_number & mask != network_number
         || proxy_number == network_number
+        || proxy_number == network_number + 1
         || proxy_number == network_number | !mask
     {
         bail!("Traefik proxy IPv4 address must be a usable address inside the edge subnet");
     }
     Ok(())
+}
+
+/// Keep automatic container allocation in the half of the subnet that excludes Traefik's static
+/// address. Otherwise a service that starts before Traefik can consume the trusted proxy address.
+pub fn edge_dynamic_ip_range(subnet: &str, proxy: &str) -> Result<String> {
+    validate_proxy_network(subnet, proxy)?;
+    let (network, prefix) = subnet.split_once('/').context("IPv4 CIDR required")?;
+    let network = u32::from(Ipv4Addr::from_str(network)?);
+    let prefix = prefix.parse::<u8>()?;
+    let proxy = u32::from(Ipv4Addr::from_str(proxy)?);
+    let half = 1_u32 << (31 - prefix);
+    let start = if proxy < network + half {
+        network + half
+    } else {
+        network
+    };
+    Ok(format!("{}/{}", Ipv4Addr::from(start), prefix + 1))
 }
 
 fn validate_domain(label: &str, value: &str) -> Result<()> {
@@ -856,5 +874,23 @@ mod tests {
         assert!(input
             .validate_and_split(&std::env::temp_dir().join("talos-server-config-test"))
             .is_err());
+    }
+
+    #[test]
+    fn dynamic_edge_pool_cannot_consume_the_static_trusted_proxy_address() {
+        assert_eq!(
+            edge_dynamic_ip_range("172.31.240.0/24", "172.31.240.2").expect("default pool"),
+            "172.31.240.128/25"
+        );
+        assert_eq!(
+            edge_dynamic_ip_range("10.20.0.0/16", "10.20.200.2").expect("upper proxy"),
+            "10.20.0.0/17"
+        );
+        assert_eq!(
+            edge_dynamic_ip_range("10.20.0.0/28", "10.20.0.2").expect("smallest pool"),
+            "10.20.0.8/29"
+        );
+        assert!(edge_dynamic_ip_range("172.31.240.0/24", "172.31.240.1").is_err());
+        assert!(edge_dynamic_ip_range("172.31.240.0/24", "172.31.241.2").is_err());
     }
 }

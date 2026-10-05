@@ -11,10 +11,10 @@ provenance gates. Resolve those gates in a reviewed integration commit; do not u
 
 ## One-time repository configuration
 
-Create these GitHub environments with required reviewers, deployment-branch/tag restrictions, and
-an approval timeout:
+Use these GitHub environments with required reviewers, deployment-branch/tag restrictions, and
+an approval timeout. They exist in this repository; inspect their active rules before publication.
 
-- `community-manifest-signing` protects the hardened Windows release runner and the two updater
+- For optional native-client releases, `community-manifest-signing` protects the hardened Windows release runner and the two updater
   manifest signing secrets `TALOS_MANIFEST_SIGNING_PFX_BASE64` and
   `TALOS_MANIFEST_SIGNING_PFX_PASSWORD`. Configure its non-secret environment variable
   `TALOS_EXPECTED_MANIFEST_KEY_SHA256` to the exact lowercase 64-character SHA-256 fingerprint of
@@ -23,7 +23,7 @@ an approval timeout:
   job.
 - `community-release-promotion` protects the only job with `contents: write`.
 
-The manifest-signing runner must have the labels `self-hosted`, `windows`, `x64`, and
+The **optional native-client** manifest-signing runner must have the labels `self-hosted`, `windows`, `x64`, and
 `talos-release`. Treat it as an ephemeral release appliance: apply current OS patches, restrict
 interactive and network access, pin the documented Bun/Rust/WiX/vcpkg/NASM inputs, clear the
 workspace and temporary files after every run, and retain its audit log. A general-purpose or
@@ -43,6 +43,15 @@ Configure GHCR so only the protected publication environment can write the four 
 packages. The bundle consumes digest references, never mutable tags. Restrict package deletion and
 tag rewriting through the repository's owner policy even though an OCI digest remains immutable.
 
+Configure each package as **public** and linked to this repository through the owner's package
+settings. New GHCR packages can initially be private even for a public repository. Candidate image
+labels record the source repository, source revision, release version, and AGPL-3.0-only licence.
+Publication verifies the reviewed digest again in a Skopeo container without any authentication
+file or credential mount. If the owner has not made a first package public, that check fails after
+the approved image copy; configure its visibility explicitly and rerun the exact-digest publication.
+The workflow never changes package/repository access settings and never needs a persistent PAT.
+See [GitHub's Container registry guide](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).
+
 ## Version ownership
 
 Create one reviewed annotated tag named `community-v<SemVer>`, without SemVer build metadata. The
@@ -60,11 +69,30 @@ Manually run `Community release candidate` from the annotated tag. It:
 2. invokes `public-source-export.ts` without a bypass flag, initializes a disposable one-commit
    history from that exact export, and scans both its history and archive;
 3. builds Linux x86-64 and explicitly unsigned Windows x64 `talos-server` launchers;
-4. builds native clients on the protected Windows runner, signs every updater manifest, records
+4. when `include_native_clients` is explicitly enabled, builds native clients on the protected Windows runner, signs every updater manifest, records
    the public-key fingerprint, and explicitly marks Windows Authenticode as unsigned;
 5. builds four linux/amd64+linux/arm64 OCI archives without pushing them, generates SPDX SBOMs,
    scans both platforms for high/critical vulnerabilities, and scans image layers for secrets; and
 6. checksums and attests every handoff artifact.
+
+The default is **controller-only**: native launchers and four application images plus bundled
+PostgreSQL/edge configuration. It uses hosted Windows and Linux builders and requires no updater
+PFX, manifest-key fingerprint, or self-hosted signer. The server launcher does not embed an updater
+key or update itself. All source, quality, vulnerability, licensing, secret-scan, SBOM, provenance,
+protected publication approvals and platform evidence gates still apply. The source handoff's
+checksummed/attested `release-identity.json` records `distribution: controller` or `full`;
+publication verifies it against the tag/version/source and carries that scope unchanged.
+
+Enable native clients only when their protected signing setup and platform evidence are ready.
+The full bundle retains every required manifest signature/key-continuity check; controller mode
+does not claim that unsigned updater-capable clients are safe or ship them without signatures.
+Controller releases record the updater key as `null` and release notes say it is not applicable.
+Before a controller trial publication, the owner needs the existing tag-restricted approval
+environments, four repository-linked **public** GHCR packages, successful security/quality/source
+and licence reviews, clean-host Linux/Windows evidence, and qualified release review. New
+persistent credentials are unnecessary. Authenticode is intentionally unsigned under existing
+policy; client PFX/password/fingerprint and the `talos-release` runner are only additional
+requirements for the full scope.
 
 The Gitleaks image is v8.30.1 at the reviewed digest in `.gitleaks.toml` and the workflows. Fixture
 exceptions require a rule, exact path, and exact value. Do not add commit-wide or path-only
@@ -94,7 +122,10 @@ bundle job then creates:
 talos-community-<version>/
   bin/linux-x86_64/talos-server
   bin/windows-x86_64/talos-server-UNSIGNED.exe
-  clients/UNSIGNED-WINDOWS/
+  Start-Talos.cmd
+  start-talos.sh
+  GETTING_STARTED.md
+  clients/UNSIGNED-WINDOWS/  # only in full scope
   compose/
   database/schema.prisma
   database/migrations/
@@ -103,6 +134,7 @@ talos-community-<version>/
   LICENSE
   THIRD_PARTY_NOTICES.md
   community-install.example.json
+  community-install.local.json
   image-references.json
   release-manifest.json
   SHA256SUMS
@@ -117,12 +149,59 @@ Talos-built image. By owner decision, only install and explicit update resolve t
 `traefik:latest`; the launcher records and reuses the resulting digest on normal starts. A release
 therefore does not claim a permanently pinned Traefik version.
 
+The platform-named outer archives are `talos-community-<version>-linux-x86_64.tar.gz` and
+`talos-community-<version>-windows-x86_64-UNSIGNED.zip`. Both retain the complete reviewed inventory
+for the selected scope (signed client manifests are included only in full scope). The generated local JSON uses the exact four published image digests,
+bundled PostgreSQL, `.localhost` names, and loopback ports 8080/8443. It contains no credentials.
+Windows uses current-user LOCALAPPDATA state through `Start-Talos.cmd`; Linux uses the documented
+system state path through `sudo ./start-talos.sh`. See `GETTING_STARTED.md` before execution,
+including explicit local certificate approval. A single browser exception for the frontend is not
+claimed to trust the API origin. Upgrades remain explicit and backed up.
+
+The Windows launcher build statically links the CRT and executes its native help plus wrapper
+dispatch on the hosted Windows candidate runner. This checks executable/command startup only;
+double-click browser behavior, Docker Desktop integration and DACL/SmartScreen evidence still need
+a clean supported Windows host.
+
+After bundle assembly, a separate read-only `smoke-linux` job verifies the downloaded archive and
+inner checksums on a disposable GitHub-hosted Linux x86-64 runner. It invokes the extracted wrapper
+and binary, requires anonymous image pulls, checks missing-Docker/no-state failure, healthy install,
+first-account creation/registration closure, loopback listeners, unchanged credentials and account
+persistence after stop/start and preserve-data uninstall, then confirmed data removal. HTTPS uses
+the exact locally generated certificate via `--cacert`, never a trust-store change or insecure TLS
+bypass. Only non-secret statuses/checksums/results are uploaded; auth responses and synthetic
+passwords stay in a private temporary directory and are removed. This job must pass for the
+publication run to succeed and become eligible for promotion. It supplements the broader manual
+Windows/Linux release evidence below; it does not complete that evidence or independent
+qualified AI or human review under [the review policy](review-policy.md).
+
+The candidate's image-build job pins its privileged emulator image to the reviewed
+`tonistiigi/binfmt` digest and installs only the ARM64 emulator required by the amd64/arm64
+image matrix. Buildx `v0.37.2` is downloaded from its exact upstream release URL and checked
+against the reviewed SHA-256 before execution and after installation into an isolated Docker
+configuration. The helper checks the setup action's actual availability probe and the selected
+version; the setup action retains that installed plugin with its version input omitted and binary
+caching disabled. Its upstream source still has an unverified download fallback if availability
+changes inside the action; the preceding unconditional guard covers the normal, unchanged-runner
+path rather than removing that fallback. The Docker-container driver selects the reviewed
+`moby/buildkit` digest instead of an implicit moving image. The setup action SHAs remain the
+existing permitted versions while the proposed Actions updates await separate approval.
+The parsed build-input contract rejects missing, floating, duplicate or conditionally skipped
+setup inputs in that job. Changing these pins requires reviewing upstream provenance/licences
+and refreshing the contract and applicable checks. Source checks do not execute or qualify
+these tools, the candidate images or the assembled release; those remain release evidence gates.
+The checksum comes from the [official Buildx v0.37.2 release](https://github.com/docker/buildx/releases/tag/v0.37.2)
+and its [published checksum file](https://github.com/docker/buildx/releases/download/v0.37.2/checksums.txt),
+which agree on the Linux amd64 binary digest. Published provenance/signature files are separate
+evidence; this source check does not verify their cryptographic identity or subject binding.
+
 The assembler can also be exercised locally after obtaining all protected inputs:
 
 ```sh
 cd apps
 bun ./scripts/community-release-bundle.ts \
   --repo-root .. \
+  --distribution full \
   --output /absolute/output/talos-community-<version> \
   --release-tag community-v<version> \
   --release-version <version> \
@@ -150,7 +229,7 @@ Linux and Windows hosts. Retain an access-controlled evidence package covering:
   uninstall on disposable data;
 - Windows DACL inspection and unsigned/SmartScreen behavior without disabling security controls;
 - updater matching-signature success plus tampered manifest, wrong key, and wrong package digest
-  failures;
+  failures when native clients are included;
 - real WebSocket/relay traffic; and, for public mode, DNS/NAT/IPv6, Let's Encrypt staging then
   production issuance, renewal, and retained ACME state; and
 - vulnerability, licence/notices, checksum, attestation, and known-limitations review by an
