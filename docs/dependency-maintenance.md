@@ -54,6 +54,15 @@ The upstream [2.11.5 CLI release](https://github.com/tauri-apps/tauri/releases/t
 includes an updater signature/version binding fix. A passing frontend build or
 CLI version check does not verify packaged application signing or installer execution.
 
+### Vite and Svelte plugin major upgrades
+
+Upgrade the four Vite consumers and the shared Svelte plugin catalog together. Vite 8.3.0 needs
+the supported plugin 7 line; plugin 6.2.4 declares only Vite 6/7 peers and can strip imports used
+only in Svelte template markup. Run the four preprocessing regressions and web CSS resolution
+regression, zero-warning Svelte checks, production builds with ordinary warning reporting, and
+browser verification. [ADR-0017](architecture/decisions/0017-vite8-svelte-plugin-migration.md)
+records the coordinated graph, narrow Tailwind SSR configuration and rollback.
+
 ### Replacement groups and native package compatibility
 
 Dependabot replaced #47 with #51 on October 5 and deleted #47's branch, which also closed the
