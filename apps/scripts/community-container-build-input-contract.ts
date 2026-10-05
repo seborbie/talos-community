@@ -2,6 +2,9 @@ const BINFMT_IMAGE =
   'docker.io/tonistiigi/binfmt@sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0';
 const BUILDKIT_IMAGE =
   'moby/buildkit@sha256:cec9f139f45e93c5c69c60f8b07cfad9f43f4ef6b6a6cd917527fea5ff2e3dea';
+const VERIFIED_INSTALL =
+  'bash scripts/install-community-buildx.sh\n' +
+  'printf \'DOCKER_CONFIG=%s\\n\' "${DOCKER_CONFIG}" >> "${GITHUB_ENV}"\n';
 
 function record(value: unknown): Record<string, unknown> | undefined {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -23,19 +26,19 @@ export function communityContainerBuildInputFailures(workflow: string): string[]
   }
 
   const failures: string[] = [];
-  if (record(images.env)?.DOCKER_CONFIG !== '${{ runner.temp }}/talos-community-docker') {
-    failures.push('images job must use the isolated Community Docker configuration');
+  if (record(images.env)?.DOCKER_CONFIG !== undefined) {
+    failures.push('images job must configure Docker storage in the verified acquisition step');
   }
   const steps = images.steps.map(record);
   const acquisitions = steps.filter((step) => step?.id === 'verified-buildx');
   const acquisition = acquisitions[0];
   if (
     acquisitions.length !== 1 ||
-    acquisition?.run !== 'bash scripts/install-community-buildx.sh' ||
+    acquisition?.run !== VERIFIED_INSTALL ||
     acquisition.shell !== 'bash' ||
+    record(acquisition.env)?.DOCKER_CONFIG !== '${{ runner.temp }}/talos-community-docker' ||
     'if' in acquisition ||
     'continue-on-error' in acquisition ||
-    'env' in acquisition ||
     'working-directory' in acquisition
   ) {
     failures.push('images job must unconditionally run the verified Buildx acquisition helper');

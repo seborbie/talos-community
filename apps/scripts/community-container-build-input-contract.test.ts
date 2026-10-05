@@ -11,6 +11,7 @@ type Step = {
   with?: Record<string, unknown>;
   if?: unknown;
   run?: string;
+  env?: Record<string, unknown>;
 };
 type Workflow = { jobs: Record<string, { steps: Step[]; env?: Record<string, unknown> }> };
 
@@ -80,10 +81,23 @@ describe('Community container build inputs', () => {
       expect(communityContainerBuildInputFailures(changed(mutation)).length).toBeGreaterThan(0);
     }
     const workflow = Bun.YAML.parse(candidate) as Workflow;
-    delete workflow.jobs.images!.env;
+    workflow.jobs.images!.env = { DOCKER_CONFIG: '${{ runner.temp }}/talos-community-docker' };
     expect(communityContainerBuildInputFailures(JSON.stringify(workflow))).toContain(
-      'images job must use the isolated Community Docker configuration',
+      'images job must configure Docker storage in the verified acquisition step',
     );
+    for (const mutation of [
+      (steps: Step[]) => {
+        delete steps.find((step) => step.id === 'verified-buildx')!.env;
+      },
+      (steps: Step[]) => {
+        steps.find((step) => step.id === 'verified-buildx')!.run =
+          'bash scripts/install-community-buildx.sh';
+      },
+    ]) {
+      expect(communityContainerBuildInputFailures(changed(mutation))).toContain(
+        'images job must unconditionally run the verified Buildx acquisition helper',
+      );
+    }
   });
 
   test('a run-script containing the pins cannot replace the actual action', () => {

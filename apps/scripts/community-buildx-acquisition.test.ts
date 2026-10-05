@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from 'bun:test';
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
@@ -115,4 +115,31 @@ docker() {
     expect(run({ TEST_OS: 'Darwin' }).exitCode).not.toBe(0);
     expect(await Bun.file(resolve(root, 'docker-calls')).exists()).toBe(false);
   });
+
+  test.each([0, 23])(
+    'persists Docker configuration only after helper success (exit: %s)',
+    async (exit) => {
+      const workflow = Bun.YAML.parse(
+        await Bun.file(
+          new URL('../../.github/workflows/community-release-candidate.yml', import.meta.url),
+        ).text(),
+      ) as { jobs: { images: { steps: { id?: string; run?: string }[] } } };
+      const step = workflow.jobs.images.steps.find((entry) => entry.id === 'verified-buildx');
+      if (!step?.run) throw new Error('verified Buildx acquisition step is missing');
+      await mkdir(resolve(root, 'scripts'));
+      await writeFile(resolve(root, 'scripts/install-community-buildx.sh'), `exit ${exit}\n`);
+      // GitHub's explicit Bash shell uses -e -o pipefail; execute the actual run scalar.
+      const result = Bun.spawnSync(['bash', '-e', '-o', 'pipefail', '-c', step.run], {
+        cwd: root,
+        env: { ...process.env, DOCKER_CONFIG: './docker with spaces', GITHUB_ENV: './github-env' },
+      });
+      expect(result.exitCode).toBe(exit);
+      expect(await Bun.file(resolve(root, 'github-env')).exists()).toBe(exit === 0);
+      if (exit === 0) {
+        expect(await readFile(resolve(root, 'github-env'), 'utf8')).toBe(
+          'DOCKER_CONFIG=./docker with spaces\n',
+        );
+      }
+    },
+  );
 });
