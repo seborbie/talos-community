@@ -61,7 +61,8 @@ stacked Vite proposal #43 unmerged. Preserve the reviewed commits in maintainer-
 branches; do not mistake either closure for integration. The replacement group incorporates the
 shared #48/#49 repair ancestry while leaving those PRs' scope unchanged. Its CLI 2.12.1 pin moves
 with the script and contract. Native Tauri API and Rust crate major/minor versions, including
-installed plugins, must also match; frontend-only builds do not verify that boundary.
+installed plugins, must also match. Direct viewer WebView2/Windows core types must share Wry's
+COM crate identities; frontend-only builds do not verify either boundary.
 
 ADR-0018 records the Tauri 2.12.1 / deep-link 2.6.1 alignment and its regression. The regression
 reads the workspace lockfiles/manifests directly because Tauri's npm-based discovery does not

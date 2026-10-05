@@ -38,9 +38,16 @@ minimums, including viewer test features, to 2.12.1 and the viewer deep-link min
 Generate Cargo.lock through targeted Cargo updates. Move the macOS viewer script and release
 contract together to exact CLI 2.12.1; retain frozen installs and Cargo `--locked`.
 
+Wry 0.57 returns WebView2 COM 0.39 / Windows core 0.62 types. Align the viewer's direct
+WebView2 and Windows core dependencies to that graph so its accelerator-key settings cast
+uses the same COM identities. Retain the separate Windows 0.61 Direct3D/Media Foundation
+bindings, whose modules use their own matching trait imports. A compile-only Windows fixture
+reproduced the old graph's missing `cast` method before alignment.
+
 Add workspace regressions requiring matching major/minor versions for each native API and
 installed JavaScript/Rust plugin pair. Require one reviewed workspace Rust release for those
-pairs. The unused JavaScript shortcut package does not add a new native plugin or capability.
+pairs, and matching viewer/Wry WebView2 and Windows core crate identities. The unused JavaScript
+shortcut package does not add a new native plugin or capability.
 Keep the Vite 8 migration in a separate recovered draft.
 
 ## Consequences and compatibility

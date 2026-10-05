@@ -44,8 +44,8 @@ talos_update_common = { path = "../../talos_update_common" }
 zstd = "0.13"
 
 [target.'cfg(windows)'.dependencies]
-webview2-com = "0.38.2"
-windows-core = "0.61.2"
+webview2-com = "0.39.1"
+windows-core = "0.62.2"
 windows = { version = "0.61.3", features = ["Win32_Foundation", "Win32_Graphics_Direct3D", "Win32_Graphics_Direct3D_Fxc", "Win32_Graphics_Direct3D11", "Win32_Graphics_Dxgi", "Win32_Graphics_Dxgi_Common", "Win32_Media_MediaFoundation", "Win32_System_Com", "Win32_System_Ole", "Win32_System_Variant"] }
 
 [target.'cfg(target_os = "macos")'.dependencies]
