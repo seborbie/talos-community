@@ -13,8 +13,8 @@ standard, and may warn, temporarily restrict, or permanently ban participants ac
 severity and pattern of conduct.
 
 When available, use the repository's [private reporting form](../../security/advisories/new) and
-prefix the report title with `[Code of Conduct]`. Talos designates the same maintainer-only intake
-mechanism for security and conduct reports. On 2026-09-11, the official repository was verified as
+prefix the report title with `[Code of Conduct]`. Talos uses the same private intake designated by the
+maintainers for security and conduct reports. On 2026-09-11, the official repository was verified as
 private and its reporting API returned 404. On 2026-09-14, the repository was public again and
 the reporting API returned enabled. The non-maintainer submission and receipt test remains
 unverified and tracked in

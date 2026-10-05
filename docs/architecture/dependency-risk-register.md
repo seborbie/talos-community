@@ -25,11 +25,54 @@ The `DR-*` entries below link to public tracking issues created for source publi
 | [DR-005](https://github.com/seborbie/talos-community/issues/6)       | Windows collector -> `registry`                                     | RUSTSEC-2025-0026                                                                                                                                                                             | The crate is used only on the Windows endpoint collector. Windows builds and collector behavior remain in the CI/release test matrix.                                                                                                                                                                                                                                                 | Replace registry access with a maintained Windows API crate.                                                                                                                                                 |
 | [DR-006](https://github.com/seborbie/talos-community/issues/7)       | TLS PEM parsing in protocol/relay/worker/viewer and vendored Samsa  | RUSTSEC-2025-0134                                                                                                                                                                             | `rustls-pemfile` is unmaintained but has no reported vulnerability. Certificate inputs are bounded configuration/session material, and the active TLS stack is current.                                                                                                                                                                                                               | Migrate to `rustls-pki-types` PEM APIs and remove the dependency.                                                                                                                                            |
 | [DR-007](https://github.com/seborbie/talos-community/issues/8)       | Tauri -> `urlpattern` -> `unic-*` 0.9                               | RUSTSEC-2025-0075, RUSTSEC-2025-0080, RUSTSEC-2025-0081, RUSTSEC-2025-0098, RUSTSEC-2025-0100                                                                                                 | These unmaintained Unicode tables are transitive build/runtime support inside Tauri URL-pattern matching. Talos does not parse authorization decisions from URL-pattern text.                                                                                                                                                                                                         | Adopt the first supported Tauri/urlpattern graph without `unic-*` 0.9.                                                                                                                                       |
-| [DR-008](https://github.com/seborbie/talos-community/issues/9)       | Prisma CLI 6.19.3 -> `@prisma/config` -> `deepmerge-ts` 7.1.5       | GHSA-ggr8-5vv4-36mx (high)                                                                                                                                                                    | This package is reached through the development-only Prisma schema/generation toolchain, not the deployed API runtime. The latest compatible Prisma 6 release and current Prisma 7 still pin the affected version exactly; forcing the fixed major would violate the parent package's declared range. Keep Prisma generation out of request-time code and review every Prisma update. | Remove the audit exception as soon as Prisma publishes a compatible dependency graph containing a fixed `deepmerge-ts`; tracked by DR-008.                                                                   |
-| [DR-009](https://github.com/seborbie/talos-community/issues/10)       | SvelteKit 2.70.2 -> `cookie` 0.6.0                                  | GHSA-pxg6-pf52-xh8x (low)                                                                                                                                                                     | The latest stable SvelteKit 2 line permits this version. The vulnerable behavior concerns cookie name/path/domain serialization; Talos application code currently makes no `cookies.set` or `cookies.delete` calls. Avoid adding those calls without re-evaluating this entry and keep SvelteKit current.                                                                             | Remove the audit exception when a stable compatible SvelteKit release resolves to a fixed cookie major; tracked by DR-009.                                                                                   |
+| [DR-008](https://github.com/seborbie/talos-community/issues/9)       | Prisma CLI 6.19.3 -> `@prisma/config` -> `deepmerge-ts` 7.1.5       | GHSA-ggr8-5vv4-36mx (high)                                                                                                                                                                    | Prisma CLI/config packages are declared as development tooling but are retained in the API image and used for production migrations. No first-party request-time import was found in the October 5 source review; that is not proof of absence from the deployed image. Restrict schema/configuration inputs to trusted deployment source. Explicit expiry approval is missing; release acceptance is blocked. See the DR-008/DR-009 evidence below. | Remove the audit exception as soon as Prisma publishes a compatible dependency graph containing a fixed `deepmerge-ts`; tracked by DR-008.                                                                   |
+| [DR-009](https://github.com/seborbie/talos-community/issues/10)       | SvelteKit 2.70.3 -> `cookie` 0.6.0                                  | GHSA-pxg6-pf52-xh8x (low)                                                                                                                                                                     | The locked SvelteKit 2 graph selects the affected nested cookie copy; Express separately uses patched cookie 0.7.2. No first-party cookie setters were found, but framework serialization/internal-fetch cookie propagation remain present. Re-evaluate any untrusted name/path/domain input. Explicit expiry approval is missing; release acceptance is blocked. See the DR-008/DR-009 evidence below.                                                                             | Remove the audit exception when a stable compatible SvelteKit release resolves to a fixed cookie major; tracked by DR-009.                                                                                   |
 | [DR-010](https://github.com/seborbie/talos-community/issues/11)       | Windows installer -> Microsoft Edge WebView2 evergreen bootstrapper | The vendor's evergreen URL is a mutable release input, so it cannot satisfy the repository rule that release inputs be digest-pinned.                                                         | The bootstrapper is downloaded over TLS to a temporary file and accepted only when Windows reports a currently valid Authenticode signature from Microsoft Corporation. The same verification runs for every cached copy. Scope is limited to the WebView2 prerequisite; VC++ redistributables remain immutable and digest-pinned. Owner: Talos maintainers. Expiry: 2026-11-17.      | Replace the bootstrapper with a reviewed, versioned WebView2 distribution and published/pinned digest, or consume a Microsoft-signed immutable vendor manifest that binds the selected artifact to a digest. |
-| [DR-011](https://github.com/seborbie/talos-community/issues/12)       | Svelte 5.55.9 transform -> Rollup 4 through Vite 7.3.6              | Generated component output carries `/* @__PURE__ */` annotations at positions Rollup cannot retain, producing annotation and secondary source-map diagnostics even though the build succeeds. | The Vite custom logger suppresses only the exact generated annotation/source-map messages from the five registered Svelte sources and fails if the 45-warning ceiling grows. Every other warning reaches Vite unchanged, the policy has negative tests, Svelte checks require zero diagnostics, and production builds remain mandatory. Owner: Talos maintainers. Expiry: 2026-11-30. | Remove the handler and this entry when the supported Svelte/Vite/Rollup graph no longer emits the warning; verify by building without the filter before every dependency upgrade.                            |
 | [DR-012](https://github.com/seborbie/talos-community/issues/13)       | Community edge -> official `traefik:latest` image                    | The owner-selected image tag is mutable and violates the repository rule that release inputs must not use floating `latest` tags.                                                             | Resolution occurs only during install or explicit update. The launcher records the immutable registry digest, reported version, resolution time, and previous known-good digest; routine restarts reuse the record, and promotion requires edge/TLS/Talos health checks with rollback. No other Community image may float. Owner: Talos maintainers. Expiry: 2027-08-28.                  | Move to an owner-approved immutable Traefik release policy, or renew the exception after reviewing upstream tag behavior and executing install/update/rollback verification.                                  |
+
+### DR-008 and DR-009: corrected exposure and incomplete exception approval
+
+Evidence reviewed on 2026-10-05 against main
+`63d97b557fe77948e4d12a0177af9dddb647a417`. This records existing unresolved findings; it does not
+approve, renew or extend an exception. A successful configured audit is not a raw-clean graph.
+
+- **Exact unmet rule:** `ENGINEERING_QUALITY.md` requires ignored advisories to have a rationale,
+  owner, tracking issue and explicit expiry. `apps/package.json` names both advisories in
+  `audit:js`, but the existing register and issues supply only a review deadline. The configured
+  audit passes with those ignores; an unfiltered Bun report still lists both findings.
+- **Owner and tracking:** Sebastian Orbe / Talos maintainers;
+  [DR-008 / issue #9](https://github.com/seborbie/talos-community/issues/9) and
+  [DR-009 / issue #10](https://github.com/seborbie/talos-community/issues/10).
+- **Review due:** 2026-11-17, retained from the existing record. **Expiry: not approved or
+  established.** A review deadline is not an expiry or evidence of risk acceptance. Until a
+  compatible remediation removes the finding or the owner explicitly approves a scoped,
+  time-bounded exception under the engineering contract, exception and release acceptance remain
+  incomplete. The existing ignore mechanism is unchanged; its success must not clear this gate.
+- **DR-008 actual scope:** Prisma 6.19.3 and `@prisma/config` 6.19.3 pin `deepmerge-ts` 7.1.5.
+  `apps/api_backend/Dockerfile` installs without production pruning and copies the dependency trees
+  into the runner; `infra/compose.community.yml` runs `prisma migrate deploy` from that image.
+  This is build and production-deployment lifecycle exposure. The reviewed first-party source has
+  no request-time deepmerge/config import, and the tracked Prisma config supplies a fixed schema
+  path. This static inspection does not certify an image SBOM or prove an unreachable runtime path.
+  [The maintainer advisory](https://github.com/RebeccaStevens/deepmerge-ts/security/advisories/GHSA-ggr8-5vv4-36mx)
+  concerns recursive object graphs at matching merged paths; ordinary JSON alone does not create
+  those cycles. A Talos exploit was not demonstrated. Keep config/schema inputs trusted, avoid
+  request-time CLI/config execution and reassess any new configuration or migration input path.
+- **DR-009 actual scope:** SvelteKit 2.70.3 selects nested cookie 0.6.0. The separate Express cookie
+  0.7.2 resolution does not fix that nested copy. No first-party `cookies.set`/`cookies.delete`
+  calls were found, but adapter-node runs framework cookie serialization and internal-fetch
+  Set-Cookie propagation. [The maintainer advisory](https://github.com/jshttp/cookie/security/advisories/GHSA-pxg6-pf52-xh8x)
+  concerns invalid/untrusted name, path and domain serialization inputs, not ordinary cookie values
+  or parsing alone. No attacker-controlled Talos serialization path was demonstrated. Re-evaluate
+  framework propagation and any added setter/header input before relying on the existing control.
+- **Compliant alternatives:** review compatible updates to the owning Prisma/SvelteKit packages
+  first. Do not force a fixed child major outside its parent's range or treat a major migration as
+  a verified fix without compatibility, security and quality checks. Recheck upstream metadata
+  before adopting an update; the current locked graph remains affected.
+- **Required disposition:** remove each ignore when a reviewed compatible graph fixes its finding,
+  or obtain and record the owner's explicit risk decision and expiry with independent review of
+  the corrected scope and controls. No expiry is invented by this documentation repair, and no
+  other release, security, legal or platform requirement is waived.
 
 ### DR-010 exception evidence
 
@@ -64,6 +107,18 @@ The `DR-*` entries below link to public tracking issues created for source publi
 - **Owner/tracking/expiry:** Talos maintainers; `DR-012`; 2027-08-28. Convert this key to a public
   issue before the Community release.
 
+## Resolved findings
+
+DR-011 ([issue #12](https://github.com/seborbie/talos-community/issues/12)) is retired by the
+coordinated Vite 8.3.0 / Svelte plugin 7.3.1 migration originally repaired in PR #43. That PR
+closed unmerged after Dependabot deleted its base branch; the maintainer-owned recovered Vite
+proposal preserves this repair separately after #52. On 2026-10-02, the complete frontend build
+with normal warning reporting produced no registered generated annotation or
+source-map diagnostics. The prior Vite 7.3.6 graph still produced them with Svelte 5.57.1.
+The obsolete filter and its exception are removed; other diagnostics remain visible. Restore
+the constrained filter and register entry if a rollback restores those warnings. See
+[ADR-0017](decisions/0017-vite8-svelte-plugin-migration.md).
+
 ## Review procedure
 
 At least quarterly, and before every release:
@@ -97,12 +152,13 @@ Rust 1.85 minimum and MIT OR Apache-2.0 licence. The separate locked 0.9.1 line 
 
 The focused Cargo regression rejects reintroducing 0.10.0/0.10.1. Local workspace tests exercise
 Talos's current QUIC/session code, but this macOS ARM machine cannot demonstrate SSE2-only x86
-execution. Native CI and required human review remain integration gates. Verify the lockfile and
+execution. Native CI and independent qualified AI or human review under
+[the review policy](../review-policy.md) remain integration gates. Verify the lockfile and
 RustSec warning removal after merge before closing issue #14. This grants no vulnerability
 exception and does not establish a demonstrated Talos exploit. Rust audit must continue to report
 zero vulnerabilities.
 
-Validation of the prepared 0.10.2 update: `bun run quality` passed locally (408 JavaScript tests, 411 Rust tests; two optional PostgreSQL integrations skipped). The focused regression fails with the previous 0.10.1 lock and passes with 0.10.2. The current RustSec audit reports zero vulnerabilities and 23 informational/yanked warnings, down from 25 before the rand and chacha20 fixes. Subsequent Linux, macOS and Windows checks passed after integration on main; see the verification below.
+Validation of the prepared 0.10.2 update: `bun run quality` passed locally (408 JavaScript tests, 411 Rust tests; two optional PostgreSQL integrations skipped). The focused regression fails with the previous 0.10.1 lock and passes with 0.10.2. The prepared September RustSec audit reported zero vulnerabilities and 23 informational/yanked warnings, down from 25 before the rand and chacha20 fixes; these are historical counts. Subsequent Linux, macOS and Windows checks passed after integration on main; see the verification below.
 
 ### DR-013 integration verification (2026-09-06)
 

@@ -33,7 +33,7 @@ The focused Cargo security regression supplements current audits by rejecting th
 
 GLib 0.18.5 remains selected by the Linux Tauri/GTK stack. [RUSTSEC-2024-0429](https://rustsec.org/advisories/RUSTSEC-2024-0429.html) affects VariantStrIter and is fixed in GLib 0.20.0. A forced transitive bump across incompatible GTK/GLib versions is not a supported fix. [DR-001 / issue #2](https://github.com/seborbie/talos-community/issues/2) continues to track the platform migration. The one remaining moderate GitHub alert must remain open until a compatible solution is integrated and verified.
 
-This patch changes dependency resolution, not trust configuration, credentials, authorization, TLS policy or update-signing policy. Required human review and native CI remain necessary before integration. After merge, verify main CI, rescan the GitHub alerts, and confirm that the ten addressed alerts close while the GLib finding remains tracked. Do not claim resolution from this local lockfile alone. Rollback restores the previous lockfile but also restores the affected versions, so any rollback requires an explicit risk assessment.
+This patch changes dependency resolution, not trust configuration, credentials, authorization, TLS policy or update-signing policy. Independent qualified AI or human review under [the review policy](../review-policy.md) and native CI remain necessary before integration. After merge, verify main CI, rescan the GitHub alerts, and confirm that the ten addressed alerts close while the GLib finding remains tracked. Do not claim resolution from this local lockfile alone. Rollback restores the previous lockfile but also restores the affected versions, so any rollback requires an explicit risk assessment.
 
 ## Validation
 
@@ -48,13 +48,24 @@ platform/integration jobs, and [dependency security](https://github.com/seborbie
 passed. These hosted checks were executed September 5 and inspected September 6; the local
 validation above is historical evidence, not a rerun today.
 
-The GitHub alert API now reports alerts 2–11 fixed, with fix timestamps on September 5: all eight
-OpenSSL alerts, serde_with, and rand. Alert 1 (GLib, moderate) remains open. The current #30
-priority is severity 3 × urgency 4 (September 7 deadline), score 12. No active exploit was
+The September 6 GitHub alert API inspection reported alerts 2–11 fixed, with fix timestamps on September 5: all eight
+OpenSSL alerts, serde_with, and rand. Alert 1 (GLib, moderate) remains open. The September 6 #30
+priority was severity 3 × urgency 4 (September 7 deadline), score 12. No active exploit was
 established. The [hosted GLib update](https://github.com/seborbie/talos-community/actions/runs/33962071554)
 confirms that 0.18.5 is the latest resolvable version and 0.20.0 the first fixed version. Keep
 #30 and DR-001 open while evaluating a supported upstream migration; no deadline or exception
-has been extended. PUB-001 human reviews remain due September 11 (severity 3 × urgency 3 = 9).
+has been extended. PUB-001 reviews were due September 11 (severity 3 × urgency 3 = 9 at that inspection).
 
 On September 6, `bun test scripts/cargo-security-regression.test.ts` passed again against the
 integrated lockfile (3 tests, 17 assertions). Full local quality was not rerun for this documentation-only update.
+
+## Current interpretation on October 5, 2026
+
+This September record does not establish the current full advisory graph. October dependency
+repairs are integrated; [the source-alpha packet](source-alpha-review-2026-09.md) records their
+exact revisions and checks. The GitHub alert feed retains GLib, while an unfiltered Bun audit
+also reports high-severity deepmerge-ts and low-severity cookie. DR-008/DR-009 still have no
+approved expiry; passing their configured ignores does not complete exception or release
+acceptance. Issue #30 remains open and overdue from September 7; PUB-001 remains open and
+overdue from September 11. Neither deadline was extended. Current review eligibility is
+independent qualified AI or human review under [the review policy](../review-policy.md).

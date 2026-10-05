@@ -93,7 +93,16 @@ and [Svelte testing guidance](https://svelte.dev/docs/svelte/testing).
 - Reviewers MUST assess design, correctness, edge cases, concurrency, security, complexity, tests,
   naming, documentation, compatibility, and operational impact.
 - Authentication, authorization, cryptography, update/install flows, remote command execution,
-  unsafe Rust, schema migrations, and release pipelines require qualified human review.
+  unsafe Rust, schema migrations, and release pipelines require independent qualified review.
+  AI and human reviewers are eligible under [the review policy](docs/review-policy.md). The author
+  or authoring AI agent MUST NOT certify its own change as independently reviewed.
+- Required review MUST identify the exact final source revision, reviewer identity/session, scope,
+  inspected evidence, findings and disposition. An AI review MUST come from a separate review agent
+  or session that assesses the source and evidence, not merely endorses the author's summary.
+- Review eligibility does not waive executed tests, threat analysis, licence/source evidence,
+  platform validation or external authorization. Unresolved blocking findings and unverified
+  release requirements remain blockers. Existing change requests require substantive resolution
+  and re-review; this policy does not dismiss or convert them into approvals.
 - Before editing, agents MUST read repository instructions, inspect relevant code and tests, and
   inspect `git status`.
 - Agents MUST preserve unrelated worktree changes and MUST NOT expand external side effects beyond

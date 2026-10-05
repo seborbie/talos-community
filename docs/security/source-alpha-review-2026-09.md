@@ -2,12 +2,14 @@
 
 Prepared 2026-09-10; reassessed 2026-09-11 for [issue #1](https://github.com/seborbie/talos-community/issues/1).
 Owner: Sebastian Orbe. The existing **2026-09-11** deadline is unchanged.
-All human acceptance items below remain pending. This packet supplies review inputs; it does not
+Outstanding acceptance items remain pending. Current source review may be completed by an
+independent qualified AI or human reviewer under [the review policy](../review-policy.md).
+This packet supplies review inputs; it does not
 approve publication, extend the exception, or authorize a supported release.
 
-The September sections preserve historical evidence. Use the October 2 reassessment below for
-the current source revision and proposed repairs; green historical checks do not clear newer
-advisories or complete human acceptance.
+The September and October 2 sections preserve historical observations and the policy in force
+on those dates. Use the October 5 reassessment below for current integration status and remaining
+gates. Green historical checks do not clear later advisories or complete outstanding acceptance.
 
 ## Revision and automated evidence
 
@@ -34,7 +36,7 @@ passed (97 assertions); the Cargo security regression passed (3 tests, 17 assert
 `git diff --check` passed. Full local quality and local PostgreSQL/platform execution were not
 repeated for this documentation-only change; fresh hosted results belong on PR #40.
 
-## September 11 visibility and intake reassessment
+## Historical September 11 visibility and intake reassessment
 
 The repository API now reports `private: true` and `visibility: private`. The private vulnerability
 reporting endpoint returns HTTP 404. GitHub documents private vulnerability reporting for
@@ -91,8 +93,8 @@ with one 201 and one 403. It is not evidence of independent-process restart, eve
 or hostile-network deployment testing. Use a migrated, empty disposable `*_test` database for any
 rerun; follow the `PostgreSQL integration` job in
 [quality.yml](../../.github/workflows/quality.yml). Never point this fixture at an existing deployment.
-Record reviewer, reviewed commit, findings and disposition on issue #1. Qualified review remains
-pending even if all automated checks pass.
+Record reviewer, reviewed commit, findings and disposition on issue #1. The complete bootstrap
+review by an independent qualified AI or human reviewer remains pending even if automated checks pass.
 
 ## Release pipeline: qualified review and platform evidence
 
@@ -105,10 +107,10 @@ registry digest preservation, token permissions, environment approvals, and roll
 tests exercise selected invariants; they do not execute a signed installer or prove hosted
 environment protection is configured correctly.
 
-PRs #33–#36 propose changes to release workflow actions and need qualified review of their own
-latest revisions. Their local integration branches and upstream review evidence are recorded on
-those PRs. The five new action pins for PRs #33–#37 remain outside the repository allowlist;
-changing that security setting has not been authorized. Do not dispatch release workflows as a
+PRs #33–#37 propose workflow action updates. Independent review of the original exact pins
+and upstream source does not approve a future main-based integration head or complete hosted
+execution. Their five new pins remain outside the repository allowlist; the separately requested
+setting change has not been approved as of the October 5 reassessment. Do not dispatch release workflows as a
 substitute for review. Before a packaged release, attach supported-platform install/update/rollback,
 Compose/ACME and backup/restore evidence plus complete binary notices/SBOMs as required by
 [source publication scope](../source-alpha-publication.md).
@@ -132,7 +134,7 @@ complete or explicitly reassess unresolved publication checks by September 11 un
 exception process. A reassessment must state the outstanding risk and disposition; this document
 grants no extension. Keep issue #1 open until its acceptance requirements are actually met.
 
-## Status reassessed September 14, 2026
+## Historical status reassessed September 14, 2026
 
 GitHub now reports public visibility and private vulnerability reporting enabled. This supersedes
 the September 11 availability evidence above; a non-maintainer submission and maintainer receipt
@@ -149,7 +151,7 @@ PR #40 at `da80edb77a3f88b7274c0683ec21b5b1efa92907` passed all seven hosted Qua
 September 14. These results predate this status correction. PR #41 is still its prerequisite
 and requires independent review. No integration or supported release is claimed.
 
-## Status reassessed October 2, 2026
+## Historical status reassessed October 2, 2026
 
 The current main revision is `e76907551f335af84c439dadb431cb9f2fad0c7e`. GitHub still reports
 public visibility, private vulnerability reporting enabled, an unprotected main branch and no
@@ -179,3 +181,59 @@ shared #48 security commits. Its residual change against #41 is documentation on
 after #48 merges, then retarget this PR after #41 merges, before deleting either base branch.
 Fresh CI belongs to the updated PR heads; earlier September results remain historical evidence.
 No release publication, protection bypass, or acceptance of the overdue review items is claimed.
+
+## Status reassessed October 5, 2026
+
+The actual main base for this refreshed packet is
+`7f3d24e24fc06e576b1185de3474ab9980d36715`. PRs #48, #49, #52, #53 and #54
+are merged: devalue 5.9.4/rustls 0.23.45, coordinated Tauri CLI/native package pins, the
+Vite 8.3.0/Svelte plugin 7.3.1 migration and the independent AI-or-human review policy are
+integrated. Actual main `63d97b557fe77948e4d12a0177af9dddb647a417` passed all seven
+[Quality jobs](https://github.com/seborbie/talos-community/actions/runs/37353838518) and
+[dependency security](https://github.com/seborbie/talos-community/actions/runs/37353935206)
+on October 5. Those exact-main results verify that earlier integrated tree, not an uncreated
+future documentation head.
+
+[PR #55](https://github.com/seborbie/talos-community/pull/55) merged the corrected DR-008/DR-009
+scope and incomplete-expiry record as `9065f727357b8ba1321c03e026a1750c34ef7403` after separate
+independent source approval and all seven
+[Quality jobs](https://github.com/seborbie/talos-community/actions/runs/37356893177) passed on
+`f2151753cf51cfa32fd4fb3f98aa3d595bf48486`. Its documentation-only change did not alter the
+previously audited dependency inputs. Issues #9 and #10 were synchronized without closing them,
+changing the review date or granting risk acceptance.
+
+The fixture prerequisite [PR #41](https://github.com/seborbie/talos-community/pull/41) is merged
+as the current base above. Its final head `886b094c2efa7a818e941eb6518be9948c60798b`, based on
+`9065f727357b8ba1321c03e026a1750c34ef7403`, received separate independent source approval. All seven
+[Quality jobs](https://github.com/seborbie/talos-community/actions/runs/37359125075) and an explicit
+[security-only audit](https://github.com/seborbie/talos-community/actions/runs/37359601167) passed
+on that exact head. The actual merge tree was verified identical to the reviewed head. The
+refreshed #40 head still needs its own independent review and fresh applicable checks; this
+packet does not pre-approve itself or claim that main's post-merge workflow has finished.
+
+At 18:39 UTC, read-only GitHub checks confirmed public visibility, private reporting enabled
+and issues #1/#30 open. The 18:13 UTC protection snapshot returned `Branch not protected` and
+an empty ruleset list. Protected release environments named the owner's account as reviewer,
+allowed administrator bypass and did not prevent self-review. Documentary independence does
+not prove stronger platform enforcement. No setting or release approval was changed. The
+non-maintainer submission and private maintainer receipt remain unverified for both policy routes.
+No alternate private destination was verified.
+
+Audit success is policy-qualified. The raw Bun report retains high-severity
+`GHSA-ggr8-5vv4-36mx` (`deepmerge-ts` 7.1.5 via Prisma CLI/config 6.19.3) and low-severity
+`GHSA-pxg6-pf52-xh8x` (`cookie` 0.6.0 via SvelteKit 2.70.3). Prisma CLI/config remains in the
+API image and is used for production migrations; absence of first-party request imports does
+not remove that deployment exposure. Framework cookie serialization also remains present.
+[DR-008/DR-009](../architecture/dependency-risk-register.md) explicitly record that expiry is
+**not approved or established** and exception/release acceptance is incomplete. The November 17
+review date is unchanged and is not risk acceptance. No compatible supported fixed resolution
+was identified in the reviewed Prisma 6/SvelteKit 2 graph; no override or invented expiry was added.
+
+GLib 0.18.5 remains unresolved in Linux Tauri. The owner-directed wait for a supported upstream
+migration remains in force. Passing registered RustSec warnings does not clear it. Actions
+#33–#37 await a separate exact-pin allowlist decision; no settings bypass is authorized. Release
+source #50 still requires its refreshed-head review and checks. Full bootstrap and pipeline
+review, source/licence/name-logo acceptance, non-maintainer intake, installer lifecycle, complete
+binary/container notices/SBOMs and deployment/restore evidence remain pending. PUB-001 remains
+overdue from September 11 and issue #30 from September 7. No exception, deadline, release
+authorization or production configuration was changed.
