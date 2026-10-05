@@ -57,11 +57,16 @@ separate release gates. Development HMR and production SSR should both receive b
 
 ## Rollout
 
-Stack this proposal on the repaired grouped Bun PR #47, preserving shared security and viewer CLI
-ancestry from #48/#49. Run the regression failures on the original plugin, then verify the repaired
-graph and all applicable gates on the exact published revision. Re-request review of the previously
-rejected Vite proposal; do not treat an old approval or a local build as integration clearance.
-After dependencies merge, retarget to main and refresh the final diff and CI before integration.
+The October 2 repair was stacked on grouped Bun PR #47. On October 5, Dependabot closed #47
+unmerged and deleted its branch, which also closed #43. Recover the preserved Vite repair in a
+maintainer-owned draft stacked on replacement #52, retaining the shared #48/#49 ancestry and
+ADR-0018 native coordination. Branch cleanup is not evidence of integration.
+
+The regression failures on the original plugin were verified before the repair. Verify the
+combined graph and all applicable gates on its exact published revision. Re-request review of
+the previously rejected Vite proposal; carry forward its review context without dismissing it.
+After prerequisites merge, retarget to main and refresh the final diff and CI before integration.
+Retarget dependents before deleting a merged prerequisite branch.
 
 ## Rollback
 

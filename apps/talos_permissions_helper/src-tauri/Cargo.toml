@@ -12,7 +12,7 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 talos_log_util = { path = "../../talos_log_util" }
 talos_protocol = { path = "../../talos_protocol" }
-tauri = { version = "2.11.2", features = [] }
+tauri = { version = "2.12.1", features = [] }
 tauri-plugin-permission-flow = "0.1.40"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
