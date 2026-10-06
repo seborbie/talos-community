@@ -4,6 +4,9 @@ import { communityContainerBuildInputFailures } from './community-container-buil
 const candidate = await Bun.file(
   new URL('../../.github/workflows/community-release-candidate.yml', import.meta.url),
 ).text();
+const compatibility = await Bun.file(
+  new URL('../../.github/workflows/actions-compatibility.yml', import.meta.url),
+).text();
 
 type Step = {
   id?: string;
@@ -28,6 +31,20 @@ function action(steps: Step[], name: string): Step {
 describe('Community container build inputs', () => {
   test('the actual image-build inputs meet the pin contract', () => {
     expect(communityContainerBuildInputFailures(candidate)).toEqual([]);
+  });
+
+  test('the hosted compatibility check exercises the actual release setup inputs', () => {
+    expect(communityContainerBuildInputFailures(compatibility)).toEqual([]);
+    const releaseSteps = (Bun.YAML.parse(candidate) as Workflow).jobs.images!.steps;
+    const compatibilitySteps = (Bun.YAML.parse(compatibility) as Workflow).jobs.images!.steps;
+    for (const name of ['docker/setup-qemu-action', 'docker/setup-buildx-action']) {
+      const release = action(releaseSteps, name);
+      const smoke = action(compatibilitySteps, name);
+      expect(smoke.uses).toBe(release.uses);
+      expect(smoke.with).toEqual(release.with);
+    }
+    const releaseUpload = action(releaseSteps, 'actions/upload-artifact');
+    expect(action(compatibilitySteps, 'actions/upload-artifact').uses).toBe(releaseUpload.uses);
   });
 
   test('rejects the former implicit emulator, builder and BuildKit defaults', () => {

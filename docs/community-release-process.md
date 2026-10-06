@@ -184,12 +184,16 @@ version; the setup action retains that installed plugin with its version input o
 caching disabled. Its upstream source still has an unverified download fallback if availability
 changes inside the action; the preceding unconditional guard covers the normal, unchanged-runner
 path rather than removing that fallback. The Docker-container driver selects the reviewed
-`moby/buildkit` digest instead of an implicit moving image. The setup action SHAs remain the
-existing permitted versions while the proposed Actions updates await separate approval.
+`moby/buildkit` digest instead of an implicit moving image. The five Actions updates use the exact
+pins separately approved by the owner on 2026-10-06; existing allowlist entries and both disabled
+broad allowances are retained. See [ADR-0020](architecture/decisions/0020-approved-actions-runtimes.md).
 The parsed build-input contract rejects missing, floating, duplicate or conditionally skipped
 setup inputs in that job. Changing these pins requires reviewing upstream provenance/licences
-and refreshing the contract and applicable checks. Source checks do not execute or qualify
-these tools, the candidate images or the assembled release; those remain release evidence gates.
+and refreshing the contract and applicable checks. The hosted Actions compatibility workflow
+executes this same setup sequence, builds a synthetic pinned Bun image for amd64 and emulated arm64,
+and checks the updated upload action against the retained download action using synthetic files.
+This supplements source checks; it does not qualify candidate images, assembled releases or the
+protected signer. Those remain release evidence gates.
 The checksum comes from the [official Buildx v0.37.2 release](https://github.com/docker/buildx/releases/tag/v0.37.2)
 and its [published checksum file](https://github.com/docker/buildx/releases/download/v0.37.2/checksums.txt),
 which agree on the Linux amd64 binary digest. Published provenance/signature files are separate
