@@ -5,6 +5,7 @@ import { resolve } from 'node:path';
 import type { Server } from 'node:http';
 import { getAuditRequestMetadata } from './audit';
 import { getTrustedClientIp, getTrustedRequestOrigin } from './requestTrust';
+import { parseApiTrustedProxies } from './environmentPolicy';
 
 const openServers: Server[] = [];
 
@@ -29,6 +30,33 @@ async function listen(app: Express): Promise<string> {
 }
 
 describe('trusted request metadata', () => {
+  test.each(['::ffff:10.0.0.0/8', '::/1'])(
+    'an IPv6 trust subnet %s cannot trust an unrelated IPv4 peer',
+    async (configuredSubnet) => {
+      const app = express();
+      app.set('trust proxy', parseApiTrustedProxies(configuredSubnet));
+      app.get('/metadata', (req, res) => {
+        res.json({
+          ip: getTrustedClientIp(req),
+          auditIp: getAuditRequestMetadata(req).clientIp,
+          origin: getTrustedRequestOrigin(req),
+        });
+      });
+      const baseUrl = await listen(app);
+      const response = await fetch(`${baseUrl}/metadata`, {
+        headers: {
+          'x-forwarded-for': '198.51.100.42',
+          'x-forwarded-proto': 'https',
+          'x-forwarded-host': 'attacker.example.test',
+        },
+      });
+      const body = (await response.json()) as { ip: string; auditIp: string; origin: string };
+      expect(body.ip).toBe('127.0.0.1');
+      expect(body.auditIp).toBe(body.ip);
+      expect(body.origin).toBe(baseUrl);
+    },
+  );
+
   test('ignores spoofed forwarding headers when the peer is not trusted', async () => {
     const app = express();
     app.set('trust proxy', false);
