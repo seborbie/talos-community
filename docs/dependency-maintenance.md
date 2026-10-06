@@ -100,7 +100,8 @@ dependencies and can leave vulnerable nested copies. Regenerate the lock with
 `bun install --lockfile-only` after changing the overrides, inspect every resolved copy, and use
 `bun ci --force` or a clean install to refresh existing isolated links. Ordinary install reuse
 can retain an older transitive link even after the lock has changed. The generator also prunes
-26 unreferenced legacy esbuild platform records left after the Vite/Rolldown migration.
+26 unreferenced esbuild platform records and their unused parent record left after the
+Vite/Rolldown migration.
 
 The proxy defect matters when an operator configures a short IPv4-mapped IPv6 subnet or an
 all-zero IPv6 prefix. Talos accepts these CIDR forms, so patched Express must reject unrelated
