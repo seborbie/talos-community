@@ -40,7 +40,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: ${{ env.BUN_VERSION }}
       - name: Derive identity only from an annotated Community tag
@@ -127,7 +127,7 @@ jobs:
       - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: ${{ runner.temp }}/source/*
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: community-source-${{ steps.identity.outputs.version }}
           path: ${{ runner.temp }}/source
@@ -147,7 +147,7 @@ jobs:
         with:
           ref: ${{ needs.validate.outputs.source_sha }}
           persist-credentials: false
-      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: ${{ env.BUN_VERSION }}
       - working-directory: apps
@@ -173,7 +173,7 @@ jobs:
       - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: ${{ runner.temp }}/launcher-linux/*
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: community-launcher-linux-${{ needs.validate.outputs.version }}
           path: ${{ runner.temp }}/launcher-linux
@@ -196,7 +196,7 @@ jobs:
         with:
           ref: ${{ needs.validate.outputs.source_sha }}
           persist-credentials: false
-      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: ${{ env.BUN_VERSION }}
       - working-directory: apps
@@ -241,7 +241,7 @@ jobs:
       - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: ${{ runner.temp }}/launcher-windows/*
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: community-launcher-windows-${{ needs.validate.outputs.version }}
           path: ${{ runner.temp }}/launcher-windows
@@ -263,7 +263,7 @@ jobs:
         with:
           ref: ${{ needs.validate.outputs.source_sha }}
           persist-credentials: false
-      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: ${{ env.BUN_VERSION }}
       - working-directory: apps
@@ -351,7 +351,7 @@ jobs:
       - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: apps/installer/artifacts/release/*
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: community-native-clients-UNSIGNED-${{ needs.validate.outputs.version }}
           path: apps/installer/artifacts/release
@@ -388,12 +388,12 @@ jobs:
         with:
           ref: ${{ needs.validate.outputs.source_sha }}
           persist-credentials: false
-      - uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
           bun-version: ${{ env.BUN_VERSION }}
       - working-directory: apps
         run: bun run third-party:vpx:prepare
-      - uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
+      - uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
         with:
           image: docker.io/tonistiigi/binfmt@sha256:400a4873b838d1b89194d982c45e5fb3cda4593fbfd7e08a02e76b03b21166f0
           platforms: arm64
@@ -405,7 +405,7 @@ jobs:
         run: |
           bash scripts/install-community-buildx.sh
           printf 'DOCKER_CONFIG=%s\n' "${DOCKER_CONFIG}" >> "${GITHUB_ENV}"
-      - uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+      - uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
         with:
           # The preceding checksum/availability guard installs the exact plugin; a version
           # input here would invoke this action's unverified release downloader instead.
@@ -452,7 +452,7 @@ jobs:
       - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
           subject-path: ${{ runner.temp }}/image-${{ matrix.key }}/*
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: community-image-${{ matrix.key }}-${{ needs.validate.outputs.version }}
           path: ${{ runner.temp }}/image-${{ matrix.key }}
