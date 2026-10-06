@@ -30,7 +30,9 @@
     "devalue": "5.9.4",
     "esbuild": "0.28.2",
     "path-to-regexp": "0.1.13",
-    "qs": "6.16.0"
+    "qs": "6.16.0",
+    "proxy-addr": "2.0.8",
+    "source-map-js": "1.2.2"
   },
   "scripts": {
     "preinstall": "bun ./scripts/check-toolchain.ts",

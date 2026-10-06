@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{future::Future, time::Duration};
 
 #[cfg(target_os = "macos")]
 use std::path::Path;
@@ -174,6 +174,21 @@ async fn run_remediation_job(
     outbound_tx: &mpsc::UnboundedSender<Message>,
     job: RemediationJob,
 ) -> Result<()> {
+    run_remediation_job_with_executor(outbound_tx, job, |command, timeout_seconds| async move {
+        execute_shell_command(&command, timeout_seconds).await
+    })
+    .await
+}
+
+async fn run_remediation_job_with_executor<E, Fut>(
+    outbound_tx: &mpsc::UnboundedSender<Message>,
+    job: RemediationJob,
+    executor: E,
+) -> Result<()>
+where
+    E: FnMut(String, u64) -> Fut,
+    Fut: Future<Output = ShellCommandResult>,
+{
     if job.intent_id == PATCH_INSTALL_INTENT_ID {
         send_remediation_job_update(
             outbound_tx,
@@ -228,19 +243,24 @@ async fn run_remediation_job(
     // Step starts are safe with both API generations. Keep completed outcomes in one terminal
     // report so the API can project them atomically; older APIs treated any terminal step as a
     // terminal job and would close multi-step work prematurely.
-    let outcome = execute_generic_steps(&job, &steps, |step| {
-        send_remediation_job_update(
-            outbound_tx,
-            &job.command_id,
-            "running",
-            step.step_index,
-            json!({
-                "phase": "running",
-                "stepIndex": step.step_index,
-                "error": null
-            }),
-        )
-    })
+    let outcome = execute_generic_steps(
+        &job,
+        &steps,
+        |step| {
+            send_remediation_job_update(
+                outbound_tx,
+                &job.command_id,
+                "running",
+                step.step_index,
+                json!({
+                    "phase": "running",
+                    "stepIndex": step.step_index,
+                    "error": null
+                }),
+            )
+        },
+        executor,
+    )
     .await?;
     let status = if outcome.iter().all(|step| step.status == "completed") {
         "completed"
@@ -259,13 +279,16 @@ async fn run_remediation_job(
     Ok(())
 }
 
-async fn execute_generic_steps<F>(
+async fn execute_generic_steps<F, E, Fut>(
     job: &RemediationJob,
     steps: &[CommandStep],
     mut before_step: F,
+    mut executor: E,
 ) -> Result<Vec<StepResult>>
 where
     F: FnMut(&CommandStep) -> Result<()>,
+    E: FnMut(String, u64) -> Fut,
+    Fut: Future<Output = ShellCommandResult>,
 {
     let default_timeout = job
         .execution
@@ -289,7 +312,7 @@ where
         let timeout_seconds = step.timeout_seconds.unwrap_or(default_timeout).max(1);
         let mut last_result = None;
         for attempt in 0..=max_retries {
-            let result = execute_shell_command(&step.command, timeout_seconds).await;
+            let result = executor(step.command.clone(), timeout_seconds).await;
             let status = if result.exit_code == Some(0) {
                 "completed"
             } else {
@@ -405,6 +428,7 @@ fn parse_steps(job: &RemediationJob) -> Vec<CommandStep> {
         .collect()
 }
 
+#[derive(Debug)]
 struct ShellCommandResult {
     output: String,
     exit_code: Option<i32>,
@@ -676,14 +700,32 @@ mod tests {
             json!({ "stepIndex": 2, "command": "echo step-two" }),
         ]);
 
-        run_remediation_job(&outbound_tx, job)
-            .await
-            .expect("three-step remediation should finish");
+        let mut calls = Vec::new();
+        run_remediation_job_with_executor(&outbound_tx, job, |command, timeout_seconds| {
+            calls.push((command.clone(), timeout_seconds));
+            std::future::ready(ShellCommandResult {
+                output: command,
+                exit_code: Some(0),
+            })
+        })
+        .await
+        .expect("three-step remediation should finish");
+        assert_eq!(
+            calls,
+            vec![
+                ("echo step-zero".to_string(), 10),
+                ("echo step-one".to_string(), 10),
+                ("echo step-two".to_string(), 10),
+            ]
+        );
 
         let updates = std::iter::from_fn(|| outbound_rx.try_recv().ok())
             .map(message_payload)
             .collect::<Vec<_>>();
         assert_eq!(updates.len(), 4);
+        for update in &updates {
+            assert_eq!(update["data"]["commandId"], "command-three-steps");
+        }
         for (expected_index, update) in updates[..3].iter().enumerate() {
             assert_eq!(update["type"], "remediation_job_update");
             assert_eq!(update["data"]["status"], "running");
@@ -703,11 +745,128 @@ mod tests {
                 .collect::<Vec<_>>(),
             vec![Some("completed"), Some("completed"), Some("completed")]
         );
+        for (index, command) in ["echo step-zero", "echo step-one", "echo step-two"]
+            .iter()
+            .enumerate()
+        {
+            assert_eq!(evidence["steps"][index]["stepIndex"], index);
+            assert_eq!(evidence["steps"][index]["exitCode"], 0);
+            assert_eq!(evidence["steps"][index]["output"], *command);
+        }
         assert!(
             serde_json::to_vec(evidence)
                 .expect("serialize evidence")
                 .len()
                 <= MAX_EVIDENCE_BYTES
+        );
+    }
+
+    #[tokio::test]
+    async fn failed_first_step_reports_one_terminal_failure_and_stops() {
+        let (outbound_tx, mut outbound_rx) = mpsc::unbounded_channel();
+        let job = test_job(vec![
+            json!({ "stepIndex": 0, "command": "first" }),
+            json!({ "stepIndex": 1, "command": "must-not-run" }),
+        ]);
+        let mut calls = Vec::new();
+        run_remediation_job_with_executor(&outbound_tx, job, |command, timeout_seconds| {
+            calls.push((command, timeout_seconds));
+            std::future::ready(ShellCommandResult {
+                output: "Command timed out after 10 seconds".to_string(),
+                exit_code: Some(-1),
+            })
+        })
+        .await
+        .expect("failed execution should still report its outcome");
+        assert_eq!(calls, vec![("first".to_string(), 10)]);
+        let updates = std::iter::from_fn(|| outbound_rx.try_recv().ok())
+            .map(message_payload)
+            .collect::<Vec<_>>();
+        assert_eq!(updates.len(), 2);
+        assert_eq!(updates[0]["data"]["status"], "running");
+        assert_eq!(updates[1]["data"]["status"], "failed");
+        assert_eq!(updates[1]["data"]["stepIndex"], 0);
+        let outcomes = updates[1]["data"]["evidence"]["steps"]
+            .as_array()
+            .expect("terminal failure must include executed outcomes");
+        assert_eq!(outcomes.len(), 1);
+        assert_eq!(outcomes[0]["status"], "failed");
+        assert_eq!(outcomes[0]["exitCode"], -1);
+        assert_eq!(outcomes[0]["output"], "Command timed out after 10 seconds");
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn retries_and_continue_on_failure_preserve_frozen_step_timeouts() {
+        let (outbound_tx, mut outbound_rx) = mpsc::unbounded_channel();
+        let mut job = test_job(vec![
+            json!({ "stepIndex": 0, "command": "retry", "timeoutSeconds": 4 }),
+            json!({ "stepIndex": 1, "command": "fail" }),
+            json!({ "stepIndex": 2, "command": "continue", "timeoutSeconds": 0 }),
+        ]);
+        job.execution["maxRetries"] = json!(1);
+        job.execution["stopOnFailure"] = json!(false);
+        let mut calls = Vec::new();
+        let started = tokio::time::Instant::now();
+        run_remediation_job_with_executor(&outbound_tx, job, |command, timeout_seconds| {
+            let exit_code = if command == "fail" || calls.is_empty() {
+                7
+            } else {
+                0
+            };
+            calls.push((command.clone(), timeout_seconds));
+            std::future::ready(ShellCommandResult {
+                output: command,
+                exit_code: Some(exit_code),
+            })
+        })
+        .await
+        .expect("retry/continue policy must report its aggregate");
+        assert_eq!(started.elapsed(), Duration::from_millis(1000));
+        assert_eq!(
+            calls,
+            vec![
+                ("retry".to_string(), 4),
+                ("retry".to_string(), 4),
+                ("fail".to_string(), 10),
+                ("fail".to_string(), 10),
+                ("continue".to_string(), 1),
+            ]
+        );
+        let updates = std::iter::from_fn(|| outbound_rx.try_recv().ok())
+            .map(message_payload)
+            .collect::<Vec<_>>();
+        assert_eq!(updates.len(), 4);
+        assert_eq!(updates[3]["data"]["status"], "failed");
+        assert_eq!(updates[3]["data"]["stepIndex"], 2);
+        let outcomes = updates[3]["data"]["evidence"]["steps"]
+            .as_array()
+            .expect("terminal aggregate outcomes");
+        assert_eq!(
+            outcomes
+                .iter()
+                .map(|step| step["status"].as_str())
+                .collect::<Vec<_>>(),
+            vec![Some("completed"), Some("failed"), Some("completed")]
+        );
+        for (index, (exit_code, output)) in [(0, "retry"), (7, "fail"), (0, "continue")]
+            .iter()
+            .enumerate()
+        {
+            assert_eq!(outcomes[index]["stepIndex"], index);
+            assert_eq!(outcomes[index]["exitCode"], *exit_code);
+            assert_eq!(outcomes[index]["output"], *output);
+        }
+    }
+
+    // Medium platform smoke: exercise the actual backend once, separately from deterministic
+    // reporting tests. A bounded cold shell startup must not decide atomic reporting assertions.
+    #[tokio::test]
+    async fn real_shell_returns_exit_code_and_output() {
+        let result = execute_shell_command("echo talos-remediation-shell-smoke", 60).await;
+        assert_eq!(result.exit_code, Some(0), "actual shell result: {result:?}");
+        assert!(
+            result.output.contains("talos-remediation-shell-smoke"),
+            "actual shell output: {result:?}"
         );
     }
 
