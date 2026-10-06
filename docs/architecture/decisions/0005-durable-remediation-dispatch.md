@@ -133,6 +133,13 @@ execution, but it must not blindly redeliver unknown shell work.
   immutable command projection ownership, patch status, and retirement of the unscoped route;
 - worker regressions cover three step-start reports, the single atomic terminal outcome, and the
   32 KiB UTF-8-safe evidence bound;
+- worker reporting tests inject controlled executor outcomes and verify the original frozen
+  deadlines, retry count, stop/continue policy and failed terminal aggregate. A paused Tokio clock
+  verifies the existing retry backoff without real sleeps. These small tests do not depend
+  on three cold PowerShell processes finishing under a ten-second fixture deadline. A separate
+  medium platform smoke invokes the real shell once with a bounded sixty-second startup allowance,
+  checks its exit code/output and reports the actual result on failure. Production shell selection,
+  timeout enforcement, retry delay and patch execution remain unchanged;
 - server tests preserve the worker wire shape and wake-only target selection;
 - a disposable migrated PostgreSQL integration exercises scoped terminal projection, replay,
   timestamp preservation, immutable command ownership, the active HTTP compatibility payload, and

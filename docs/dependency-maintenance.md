@@ -87,6 +87,35 @@ PRs #52 and #53 on October 5, preserving ADR-0017/0018 and their regressions. Na
 installer/signing execution and independent qualified AI or human review remain separate gates;
 the Linux GLib finding is unchanged.
 
+### October 6 advisory refresh
+
+The live Bun audit identified two additional findings after the previous main checks passed:
+[proxy-addr IP spoofing](https://github.com/advisories/GHSA-jqcg-44mw-7w3h) and
+[source-map-js source-map amplification](https://github.com/advisories/GHSA-68fv-2mgg-jv7q).
+Use the compatible patched versions 2.0.8 and 1.2.2 respectively. Exact root overrides enforce
+every transitive copy within all current parent ranges; no advisory ignore is added.
+
+With pinned Bun 1.3.14, naming these undeclared children in `bun update` adds root runtime
+dependencies and can leave vulnerable nested copies. Regenerate the lock with
+`bun install --lockfile-only` after changing the overrides, inspect every resolved copy, and use
+`bun ci --force` or a clean install to refresh existing isolated links. Ordinary install reuse
+can retain an older transitive link even after the lock has changed. The generator also prunes
+26 unreferenced esbuild platform records and their unused parent record left after the
+Vite/Rolldown migration.
+
+The proxy defect matters when an operator configures a short IPv4-mapped IPv6 subnet or an
+all-zero IPv6 prefix. Talos accepts these CIDR forms, so patched Express must reject unrelated
+IPv4 peers rather than believe their forwarding headers. Regressions exercise client/audit IP
+and request origin through the real Express policy. Ordinary `trust proxy = false` remains
+unaffected; no deployed configuration or credential bypass is inferred.
+
+Source-map regressions resolve the implementation through both actual PostCSS versions and
+Tailwind node, reject invalid or excessive indexed-map offsets without expanding their mappings,
+and preserve valid lookups. Build inputs remain a trust boundary even though no first-party API
+route was found accepting uploaded source maps. Run full checks, tests, frontend builds, live
+advisory policy and independent review before merging. The existing Prisma/SvelteKit exceptions
+and GLib migration remain separate unresolved findings.
+
 ## Hosted verification on 2026-09-06
 
 The repair reached `main` in `10e1698ae892c73453252305abbec40c3f105231`.
