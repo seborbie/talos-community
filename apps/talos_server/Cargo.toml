@@ -8,7 +8,7 @@ license.workspace = true
 [dependencies]
 anyhow = "1.0"
 talos_protocol = { path = "../talos_protocol" }
-axum = { version = "0.7", features = ["ws"] }
+axum = { version = "0.8", features = ["ws"] }
 base64 = "0.22"
 chrono = { version = "0.4", features = ["serde"] }
 dotenvy = "0.15"
