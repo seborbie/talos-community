@@ -1364,9 +1364,9 @@ dependencies = [
 
 [[package]]
 name = "doom-fish-utils"
-version = "0.3.2"
+version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2f014d56e0b8ef916deeaa003fb711eb52879fae2701d86cc73953367b805ac"
+checksum = "c801f6c2a0db1a1909d89fc395b9dccc594de9ef599659fbde9bb3b55ef67f9f"
 dependencies = [
  "crossbeam-queue",
  "futures-util",
