@@ -4065,9 +4065,9 @@ checksum = "f8dcc9c7d52a811697d2151c701e0d08956f92b0e24136cf4cf27b57a6a0d9bf"
 
 [[package]]
 name = "rand"
-version = "0.8.6"
+version = "0.8.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ca0ecfa931c29007047d1bc58e623ab12e5590e8c7cc53200d5202b69266d8a"
+checksum = "e058c7de0b26af77780c769414d6257830bb240f3c38477dbc2c16e5f54d6d4c"
 dependencies = [
  "libc",
  "rand_chacha 0.3.1",
@@ -4384,7 +4384,7 @@ dependencies = [
  "digest",
  "hmac",
  "pbkdf2",
- "rand 0.8.6",
+ "rand 0.8.8",
  "serde_json",
  "sha1",
  "sha2",
@@ -4589,7 +4589,7 @@ dependencies = [
  "nombytes",
  "num-derive",
  "num-traits",
- "rand 0.8.6",
+ "rand 0.8.8",
  "rsasl",
  "rustls-pemfile",
  "rustls-pki-types",
@@ -5313,7 +5313,7 @@ name = "talos_appliance"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "rand 0.8.6",
+ "rand 0.10.2",
  "rcgen",
  "serde",
  "serde_json",
@@ -5419,7 +5419,7 @@ dependencies = [
  "chrono",
  "dotenvy",
  "futures-util",
- "rand 0.8.6",
+ "rand 0.10.2",
  "rcgen",
  "reqwest 0.12.28",
  "serde",
@@ -6593,7 +6593,7 @@ dependencies = [
  "http",
  "httparse",
  "log",
- "rand 0.8.6",
+ "rand 0.8.8",
  "rustls",
  "rustls-pki-types",
  "sha1",
@@ -6608,7 +6608,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97fee6b57c6a41524a810daee9286c02d7752c4253064d0b05472833a438f675"
 dependencies = [
  "cfg-if",
- "rand 0.8.6",
+ "rand 0.8.8",
  "static_assertions",
 ]
 
